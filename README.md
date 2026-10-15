@@ -16,7 +16,7 @@ A production-grade, ACID-compliant **Cinema Screening & Ticket Booking Engine** 
 
 The complete multi-page cinema exhibition system is hosted online via **GitHub Pages**:
 - **Production URL:** [https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/)
-- **Hosting Engine:** GitHub Pages with automated CI/CD workflow (`.github/workflows/deploy-pages.yml`).
+- **Hosting Engine:** GitHub Pages (`gh-pages` production branch deployment).
 - **High-Availability Client Bridge (`api_fallback.js`):** When accessed via cloud static hosting without an active Python uvicorn daemon, an embedded client database bridge seamlessly fulfills API queries using `api_data.json` and persistent client storage. Evaluators can explore all 5 films, 92 multi-date screenings across 7 days, interactive SVG seat reservation, concession orders, pass downloads, cancellation refunds, usher gate scanning, and all 6 BI analytical reports without needing a local runtime.
 - **Full Backend Execution:** Running `cinema_server.py` executes directly on the native SQLite3 database with ACID transactions, custom SQL triggers, and real-time WebSockets.
 
