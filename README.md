@@ -28,10 +28,10 @@ A production-grade, ACID-compliant **Cinema Screening & Ticket Booking Engine** 
 - **Predictive Concession Inventory Forecast:** Correlates genre attendance with snack demand to alert when inventory reaches restock thresholds.
 - **Prometheus Telemetry (/metrics):** Live metrics format tracking transaction latency, connection pool status, and throughput.
 
-### 3. Frontend Architecture (Zero-Build Tailwind CSS)
-Standalone Single Page Architecture (SPA) served directly by FastAPI without Node.js or npm build steps:
-- **Design Aesthetic:** Light modernist luxury canvas (`#dbe4eb` body background, `#ffffff` card container with `rounded-[2.5rem]`, `#f4f5f8` panel containers, `#181111` dark charcoal typography, `#e3e2f7` lilac pill accents, and `#ecfdf5` mint status badges).
-- **Typography:** Satoshi geometric sans-serif paired with Newsreader editorial serif italic accents.
+### 3. Frontend Architecture
+Built using clean, modern HTML5 and Tailwind CSS:
+- Responsive user interface with interactive SVG auditorium seat matrix and live booking workflow.
+- Dedicated interfaces for movie discovery, gourmet concessions ordering, digital pass wallet, and management analytics.
 
 ---
 
@@ -70,6 +70,12 @@ Open your browser at **`http://localhost:8000/`**.
 ---
 
 ## 🏛️ Academic PBL Context
+- **Project Title:** Design and Implementation of a Database Management System for Cinema Screening and Ticket Booking System
+- **Student Name:** G. Abhinav
+- **Roll Number:** WU0102089 (25WU0102089)
+- **Section:** AIML Rhinos (Batch 2025–2029)
+- **Program:** B.Tech in Computer Science and Engineering
+- **Institution:** School of Technology, Woxsen University, Hyderabad
 - **Course:** Database Management Systems (DBMS PBL)
-- **Author:** G. Abhinav (`25WU0102089`)
-- **Institution:** Woxsen University
+- **Course Faculty:** Prof. Sahithi
+- **Academic Year:** 2026 – 2027
