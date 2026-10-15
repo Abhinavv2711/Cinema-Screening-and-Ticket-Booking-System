@@ -17,9 +17,8 @@ from pydantic import BaseModel, Field
 # -----------------------------------------------------------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 POSSIBLE_PATHS = [
-    os.path.join(BASE_DIR, "cinema_booking_system_git_package", "project", "app", "cinema_booking.db"),
-    os.path.join(BASE_DIR, "cinema_booking_system_git_package", "project", "sql", "cinema_booking.db"),
     os.path.join(BASE_DIR, "cinema_booking.db"),
+    os.path.join(BASE_DIR, "cinema_booking_system_git_package", "project", "app", "cinema_booking.db"),
     os.path.join(BASE_DIR, "project", "app", "cinema_booking.db"),
 ]
 
