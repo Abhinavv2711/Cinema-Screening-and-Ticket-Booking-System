@@ -323,6 +323,155 @@ def list_screenings():
     conn.close()
     return rows
 
+@app.get("/api/movies")
+def list_movies():
+    """Returns now-showing movie catalog with rich cinematic metadata, posters, and cast."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT movie_id, title, genre, duration_minutes, rating, language, release_date
+        FROM movies;
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    
+    METADATA = {
+        "Oppenheimer": {
+            "tagline": "The world forever changes.",
+            "synopsis": "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb during World War II.",
+            "director": "Christopher Nolan",
+            "cast": ["Cillian Murphy", "Emily Blunt", "Matt Damon", "Robert Downey Jr."],
+            "imdb_score": "8.9",
+            "critic_score": "93%",
+            "backdrop": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=1600&q=80",
+            "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+            "badge": "IMAX Exclusive",
+            "hero_gradient": "from-amber-950/80 via-black/70 to-charcoal"
+        },
+        "Dune: Part Two": {
+            "tagline": "Long live the fighters.",
+            "synopsis": "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
+            "director": "Denis Villeneuve",
+            "cast": ["Timothée Chalamet", "Zendaya", "Rebecca Ferguson", "Javier Bardem"],
+            "imdb_score": "8.8",
+            "critic_score": "92%",
+            "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1600&q=80",
+            "poster": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+            "badge": "4DX Experience",
+            "hero_gradient": "from-orange-950/80 via-black/70 to-charcoal"
+        },
+        "Interstellar": {
+            "tagline": "Mankind was born on Earth. It was never meant to die here.",
+            "synopsis": "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot is tasked to pilot a spacecraft along with a team of researchers.",
+            "director": "Christopher Nolan",
+            "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
+            "imdb_score": "8.7",
+            "critic_score": "87%",
+            "backdrop": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80",
+            "poster": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=600&q=80",
+            "badge": "Cult Classic",
+            "hero_gradient": "from-indigo-950/80 via-black/70 to-charcoal"
+        },
+        "Kalki 2898 AD": {
+            "tagline": "The future has arrived.",
+            "synopsis": "Set in a post-apocalyptic world in the year 2898 AD, the film follows a select group on a mission to save the unborn child of SUM-80.",
+            "director": "Nag Ashwin",
+            "cast": ["Prabhas", "Amitabh Bachchan", "Kamal Haasan", "Deepika Padukone"],
+            "imdb_score": "7.8",
+            "critic_score": "81%",
+            "backdrop": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1600&q=80",
+            "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+            "badge": "Epic Sci-Fi",
+            "hero_gradient": "from-yellow-950/80 via-black/70 to-charcoal"
+        },
+        "Inception": {
+            "tagline": "Your mind is the scene of the crime.",
+            "synopsis": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.",
+            "director": "Christopher Nolan",
+            "cast": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"],
+            "imdb_score": "8.8",
+            "critic_score": "91%",
+            "backdrop": "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1600&q=80",
+            "poster": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80",
+            "badge": "Masterpiece",
+            "hero_gradient": "from-slate-950/80 via-black/70 to-charcoal"
+        }
+    }
+    
+    result = []
+    for mid, title, genre, duration, rating, lang, r_date in rows:
+        meta = METADATA.get(title, {
+            "tagline": "Now playing in luxury auditoriums.",
+            "synopsis": f"Experience {title} in ultra-crisp audio and visual quality.",
+            "director": "Acclaimed Director",
+            "cast": ["All-Star Cast"],
+            "imdb_score": "8.5",
+            "critic_score": "88%",
+            "backdrop": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80",
+            "poster": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80",
+            "badge": "Now Showing",
+            "hero_gradient": "from-charcoal/80 via-black/70 to-charcoal"
+        })
+        result.append({
+            "movie_id": mid,
+            "title": title,
+            "genre": genre,
+            "duration_minutes": duration,
+            "rating": rating,
+            "language": lang,
+            "release_date": str(r_date),
+            **meta
+        })
+    return result
+
+@app.get("/api/customer/{customer_id}/bookings")
+def get_customer_bookings(customer_id: int):
+    """Returns booking history with issued tickets, screening details and QR codes."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT 
+            b.booking_id, b.total_amount, b.booking_status, b.booking_time,
+            s.screening_id, s.show_date, s.start_time, s.end_time,
+            m.title AS movie_title, m.genre, m.duration_minutes,
+            c.name AS cinema_name, sc.screen_number, sc.screen_type,
+            p.payment_method, p.transaction_reference
+        FROM bookings b
+        JOIN screenings s ON b.screening_id = s.screening_id
+        JOIN movies m ON s.movie_id = m.movie_id
+        JOIN screens sc ON s.screen_id = sc.screen_id
+        JOIN cinemas c ON sc.cinema_id = c.cinema_id
+        LEFT JOIN payments p ON b.booking_id = p.booking_id
+        WHERE b.customer_id = ?
+        ORDER BY b.booking_id DESC;
+    """, (customer_id,))
+    
+    booking_rows = cur.fetchall()
+    cols = [col[0] for col in cur.description]
+    
+    bookings = []
+    for row in booking_rows:
+        b_dict = dict(zip(cols, row))
+        b_id = b_dict["booking_id"]
+        
+        # Get seats & tickets
+        cur.execute("""
+            SELECT t.ticket_id, t.ticket_number, t.barcode_hash, t.status,
+                   s.row_label, s.seat_number, s.seat_tier, bs.price
+            FROM tickets t
+            JOIN booked_seats bs ON t.booked_seat_id = bs.booked_seat_id
+            JOIN seats s ON bs.seat_id = s.seat_id
+            WHERE t.booking_id = ?;
+        """, (b_id,))
+        t_cols = [c[0] for c in cur.description]
+        tickets = [dict(zip(t_cols, tr)) for tr in cur.fetchall()]
+        b_dict["tickets"] = tickets
+        b_dict["seat_labels"] = [f"{t['row_label']}{t['seat_number']}" for t in tickets]
+        bookings.append(b_dict)
+        
+    conn.close()
+    return bookings
+
 @app.get("/api/screening/{screening_id}/seats")
 def get_screening_seats(screening_id: int):
     """Returns the visual 2D seating matrix with booked status and real-time WebSocket locks."""
