@@ -17,13 +17,13 @@
       theme: {
         extend: {
           colors: {
-            bodyBg: '#dbe4eb',        // Soft cool blue-gray outer frame from screenshot
+            bodyBg: '#dbe4eb',        // Outer frame background
             canvas: '#ffffff',        // Main pure white card container
             panel: '#f4f5f8',         // Light off-white container panels
             panelBorder: '#e2e8f0',   // Subtle panel border
             charcoal: '#181111',      // Primary dark charcoal for buttons, text, and active pills
             charcoalHover: '#000000',
-            lilac: '#e3e2f7',         // Subtle lilac badge accent from screenshot
+            lilac: '#e3e2f7',         // Lilac accent badge
             lilacDark: '#3c2a63',     // Dark lilac for badge text
             lilacBorder: '#d0cbf2',
             slateText: '#64748b',     // Secondary text
@@ -71,12 +71,10 @@
 <body class="min-h-screen p-3 sm:p-6 lg:p-8 flex flex-col justify-between selection:bg-lilac selection:text-charcoal font-sans">
 
   <!-- ========================================================================= -->
-  <!-- MAIN APPLICATION CANVAS (WHITE ROUNDED CONTAINER FROM SCREENSHOT)         -->
+  <!-- MAIN APPLICATION CANVAS                                                   -->
   <!-- ========================================================================= -->
   <div class="max-w-[1360px] mx-auto w-full bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col min-h-[92vh]">
     
-    <!-- ========================================================================= -->
-    <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
     <!-- ========================================================================= -->
     <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
     <!-- ========================================================================= -->
@@ -96,7 +94,7 @@
         </div>
       </a>
 
-      <!-- Center Navigation Pill Switcher (Matching Modernist Design) -->
+      <!-- Center Navigation Pill Switcher -->
       <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
         <a href="/" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Now Showing</a>
         <a href="#screens-section" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Experiences</a>
@@ -180,7 +178,7 @@
 
       </div>
 
-      <!-- Right Column: Featured Premiere Showcase Card (Matching Aesthetic) -->
+      <!-- Right Column: Featured Premiere Showcase Card -->
       <div class="lg:col-span-5 flex justify-center">
         <div class="w-full max-w-sm bg-charcoal rounded-[2.5rem] p-3 shadow-2xl border-4 border-gray-200">
           <div class="bg-white rounded-[2rem] p-5 space-y-4">
@@ -354,7 +352,7 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 5. CINEMA HALLS & PREMIUM FORMATS (MATCHING PALETTE)                       -->
+    <!-- 5. CINEMA HALLS & PREMIUM FORMATS                                          -->
     <!-- ========================================================================= -->
     <section id="screens-section" class="px-6 sm:px-10 py-10 bg-panel/40 border-t border-gray-100">
       <div class="text-center max-w-xl mx-auto mb-8">
