@@ -111,13 +111,15 @@
 
       <!-- Center Navigation Links -->
       <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
-        <button onclick="scrollToSection('movies-section')" class="px-4 py-1.5 rounded-full text-white bg-white/10 hover:bg-white/20 transition-all">Now Showing</button>
-        <button onclick="scrollToSection('cinemas-section')" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Cinemas &amp; Formats</button>
-        <button onclick="openConcessionsDirect()" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</button>
-        <button onclick="openMyBookingsModal()" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
+        <a href="#movies-section" class="px-3.5 py-1.5 rounded-full text-white bg-white/10 hover:bg-white/20 transition-all">Now Showing</a>
+        <a href="/concessions" class="px-3.5 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-3.5 py-1.5 rounded-full text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
           <span>My Tickets</span>
           <span id="nav-booking-badge" class="w-4 h-4 rounded-full bg-lilac text-charcoal text-[10px] font-black flex items-center justify-center">0</span>
-        </button>
+        </a>
+        <a href="/usher" class="px-3.5 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-3.5 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
+        <a href="/docs" class="px-3.5 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
       </nav>
 
       <!-- Right Location Selector & Quick Action -->
@@ -800,9 +802,11 @@
       <!-- Consumer Footer Links -->
       <div class="flex flex-wrap items-center justify-center gap-6 text-gray-400 font-medium">
         <a href="#movies-section" class="hover:text-white transition-colors">Movies</a>
-        <a href="#cinemas-section" class="hover:text-white transition-colors">Experiences</a>
-        <a href="javascript:void(0)" onclick="openConcessionsDirect()" class="hover:text-white transition-colors">Gourmet Food</a>
-        <a href="javascript:void(0)" onclick="openMyBookingsModal()" class="hover:text-white transition-colors">My Tickets</a>
+        <a href="/concessions" class="hover:text-white transition-colors">Gourmet Food</a>
+        <a href="/my-tickets" class="hover:text-white transition-colors">My Tickets</a>
+        <a href="/usher" class="hover:text-white transition-colors">Gate Scanner</a>
+        <a href="/admin" class="hover:text-lilac transition-colors">Cinema Manager &amp; BI</a>
+        <a href="/docs" class="hover:text-white transition-colors">Project 65 Docs</a>
         <span class="text-gray-700">|</span>
         <!-- Discreet Developer Toggle (Backend hidden from main view) -->
         <button onclick="openDevConsole()" class="text-gray-500 hover:text-lilac flex items-center gap-1.5 transition-colors">
@@ -910,7 +914,7 @@
 
       grid.innerHTML = movies.map(m => `
         <div class="bg-charcoalDark border border-white/10 rounded-2xl overflow-hidden hover:border-lilac/50 hover:shadow-xl transition-all group flex flex-col justify-between">
-          <div class="relative aspect-[2/3] overflow-hidden bg-charcoal">
+          <a href="/movie?id=${m.movie_id}" class="relative aspect-[2/3] overflow-hidden bg-charcoal block cursor-pointer">
             <img src="${m.poster}" alt="${m.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
             <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-charcoalDark/80 text-white backdrop-blur-md border border-white/20">
               ${m.badge}
@@ -918,18 +922,23 @@
             <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-black bg-amber-500 text-charcoal">
               ★ ${m.imdb_score}
             </span>
-          </div>
+          </a>
 
           <div class="p-3.5 space-y-2 flex-1 flex flex-col justify-between">
             <div>
-              <h3 class="font-black text-white text-sm line-clamp-1 group-hover:text-lilac transition-colors">${m.title}</h3>
+              <a href="/movie?id=${m.movie_id}" class="font-black text-white text-sm line-clamp-1 hover:text-lilac transition-colors block">${m.title}</a>
               <p class="text-[11px] text-gray-400 mt-0.5">${m.genre}</p>
               <p class="text-[10px] text-gray-500">${m.language} • ${m.duration_minutes} min</p>
             </div>
 
-            <button onclick="openBookingModalForMovie(${m.movie_id})" class="w-full py-2 rounded-xl bg-white/10 text-white font-bold text-xs hover:bg-white hover:text-charcoal transition-all shadow-sm">
-              Book Tickets
-            </button>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <a href="/movie?id=${m.movie_id}" class="py-2 text-center rounded-xl bg-white/5 border border-white/10 text-gray-300 font-bold text-xs hover:bg-white/10 hover:text-white transition-all">
+                Details
+              </a>
+              <button onclick="openBookingModalForMovie(${m.movie_id})" class="py-2 rounded-xl bg-white text-charcoal font-black text-xs hover:bg-lilac transition-all shadow-sm">
+                Book
+              </button>
+            </div>
           </div>
         </div>
       `).join('');

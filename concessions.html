@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gourmet Concessions &amp; Dining | AURA LUXE CINEMAS</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Satoshi Font & Newsreader Serif -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#231212',
+            charcoalDark: '#120808',
+            charcoalHover: '#321919',
+            lilac: '#e3e2f7',
+            lilacDark: '#564488',
+            offwhite: '#f4f4f4',
+            gold: '#D4AF37',
+          },
+          fontFamily: {
+            sans: ['Satoshi', 'Inter', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background-color: #0d0707;
+      color: #f4f4f4;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-lilac selection:text-charcoal">
+
+  <!-- ========================================================================= -->
+  <!-- 1. NAVIGATION BAR                                                          -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+          🍿
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base font-black tracking-tight text-white uppercase">AURA</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac/20 text-lilac uppercase tracking-wider">GOURMET</span>
+          </div>
+          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">CINEMA DINING &amp; CONCESSIONS</p>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
+        <a href="/" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Movies</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-white bg-white/10 font-bold transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">My Tickets</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button onclick="scrollToCart()" class="px-4 py-2 rounded-full bg-lilac text-charcoal font-black text-xs shadow-md flex items-center gap-2 hover:bg-white transition-all">
+          <span>🛒 Cart</span>
+          <span id="nav-cart-count" class="w-5 h-5 rounded-full bg-charcoal text-white text-[10px] flex items-center justify-center font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. HERO SPOTLIGHT                                                          -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 md:px-8 py-10 w-full space-y-10">
+    <div class="relative rounded-3xl overflow-hidden border border-white/15 bg-gradient-to-r from-amber-950/60 via-charcoal to-[#180d0d] p-8 sm:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+      <div class="space-y-3 max-w-xl">
+        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gold/20 text-gold border border-gold/30">
+          Chef-Crafted Cinema Dining
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">Artisanal Popcorn &amp; Gourmet Bites</h1>
+        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed font-serif italic">
+          "Freshly popped French caramel kernels, warm Spanish salsa nachos, and handcrafted artisan combos delivered directly to your recliner."
+        </p>
+      </div>
+
+      <div class="flex items-center gap-4 text-center">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[100px]">
+          <span class="text-2xl block mb-1">🍿</span>
+          <span class="text-xs font-bold text-white block">100% Corn</span>
+          <span class="text-[10px] text-gray-400">Non-GMO</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[100px]">
+          <span class="text-2xl block mb-1">🧈</span>
+          <span class="text-xs font-bold text-white block">Pure Butter</span>
+          <span class="text-[10px] text-gray-400">Fresh Popped</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[100px]">
+          <span class="text-2xl block mb-1">⚡</span>
+          <span class="text-xs font-bold text-white block">At-Seat</span>
+          <span class="text-[10px] text-gray-400">Intermission</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. MENU SECTION & LIVE CART                                               -->
+    <!-- ========================================================================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      
+      <!-- Left: Menu Items (2 Cols) -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-black text-white">Concessions Menu</h2>
+          <div class="flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/10 text-xs font-bold">
+            <button onclick="filterCategory('ALL')" id="cat-ALL" class="px-3.5 py-1 rounded-full bg-white text-charcoal">All</button>
+            <button onclick="filterCategory('Popcorn')" id="cat-Popcorn" class="px-3.5 py-1 rounded-full text-gray-400 hover:text-white">Popcorn</button>
+            <button onclick="filterCategory('Beverage')" id="cat-Beverage" class="px-3.5 py-1 rounded-full text-gray-400 hover:text-white">Beverages</button>
+            <button onclick="filterCategory('Snack')" id="cat-Snack" class="px-3.5 py-1 rounded-full text-gray-400 hover:text-white">Snacks &amp; Combos</button>
+          </div>
+        </div>
+
+        <div id="concessions-menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Right: Live Shopping Cart (1 Col) -->
+      <div id="cart-sidebar" class="bg-charcoalDark border border-white/15 rounded-3xl p-6 space-y-5 sticky top-24 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <h3 class="font-black text-white text-base flex items-center gap-2">
+            <span>🛒</span>
+            <span>Your Gourmet Order</span>
+          </h3>
+          <span id="cart-items-count" class="text-xs text-lilac font-bold">0 items</span>
+        </div>
+
+        <div id="cart-items-list" class="space-y-3 max-h-64 overflow-y-auto text-xs text-gray-300">
+          <div class="py-8 text-center text-gray-500 italic">No food items added yet.</div>
+        </div>
+
+        <div class="border-t border-white/10 pt-4 space-y-2 text-xs">
+          <div class="flex justify-between text-gray-300">
+            <span>Subtotal:</span>
+            <span id="cart-subtotal" class="font-bold">₹0.00</span>
+          </div>
+          <div class="flex justify-between text-gray-300">
+            <span>GST &amp; Packaging (5%):</span>
+            <span id="cart-tax" class="font-bold">₹0.00</span>
+          </div>
+          <div class="flex justify-between text-white font-black text-base pt-2 border-t border-white/10">
+            <span>Total Payable:</span>
+            <span id="cart-grand-total" class="text-lilac font-black">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="space-y-2 pt-2 border-t border-white/10">
+          <label class="block text-[11px] font-bold text-gray-400 uppercase">Select Payment</label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white/10 border border-lilac cursor-pointer">
+              <input type="radio" name="order-pay" value="UPI" checked class="text-lilac">
+              <span class="font-bold text-white text-xs">UPI / GPay</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
+              <input type="radio" name="order-pay" value="Card" class="text-lilac">
+              <span class="font-bold text-white text-xs">Card / POS</span>
+            </label>
+          </div>
+        </div>
+
+        <button id="btn-place-fnb" onclick="submitConcessionOrder()" disabled class="w-full py-3.5 rounded-full bg-gradient-to-r from-lilac to-white text-charcoal font-black text-xs shadow-xl disabled:opacity-40 disabled:cursor-not-allowed hover:scale-102 transition-all">
+          Place Gourmet Order &rarr;
+        </button>
+
+        <div id="order-success-banner" class="hidden p-4 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs space-y-1">
+          <p class="font-bold">✓ Order Successfully Placed!</p>
+          <p class="text-[11px] text-gray-300">Order ID: <strong id="succ-order-id" class="text-white">#0</strong></p>
+          <p class="text-[11px] text-gray-300">Txn: <strong id="succ-txn-id" class="text-white">TXN-000</strong></p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 4. FOOTER                                                                  -->
+  <!-- ========================================================================= -->
+  <footer class="border-t border-white/10 bg-charcoalDark/80 py-6 px-4 md:px-8 text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span>🍿</span>
+        <span class="font-bold text-white">AURA GOURMET DINING</span>
+        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
+      </div>
+      <div class="flex items-center gap-4 text-gray-400">
+        <a href="/" class="hover:text-white">Home</a>
+        <a href="/my-tickets" class="hover:text-white">My Tickets</a>
+        <a href="/usher" class="hover:text-white">Gate Scanner</a>
+        <a href="/admin" class="hover:text-lilac">Cinema Manager</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 5. JAVASCRIPT LOGIC                                                        -->
+  <!-- ========================================================================= -->
+  <script>
+    let allConcessions = [];
+    let cart = {}; // item_id -> quantity
+    const CUSTOMER_ID = 2;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/concessions');
+        allConcessions = await res.json();
+        renderMenu(allConcessions);
+      } catch (err) {
+        console.error("Failed to load concessions:", err);
+      }
+    });
+
+    function renderMenu(items) {
+      const grid = document.getElementById('concessions-menu-grid');
+      grid.innerHTML = items.map(item => {
+        const icon = item.category === 'Popcorn' ? '🍿' : (item.category === 'Beverage' ? '🥤' : '🍔');
+        const qty = cart[item.item_id] || 0;
+        return `
+          <div class="bg-charcoal border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-lilac/40 transition-all space-y-4">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-white/10 text-white flex items-center justify-center text-2xl flex-shrink-0">
+                  ${icon}
+                </div>
+                <div>
+                  <h4 class="font-black text-white text-sm">${item.item_name}</h4>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/10 text-lilac uppercase tracking-wider">${item.category}</span>
+                </div>
+              </div>
+              <span class="text-sm font-black text-white">₹${item.unit_price}</span>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
+              <span class="text-[11px] text-gray-400">Stock: <strong class="text-emerald-400 font-bold">${item.stock_quantity} available</strong></span>
+              
+              <div class="flex items-center gap-2">
+                <button onclick="updateCartQty(${item.item_id}, -1)" class="w-7 h-7 rounded-lg bg-white/10 text-white hover:bg-white/20 font-bold flex items-center justify-center">-</button>
+                <span id="menu-qty-${item.item_id}" class="w-6 text-center font-black text-white">${qty}</span>
+                <button onclick="updateCartQty(${item.item_id}, 1)" class="w-7 h-7 rounded-lg bg-lilac text-charcoal hover:bg-white font-bold flex items-center justify-center">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterCategory(cat) {
+      ['ALL', 'Popcorn', 'Beverage', 'Snack'].forEach(c => {
+        const btn = document.getElementById(`cat-${c}`);
+        if (!btn) return;
+        btn.className = (c === cat) ? "px-3.5 py-1 rounded-full bg-white text-charcoal font-bold" : "px-3.5 py-1 rounded-full text-gray-400 hover:text-white";
+      });
+
+      if (cat === 'ALL') renderMenu(allConcessions);
+      else if (cat === 'Snack') renderMenu(allConcessions.filter(i => i.category === 'Snack' || i.category === 'Combo'));
+      else renderMenu(allConcessions.filter(i => i.category === cat));
+    }
+
+    function updateCartQty(itemId, delta) {
+      const current = cart[itemId] || 0;
+      const next = Math.max(0, current + delta);
+      if (next === 0) delete cart[itemId];
+      else cart[itemId] = next;
+
+      const label = document.getElementById(`menu-qty-${itemId}`);
+      if (label) label.innerText = next;
+
+      renderCartSidebar();
+    }
+
+    function renderCartSidebar() {
+      const list = document.getElementById('cart-items-list');
+      const itemIds = Object.keys(cart);
+
+      let subtotal = 0;
+      let totalItems = 0;
+
+      if (itemIds.length === 0) {
+        list.innerHTML = '<div class="py-8 text-center text-gray-500 italic">No food items added yet.</div>';
+      } else {
+        list.innerHTML = itemIds.map(id => {
+          const item = allConcessions.find(c => c.item_id === parseInt(id));
+          const qty = cart[id];
+          const itemSub = item.unit_price * qty;
+          subtotal += itemSub;
+          totalItems += qty;
+
+          return `
+            <div class="flex items-center justify-between bg-white/5 p-2.5 rounded-xl">
+              <div>
+                <p class="font-bold text-white">${item.item_name}</p>
+                <p class="text-[10px] text-gray-400">₹${item.unit_price} &times; ${qty}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-black text-white">₹${itemSub}</span>
+                <button onclick="updateCartQty(${item.item_id}, -${qty})" class="text-rose-400 hover:text-rose-300 font-bold ml-1 text-xs">✕</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const tax = Math.round(subtotal * 0.05);
+      const grandTotal = subtotal + tax;
+
+      document.getElementById('nav-cart-count').innerText = totalItems;
+      document.getElementById('cart-items-count').innerText = `${totalItems} items`;
+      document.getElementById('cart-subtotal').innerText = `₹${subtotal.toFixed(2)}`;
+      document.getElementById('cart-tax').innerText = `₹${tax.toFixed(2)}`;
+      document.getElementById('cart-grand-total').innerText = `₹${grandTotal.toFixed(2)}`;
+      document.getElementById('btn-place-fnb').disabled = totalItems === 0;
+    }
+
+    async function submitConcessionOrder() {
+      const btn = document.getElementById('btn-place-fnb');
+      btn.disabled = true;
+      btn.innerText = 'Processing Order...';
+
+      try {
+        const payMethod = document.querySelector('input[name="order-pay"]:checked')?.value || 'UPI';
+        const items = Object.entries(cart).map(([id, qty]) => ({
+          item_id: parseInt(id),
+          quantity: qty
+        }));
+
+        const res = await fetch('/api/order-concessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer_id: CUSTOMER_ID,
+            booking_id: null,
+            items: items,
+            payment_method: payMethod
+          })
+        });
+
+        if (!res.ok) throw new Error('Failed to submit food order');
+        const data = await res.json();
+
+        // Show success
+        document.getElementById('order-success-banner').classList.remove('hidden');
+        document.getElementById('succ-order-id').innerText = `#${data.order_id}`;
+        document.getElementById('succ-txn-id').innerText = data.transaction_reference;
+
+        cart = {};
+        renderCartSidebar();
+        // Refresh menu stock
+        const freshRes = await fetch('/api/concessions');
+        allConcessions = await freshRes.json();
+        renderMenu(allConcessions);
+
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Place Gourmet Order →';
+      }
+    }
+
+    function scrollToCart() {
+      document.getElementById('cart-sidebar').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

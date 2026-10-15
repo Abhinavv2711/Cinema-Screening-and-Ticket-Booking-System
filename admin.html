@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinema Manager &amp; Executive BI Analytics | AURA LUXE CINEMAS</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Satoshi Font & Newsreader Serif -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#231212',
+            charcoalDark: '#120808',
+            charcoalHover: '#321919',
+            lilac: '#e3e2f7',
+            lilacDark: '#564488',
+            offwhite: '#f4f4f4',
+            gold: '#D4AF37',
+          },
+          fontFamily: {
+            sans: ['Satoshi', 'Inter', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background-color: #0d0707;
+      color: #f4f4f4;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-lilac selection:text-charcoal">
+
+  <!-- ========================================================================= -->
+  <!-- 1. NAVIGATION BAR                                                          -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+          📊
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base font-black tracking-tight text-white uppercase">CINEMA</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac/20 text-lilac uppercase tracking-wider">MANAGER &amp; BI</span>
+          </div>
+          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">EXECUTIVE OPERATIONS CONSOLE</p>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
+        <a href="/" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Movies</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">My Tickets</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-white bg-white/10 font-bold transition-all">Cinema Manager</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="/metrics" target="_blank" class="px-3.5 py-1.5 rounded-full border border-lilac/30 text-lilac hover:bg-lilac/10 text-xs font-bold transition-all flex items-center gap-1">
+          <span>Prometheus /metrics</span> &rarr;
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MANAGER DASHBOARD WORKSPACE                                            -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 md:px-8 py-10 w-full space-y-10">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-white">Cinema Operations &amp; Executive Analytics</h1>
+        <p class="text-xs text-gray-400 mt-1">Project 65: Show Scheduling, Concurrency Control, 6 SQL Views, and Automated Diagnostics.</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="runDiagnostics()" class="px-5 py-2.5 rounded-full bg-lilac text-charcoal font-black text-xs hover:bg-white shadow-lg transition-all flex items-center gap-1.5">
+          <span>⚡ Run ACID Diagnostics</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Navigation Tabs for Admin -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-white/10 text-xs font-bold">
+      <button onclick="setAdminTab('scheduling')" id="tab-btn-scheduling" class="px-5 py-2 rounded-full bg-white text-charcoal font-black shadow-md">
+        📅 Show Scheduling
+      </button>
+      <button onclick="setAdminTab('bi-reports')" id="tab-btn-bi-reports" class="px-5 py-2 rounded-full text-gray-400 hover:text-white">
+        📊 6 SQL Executive Views
+      </button>
+      <button onclick="setAdminTab('concurrency')" id="tab-btn-concurrency" class="px-5 py-2 rounded-full text-gray-400 hover:text-white">
+        🔒 OCC &amp; EXPLAIN QUERY PLAN
+      </button>
+      <button onclick="setAdminTab('audit')" id="tab-btn-audit" class="px-5 py-2 rounded-full text-gray-400 hover:text-white">
+        📜 Audit Event Sourcing
+      </button>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 1: SHOW SCHEDULING (PROJECT 65 REQUIREMENT)                         -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-scheduling" class="space-y-6">
+      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+        <div>
+          <h2 class="text-xl font-black text-white">Schedule New Screening</h2>
+          <p class="text-xs text-gray-400 mt-1">Database trigger <code class="text-lilac">trg_prevent_screen_overlap_insert</code> automatically checks and enforces zero overlap + 15m turnaround buffer.</p>
+        </div>
+
+        <form id="schedule-form" onsubmit="handleScheduleSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-1.5">Select Movie</label>
+            <select id="sched-movie-id" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white focus:outline-none focus:border-lilac">
+              <option value="">Loading movies...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-1.5">Select Screen &amp; Venue</label>
+            <select id="sched-screen-id" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white focus:outline-none focus:border-lilac">
+              <option value="">Loading screens...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-1.5">Show Date</label>
+            <input type="date" id="sched-show-date" value="2026-10-11" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white focus:outline-none focus:border-lilac">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-1.5">Start Time (24h)</label>
+            <input type="time" id="sched-start-time" value="10:00" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white focus:outline-none focus:border-lilac">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-1.5">End Time (including 15m cleanup)</label>
+            <input type="time" id="sched-end-time" value="13:15" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white focus:outline-none focus:border-lilac">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-1.5">Ticket Base Price (₹)</label>
+            <input type="number" id="sched-price" value="450" required min="100" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white focus:outline-none focus:border-lilac">
+          </div>
+
+          <div class="sm:col-span-2 lg:col-span-3 pt-3 flex items-center justify-between">
+            <button type="submit" id="btn-submit-sched" class="px-8 py-3 rounded-full bg-emerald-500 text-charcoal font-black text-xs hover:bg-emerald-400 shadow-lg transition-all">
+              ⚡ Schedule Show &amp; Validate Triggers
+            </button>
+            <span class="text-xs text-gray-400">Trigger rule: No screen overlap permitted.</span>
+          </div>
+        </form>
+
+        <div id="sched-feedback" class="hidden p-4 rounded-2xl text-xs font-mono"></div>
+      </div>
+
+      <!-- Current Scheduled Screenings Table -->
+      <div class="bg-charcoalDark border border-white/10 rounded-3xl p-6 space-y-4">
+        <h3 class="text-sm font-black text-white uppercase tracking-wider">Scheduled Screenings Database Overview</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-gray-300">
+            <thead>
+              <tr class="text-gray-500 border-b border-white/10 text-[11px] uppercase">
+                <th class="py-2.5">ID</th>
+                <th>Movie</th>
+                <th>Cinema &bull; Screen</th>
+                <th>Date</th>
+                <th>Time Window</th>
+                <th>Price</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="scheduled-screenings-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 2: 6 SQL EXECUTIVE VIEWS (PROJECT 65 DELIVERABLE)                   -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-bi-reports" class="hidden space-y-8">
+      
+      <!-- Subtabs for the 6 views -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-bold">
+        <button onclick="setBIView('occupancy')" id="biview-occupancy" class="px-4 py-1.5 rounded-full bg-lilac text-charcoal">1. Show Occupancy</button>
+        <button onclick="setBIView('boxoffice')" id="biview-boxoffice" class="px-4 py-1.5 rounded-full bg-white/5 text-gray-400 hover:text-white">2. Movie Box Office</button>
+        <button onclick="setBIView('screenutil')" id="biview-screenutil" class="px-4 py-1.5 rounded-full bg-white/5 text-gray-400 hover:text-white">3. Screen Utilization</button>
+        <button onclick="setBIView('concessions')" id="biview-concessions" class="px-4 py-1.5 rounded-full bg-white/5 text-gray-400 hover:text-white">4. Concessions Sales</button>
+        <button onclick="setBIView('cancellations')" id="biview-cancellations" class="px-4 py-1.5 rounded-full bg-white/5 text-gray-400 hover:text-white">5. Cancellations &amp; Refunds</button>
+        <button onclick="setBIView('revenue')" id="biview-revenue" class="px-4 py-1.5 rounded-full bg-white/5 text-gray-400 hover:text-white">6. Revenue Breakdown</button>
+      </div>
+
+      <!-- View Containers -->
+      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div>
+            <h3 id="current-view-title" class="text-base font-black text-white">Show Occupancy (view_show_occupancy)</h3>
+            <p id="current-view-desc" class="text-xs text-gray-400">Aggregates total booked seats versus auditorium capacity per screening.</p>
+          </div>
+          <span class="text-[10px] font-mono text-lilac px-2.5 py-1 rounded-full bg-lilac/10 border border-lilac/20">SQL View Active</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-gray-300 font-mono" id="bi-table">
+            <!-- Populated via JS -->
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 3: CONCURRENCY & EXPLAIN QUERY PLAN                                 -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-concurrency" class="hidden space-y-8">
+      
+      <!-- OCC Simulation Box -->
+      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-4">
+        <h3 class="text-base font-black text-white">Optimistic Concurrency Control (OCC) Simulator</h3>
+        <p class="text-xs text-gray-400">Spawns 2 asynchronous threads simultaneously attempting to purchase Seat #1 with stale version checking.</p>
+        
+        <button onclick="runOCC()" class="px-6 py-2.5 rounded-full bg-lilac text-charcoal font-black text-xs hover:bg-white transition-all shadow-md">
+          ⚡ Trigger Concurrent Race Condition
+        </button>
+
+        <div id="occ-box" class="hidden p-5 rounded-2xl bg-charcoalDark border border-white/10 font-mono text-xs space-y-1.5"></div>
+      </div>
+
+      <!-- EXPLAIN QUERY PLAN Visualizer -->
+      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-black text-white">SQLite B-Tree Query Optimizer (EXPLAIN QUERY PLAN)</h3>
+            <p class="text-xs text-gray-400">Demonstrates composite indexing optimization on high-frequency filters.</p>
+          </div>
+          <button onclick="fetchExplain()" class="text-xs text-lilac hover:underline font-bold">Refresh Plan</button>
+        </div>
+
+        <div id="explain-box" class="space-y-2 font-mono text-xs"></div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 4: IMMUTABLE AUDIT LOG (EVENT SOURCING)                             -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-audit" class="hidden space-y-6">
+      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-4">
+        <div>
+          <h3 class="text-base font-black text-white">Immutable Audit Trail (audit_log Table)</h3>
+          <p class="text-xs text-gray-400">Tracks all transactional state transitions: PENDING &rarr; CONFIRMED &rarr; CANCELLED &rarr; GATE_CHECKIN.</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-gray-300 font-mono">
+            <thead>
+              <tr class="text-gray-500 border-b border-white/10 text-[11px] uppercase">
+                <th class="py-2">Time</th>
+                <th>Entity</th>
+                <th>Transition</th>
+                <th>Action</th>
+                <th>Actor</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagnostic Results Modal/Box -->
+    <div id="diag-results-box" class="hidden bg-charcoal border border-lilac/30 rounded-3xl p-6 shadow-2xl space-y-3 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2">
+        <span class="font-black text-white">ACID Integrity Constraints Diagnostics</span>
+        <button onclick="document.getElementById('diag-results-box').classList.add('hidden')" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+      <div id="diag-tests-list" class="space-y-2"></div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 3. FOOTER                                                                  -->
+  <!-- ========================================================================= -->
+  <footer class="border-t border-white/10 bg-charcoalDark/80 py-6 px-4 md:px-8 text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span>📊</span>
+        <span class="font-bold text-white">AURA CINEMA MANAGER</span>
+        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
+      </div>
+      <div class="flex items-center gap-4 text-gray-400">
+        <a href="/" class="hover:text-white">Home</a>
+        <a href="/concessions" class="hover:text-white">Concessions</a>
+        <a href="/my-tickets" class="hover:text-white">My Tickets</a>
+        <a href="/usher" class="hover:text-white">Gate Scanner</a>
+        <a href="/docs" class="hover:text-white">Project 65 Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 4. JAVASCRIPT LOGIC                                                        -->
+  <!-- ========================================================================= -->
+  <script>
+    let reportData = null;
+    let currentBIView = 'occupancy';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadDropdowns();
+      await loadScheduledScreenings();
+      await loadBIReports();
+      await loadAuditLogs();
+      fetchExplain();
+    });
+
+    async function loadDropdowns() {
+      try {
+        const [mRes, sRes] = await Promise.all([
+          fetch('/api/movies'),
+          fetch('/api/screens')
+        ]);
+        const movies = await mRes.json();
+        const screens = await sRes.json();
+
+        const mSelect = document.getElementById('sched-movie-id');
+        mSelect.innerHTML = movies.map(m => `<option value="${m.movie_id}" class="bg-charcoal text-white">${m.title} (${m.duration_minutes}m, ${m.genre})</option>`).join('');
+
+        const sSelect = document.getElementById('sched-screen-id');
+        sSelect.innerHTML = screens.map(s => `<option value="${s.screen_id}" class="bg-charcoal text-white">${s.cinema_name} &bull; Screen ${s.screen_number} (${s.screen_type}, ${s.seating_capacity} seats)</option>`).join('');
+      } catch (e) {}
+    }
+
+    async function loadScheduledScreenings() {
+      try {
+        const res = await fetch('/api/screenings');
+        const list = await res.json();
+        const tbody = document.getElementById('scheduled-screenings-tbody');
+        tbody.innerHTML = list.slice(0, 15).map(s => `
+          <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+            <td class="py-2.5 text-gray-400 font-mono">#${s.screening_id}</td>
+            <td class="font-bold text-white">${s.movie_title}</td>
+            <td class="text-gray-300">${s.cinema_name} &bull; ${s.screen_type}</td>
+            <td class="text-lilac font-mono">${s.show_date}</td>
+            <td class="font-mono text-gray-200">${s.start_time} &rarr; ${s.end_time}</td>
+            <td class="font-bold text-white">₹${s.ticket_price}</td>
+            <td><span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-300">${s.status}</span></td>
+          </tr>
+        `).join('');
+      } catch (e) {}
+    }
+
+    async function handleScheduleSubmit(evt) {
+      evt.preventDefault();
+      const fb = document.getElementById('sched-feedback');
+      fb.classList.remove('hidden');
+      fb.className = 'p-4 rounded-2xl text-xs font-mono bg-white/5 border border-white/10 text-gray-300';
+      fb.innerText = 'Validating against trigger trg_prevent_screen_overlap_insert...';
+
+      const payload = {
+        movie_id: parseInt(document.getElementById('sched-movie-id').value),
+        screen_id: parseInt(document.getElementById('sched-screen-id').value),
+        show_date: document.getElementById('sched-show-date').value,
+        start_time: document.getElementById('sched-start-time').value,
+        end_time: document.getElementById('sched-end-time').value,
+        ticket_price: parseFloat(document.getElementById('sched-price').value)
+      };
+
+      try {
+        const res = await fetch('/api/screenings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          fb.className = 'p-4 rounded-2xl text-xs font-mono bg-rose-500/20 border border-rose-500/40 text-rose-300';
+          fb.innerHTML = `❌ TRIGGER INTEGRITY VIOLATION:<br>${err.detail}`;
+          return;
+        }
+
+        const data = await res.json();
+        fb.className = 'p-4 rounded-2xl text-xs font-mono bg-emerald-500/20 border border-emerald-500/40 text-emerald-300';
+        fb.innerHTML = `✅ SUCCESS: ${data.message}`;
+        loadScheduledScreenings();
+      } catch (e) {
+        fb.className = 'p-4 rounded-2xl text-xs font-mono bg-rose-500/20 border border-rose-500/40 text-rose-300';
+        fb.innerText = `Error: ${e.message}`;
+      }
+    }
+
+    function setAdminTab(tab) {
+      ['scheduling', 'bi-reports', 'concurrency', 'audit'].forEach(t => {
+        document.getElementById(`admin-panel-${t}`).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) {
+          btn.className = (t === tab) 
+            ? "px-5 py-2 rounded-full bg-white text-charcoal font-black shadow-md"
+            : "px-5 py-2 rounded-full text-gray-400 hover:text-white";
+        }
+      });
+    }
+
+    async function loadBIReports() {
+      try {
+        const res = await fetch('/api/reports');
+        reportData = await res.json();
+        renderBIView();
+      } catch (e) {}
+    }
+
+    function setBIView(v) {
+      currentBIView = v;
+      ['occupancy', 'boxoffice', 'screenutil', 'concessions', 'cancellations', 'revenue'].forEach(key => {
+        const btn = document.getElementById(`biview-${key}`);
+        if (btn) {
+          btn.className = (key === v) ? "px-4 py-1.5 rounded-full bg-lilac text-charcoal font-bold" : "px-4 py-1.5 rounded-full bg-white/5 text-gray-400 hover:text-white";
+        }
+      });
+      renderBIView();
+    }
+
+    function renderBIView() {
+      if (!reportData) return;
+      const table = document.getElementById('bi-table');
+      const titleEl = document.getElementById('current-view-title');
+      const descEl = document.getElementById('current-view-desc');
+
+      if (currentBIView === 'occupancy') {
+        titleEl.innerText = "1. Show Occupancy (view_show_occupancy)";
+        descEl.innerText = "Real-time occupancy percentage per scheduled screening.";
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500 border-b border-white/10 uppercase text-[10px]">
+              <th class="py-2">Movie</th>
+              <th>Cinema</th>
+              <th>Screen</th>
+              <th>Showtime</th>
+              <th>Booked / Total</th>
+              <th>Occupancy %</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reportData.occupancy.map(r => `
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-2 text-white font-bold">${r.movie_title}</td>
+                <td>${r.cinema_name}</td>
+                <td>Screen ${r.screen_number}</td>
+                <td>${r.show_date} ${r.start_time}</td>
+                <td>${r.booked_seats} / ${r.total_seats}</td>
+                <td class="text-lilac font-black">${r.occupancy_percentage}%</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      } else if (currentBIView === 'boxoffice') {
+        titleEl.innerText = "2. Movie Performance (view_movie_performance)";
+        descEl.innerText = "Box office gross and total tickets sold by title.";
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500 border-b border-white/10 uppercase text-[10px]">
+              <th class="py-2">Movie Title</th>
+              <th>Genre</th>
+              <th>Screenings</th>
+              <th>Tickets Sold</th>
+              <th>Box Office Gross</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reportData.box_office.map(r => `
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-2 text-white font-bold">${r.movie_title}</td>
+                <td>${r.genre}</td>
+                <td>${r.total_screenings}</td>
+                <td class="text-lilac font-bold">${r.tickets_sold}</td>
+                <td class="text-emerald-400 font-black">₹${r.box_office_gross}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      } else if (currentBIView === 'screenutil') {
+        titleEl.innerText = "3. Screen Capacity Utilization (view_screen_utilization)";
+        descEl.innerText = "Runtime operational hours and average utilization per auditorium.";
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500 border-b border-white/10 uppercase text-[10px]">
+              <th class="py-2">Cinema</th>
+              <th>Screen Number</th>
+              <th>Format</th>
+              <th>Shows Scheduled</th>
+              <th>Operational Runtime</th>
+              <th>Avg Capacity %</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reportData.screen_utilization.map(r => `
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-2 text-white font-bold">${r.cinema_name}</td>
+                <td>Screen ${r.screen_number}</td>
+                <td>${r.screen_type}</td>
+                <td>${r.total_shows_scheduled}</td>
+                <td>${r.operational_hours_runtime} hrs</td>
+                <td class="text-lilac font-black">${r.average_capacity_utilization}%</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      } else if (currentBIView === 'concessions') {
+        titleEl.innerText = "4. Concessions Sales Summary (view_concession_sales_summary)";
+        descEl.innerText = "Stock levels, units sold, and food revenue breakdown.";
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500 border-b border-white/10 uppercase text-[10px]">
+              <th class="py-2">Item</th>
+              <th>Category</th>
+              <th>Unit Price</th>
+              <th>Current Stock</th>
+              <th>Units Sold</th>
+              <th>Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(reportData.concessions_sales || []).map(r => `
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-2 text-white font-bold">${r.item_name}</td>
+                <td>${r.category}</td>
+                <td>₹${r.unit_price}</td>
+                <td class="text-gray-400">${r.current_stock}</td>
+                <td class="text-lilac font-bold">${r.total_units_sold}</td>
+                <td class="text-emerald-400 font-black">₹${r.total_revenue}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      } else if (currentBIView === 'cancellations') {
+        titleEl.innerText = "5. Cancellations & Refunds (view_cancellations_and_refunds)";
+        descEl.innerText = "Retained 10% cancellation penalties and processed refunds.";
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500 border-b border-white/10 uppercase text-[10px]">
+              <th class="py-2">Customer</th>
+              <th>Movie</th>
+              <th>Date</th>
+              <th>Booking Amount</th>
+              <th>Retained Fee (10%)</th>
+              <th>Refunded (90%)</th>
+              <th>Refund Ref</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(reportData.cancellations_refunds || []).map(r => `
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-2 text-white font-bold">${r.customer_name}</td>
+                <td>${r.movie_title}</td>
+                <td>${r.show_date}</td>
+                <td>₹${r.booking_amount}</td>
+                <td class="text-amber-400 font-bold">₹${r.cancellation_fee}</td>
+                <td class="text-emerald-400 font-bold">₹${r.refund_amount}</td>
+                <td class="text-gray-400 text-[10px]">${r.refund_reference}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      } else if (currentBIView === 'revenue') {
+        titleEl.innerText = "6. Net Operating Revenue (view_total_revenue_breakdown)";
+        descEl.innerText = "Comprehensive box office, F&B, penalties, and net operating revenue.";
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500 border-b border-white/10 uppercase text-[10px]">
+              <th class="py-2">Cinema Location</th>
+              <th>Ticket Revenue</th>
+              <th>F&amp;B Revenue</th>
+              <th>Retained Penalties</th>
+              <th>Disbursed Refunds</th>
+              <th>Net Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reportData.revenue.map(r => `
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-2 text-white font-bold">${r.cinema_name}</td>
+                <td>₹${r.ticket_revenue}</td>
+                <td>₹${r.concession_revenue}</td>
+                <td class="text-amber-400">₹${r.cancellation_penalties_retained}</td>
+                <td class="text-rose-400">-₹${r.total_refunds_disbursed}</td>
+                <td class="text-emerald-400 font-black text-sm">₹${r.net_operating_revenue}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      }
+    }
+
+    async function runOCC() {
+      const box = document.getElementById('occ-box');
+      box.classList.remove('hidden');
+      box.innerHTML = '<span class="text-lilac">Dispatching Thread A &amp; Thread B simultaneously on Seat #1...</span>';
+
+      try {
+        const res = await fetch('/api/occ-simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ screening_id: 1, seat_id: 1 })
+        });
+        const d = await res.json();
+        box.innerHTML = `
+          <div class="text-emerald-400 font-bold">&bull; Target: ${d.seat} (Read Version: ${d.initial_read_version})</div>
+          <div class="text-emerald-300">&bull; Thread A: ${d.thread_a_status}</div>
+          <div class="text-rose-400">&bull; Thread B: ${d.thread_b_status}</div>
+          <div class="text-gray-300">&bull; Concurrency Model: ${d.db_lock_type}</div>
+          <div class="text-amber-300">&bull; Resolution: ${d.resolution}</div>
+        `;
+        loadAuditLogs();
+      } catch (e) {
+        box.innerHTML = `<span class="text-rose-400">Error: ${e.message}</span>`;
+      }
+    }
+
+    async function fetchExplain() {
+      const box = document.getElementById('explain-box');
+      try {
+        const res = await fetch('/api/explain-query');
+        const d = await res.json();
+        box.innerHTML = `
+          <div class="text-lilac font-bold mb-2">&bull; Target Query: ${d.executed_query}</div>
+          ${d.execution_steps.map((s, idx) => `
+            <div class="p-2.5 rounded-xl bg-charcoalDark border border-white/10 flex items-center justify-between">
+              <span>${idx+1}. ${s.detail}</span>
+              <span class="px-2 py-0.5 rounded text-[9px] font-bold ${s.is_index_scan ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/10 text-gray-400'}">${s.optimization_score}</span>
+            </div>
+          `).join('')}
+        `;
+      } catch (e) {}
+    }
+
+    async function loadAuditLogs() {
+      try {
+        const res = await fetch('/api/audit-logs');
+        const logs = await res.json();
+        const tbody = document.getElementById('audit-tbody');
+        tbody.innerHTML = logs.slice(0, 15).map(l => `
+          <tr class="border-b border-white/5 hover:bg-white/5">
+            <td class="py-2 text-gray-500">${l.timestamp.split(' ')[1]}</td>
+            <td class="text-lilac font-bold">${l.entity_type} #${l.entity_id}</td>
+            <td>${l.previous_state || 'INIT'} &rarr; ${l.new_state}</td>
+            <td class="text-emerald-300">${l.action_type}</td>
+            <td>Actor #${l.actor_id}</td>
+            <td class="text-gray-400">${l.details}</td>
+          </tr>
+        `).join('');
+      } catch (e) {}
+    }
+
+    async function runDiagnostics() {
+      const box = document.getElementById('diag-results-box');
+      const list = document.getElementById('diag-tests-list');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      list.innerHTML = '<span class="text-lilac">Running diagnostic tests against SQLite database constraints...</span>';
+
+      try {
+        const res = await fetch('/api/diagnostics', { method: 'POST' });
+        const tests = await res.json();
+        list.innerHTML = tests.map(t => `
+          <div class="p-3 rounded-xl bg-charcoalDark border border-white/10 flex items-center justify-between">
+            <div>
+              <p class="font-bold text-white">${t.name}</p>
+              <p class="text-[11px] text-gray-400">${t.detail}</p>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[10px] font-black ${t.status === 'PASS' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">
+              ${t.status}
+            </span>
+          </div>
+        `).join('');
+      } catch (e) {
+        list.innerHTML = `<span class="text-rose-400">Failed: ${e.message}</span>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Details &amp; Showtimes | AURA LUXE CINEMAS</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Satoshi Font & Newsreader Serif -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#231212',
+            charcoalDark: '#120808',
+            charcoalHover: '#321919',
+            lilac: '#e3e2f7',
+            lilacDark: '#564488',
+            offwhite: '#f4f4f4',
+            gold: '#D4AF37',
+          },
+          fontFamily: {
+            sans: ['Satoshi', 'Inter', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background-color: #0d0707;
+      color: #f4f4f4;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-lilac selection:text-charcoal">
+
+  <!-- ========================================================================= -->
+  <!-- 1. TOP NAVIGATION BAR                                                      -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+          🎬
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base font-black tracking-tight text-white uppercase">AURA</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac/20 text-lilac uppercase tracking-wider">LUXE</span>
+          </div>
+          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">CINEMAS &amp; EXPERIENCES</p>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
+        <a href="/" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Movies</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">My Tickets</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
+      </nav>
+
+      <a href="/" class="px-4 py-2 rounded-full border border-white/20 text-xs font-bold hover:bg-white/10 transition-all flex items-center gap-1.5">
+        <span>&larr;</span>
+        <span>Back to Movies</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MOVIE HERO BACKDROP & DETAILS                                           -->
+  <!-- ========================================================================= -->
+  <main class="flex-1">
+    <div class="relative overflow-hidden min-h-[460px] flex items-end pb-10 border-b border-white/10">
+      <div id="movie-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=1600&q=80');">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0d0707] via-[#0d0707]/80 to-black/40"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#0d0707] via-[#0d0707]/60 to-transparent"></div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 md:px-8 w-full z-10 flex flex-col md:flex-row items-end gap-8">
+        <!-- Movie Poster Card -->
+        <div class="w-36 sm:w-48 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl flex-shrink-0 bg-charcoal hidden sm:block">
+          <img id="movie-poster-img" src="" alt="Movie Poster" class="w-full h-full object-cover">
+        </div>
+
+        <!-- Movie Information -->
+        <div class="space-y-3 max-w-3xl">
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="movie-badge" class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-lilac text-charcoal">IMAX Exclusive</span>
+            <span id="movie-rating-badge" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/10 text-white border border-white/20">UA • 180 min</span>
+            <span id="movie-score" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">★ 8.9 IMDb</span>
+            <span id="movie-lang" class="text-xs font-semibold text-gray-300">English • 2D &amp; 3D</span>
+          </div>
+
+          <h1 id="movie-title" class="text-3xl sm:text-5xl font-black text-white tracking-tight">Movie Title</h1>
+          <p id="movie-tagline" class="text-base sm:text-lg italic font-serif text-lilac">"Tagline goes here."</p>
+          <p id="movie-synopsis" class="text-xs sm:text-sm text-gray-300 leading-relaxed max-w-2xl">Synopsis goes here.</p>
+
+          <div class="flex flex-wrap gap-4 text-xs text-gray-300 pt-1">
+            <div><strong class="text-gray-400">Director:</strong> <span id="movie-director">Christopher Nolan</span></div>
+            <div><strong class="text-gray-400">Cast:</strong> <span id="movie-cast">Cillian Murphy, Emily Blunt</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. DATE SELECTOR & SHOWTIMES SECTION                                      -->
+    <!-- ========================================================================= -->
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-10 space-y-8">
+      
+      <!-- Date Selector Bar -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-black text-gray-300 uppercase tracking-wider flex items-center gap-2">
+            <span>📅</span>
+            <span>Select Screening Date</span>
+          </h2>
+          <span class="text-xs text-lilac font-medium">Click any date to see available showtimes</span>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="date-tabs-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Showtimes grouped by Cinema -->
+      <div>
+        <h3 class="text-xl font-black text-white mb-4">Available Cinemas &amp; Screen Formats</h3>
+        <div id="screenings-list" class="space-y-4">
+          <div class="p-8 text-center text-gray-400 bg-white/5 rounded-2xl">Loading showtimes from cinema database...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 4. FOOTER                                                                  -->
+  <!-- ========================================================================= -->
+  <footer class="border-t border-white/10 bg-charcoalDark/80 py-6 px-4 md:px-8 text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span>🎬</span>
+        <span class="font-bold text-white">AURA LUXE CINEMAS</span>
+        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
+      </div>
+      <div class="flex items-center gap-4 text-gray-400">
+        <a href="/" class="hover:text-white">Home</a>
+        <a href="/concessions" class="hover:text-white">Concessions</a>
+        <a href="/my-tickets" class="hover:text-white">My Tickets</a>
+        <a href="/admin" class="hover:text-lilac">Cinema Manager</a>
+        <a href="/docs" class="hover:text-white">Project 65 Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 5. JAVASCRIPT LOGIC                                                        -->
+  <!-- ========================================================================= -->
+  <script>
+    let currentMovie = null;
+    let allScreenings = [];
+    let selectedDate = '2026-10-04';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const movieId = parseInt(urlParams.get('id') || '1');
+
+      try {
+        const [moviesRes, scrRes] = await Promise.all([
+          fetch('/api/movies'),
+          fetch('/api/screenings')
+        ]);
+        const movies = await moviesRes.json();
+        allScreenings = await scrRes.json();
+
+        currentMovie = movies.find(m => m.movie_id === movieId) || movies[0];
+        renderMovieDetails(currentMovie);
+        renderDateTabs();
+        renderShowtimes();
+      } catch (err) {
+        console.error("Failed to load movie details:", err);
+      }
+    });
+
+    function renderMovieDetails(m) {
+      document.title = `${m.title} | AURA LUXE CINEMAS`;
+      document.getElementById('movie-title').innerText = m.title;
+      document.getElementById('movie-tagline').innerText = `"${m.tagline}"`;
+      document.getElementById('movie-synopsis').innerText = m.synopsis;
+      document.getElementById('movie-badge').innerText = m.badge;
+      document.getElementById('movie-rating-badge').innerText = `${m.rating} • ${m.duration_minutes} min`;
+      document.getElementById('movie-score').innerText = `★ ${m.imdb_score} IMDb`;
+      document.getElementById('movie-lang').innerText = `${m.language} • ${m.genre}`;
+      document.getElementById('movie-director').innerText = m.director;
+      document.getElementById('movie-cast').innerText = m.cast.join(', ');
+
+      document.getElementById('movie-poster-img').src = m.poster;
+      document.getElementById('movie-backdrop').style.backgroundImage = `url('${m.backdrop}')`;
+    }
+
+    function renderDateTabs() {
+      const container = document.getElementById('date-tabs-container');
+      const movieDates = Array.from(new Set(
+        allScreenings.filter(s => s.movie_id === currentMovie.movie_id).map(s => s.show_date)
+      )).sort();
+
+      const dates = movieDates.length > 0 ? movieDates : Array.from(new Set(allScreenings.map(s => s.show_date))).sort();
+
+      if (!dates.includes(selectedDate) && dates.length > 0) {
+        selectedDate = dates[0];
+      }
+
+      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+      container.innerHTML = dates.map((dStr, idx) => {
+        const isSelected = (dStr === selectedDate);
+        const parts = dStr.split('-');
+        const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        const dayLabel = idx === 0 ? 'TODAY' : days[dateObj.getDay()];
+        const monthDay = `${months[dateObj.getMonth()]} ${parts[2]}`;
+        const showsCount = allScreenings.filter(s => s.movie_id === currentMovie.movie_id && s.show_date === dStr).length;
+
+        const btnClass = isSelected
+          ? "px-5 py-3 rounded-2xl bg-white text-charcoal font-black text-xs flex flex-col items-center min-w-[85px] shadow-lg border-2 border-lilac scale-105 transition-all"
+          : "px-5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-300 font-bold text-xs flex flex-col items-center min-w-[85px] border border-white/10 transition-all";
+
+        return `
+          <button onclick="selectDate('${dStr}')" class="${btnClass}">
+            <span class="text-[10px] uppercase font-bold ${isSelected ? 'text-charcoal/70' : 'text-gray-400'}">${dayLabel}</span>
+            <span class="text-sm font-black ${isSelected ? 'text-charcoal' : 'text-white'}">${monthDay}</span>
+            <span class="text-[9px] mt-0.5 ${isSelected ? 'text-charcoal/60' : 'text-gray-500'} font-semibold">${showsCount} shows</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectDate(dStr) {
+      selectedDate = dStr;
+      renderDateTabs();
+      renderShowtimes();
+    }
+
+    function renderShowtimes() {
+      const container = document.getElementById('screenings-list');
+      const movieScreenings = allScreenings.filter(s => 
+        s.movie_id === currentMovie.movie_id && s.show_date === selectedDate
+      );
+
+      if (movieScreenings.length === 0) {
+        container.innerHTML = `
+          <div class="p-10 text-center bg-white/5 border border-white/10 rounded-2xl space-y-2">
+            <span class="text-3xl">📅</span>
+            <h4 class="text-base font-bold text-white">No Showtimes Available on ${selectedDate}</h4>
+            <p class="text-xs text-gray-400">Please choose another date above to view scheduled screenings.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const cinemas = {};
+      movieScreenings.forEach(s => {
+        if (!cinemas[s.cinema_name]) cinemas[s.cinema_name] = [];
+        cinemas[s.cinema_name].push(s);
+      });
+
+      container.innerHTML = Object.entries(cinemas).map(([cinemaName, scrList]) => `
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4 hover:border-white/20 transition-all">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <div>
+              <h4 class="font-black text-white text-base flex items-center gap-2">
+                <span>📍</span>
+                <span>${cinemaName}</span>
+              </h4>
+              <p class="text-[11px] text-gray-400 mt-0.5">High definition digital audio &bull; Luxury acoustic walls</p>
+            </div>
+            <span class="text-[10px] text-lilac font-bold px-2.5 py-1 rounded-full bg-lilac/10 border border-lilac/20">
+              4K Laser Immersion
+            </span>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            ${scrList.map(s => `
+              <a href="/booking?screening_id=${s.screening_id}" class="px-5 py-3 rounded-2xl border border-white/15 bg-white/5 hover:bg-lilac hover:text-charcoal group transition-all min-w-[140px] shadow-sm flex flex-col justify-between">
+                <div class="text-sm font-black text-white group-hover:text-charcoal">${s.start_time}</div>
+                <div class="text-[11px] text-gray-300 group-hover:text-charcoal/80 font-bold mt-1">${s.screen_type}</div>
+                <div class="text-[10px] text-lilac group-hover:text-charcoal/70 font-semibold mt-0.5">From ₹${s.ticket_price}</div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+
+</body>
+</html>
