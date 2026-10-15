@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinema Screening & Ticket Booking Engine | DBMS Architecture</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Satoshi Font via Fontshare CDN -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#231212',
+            charcoalDark: '#170c0c',
+            charcoalHover: '#361c1c',
+            lilac: '#e3e2f7',
+            lilacDark: '#564488',
+            offwhite: '#f4f4f4',
+            canvas: '#F5F6F9',
+          },
+          fontFamily: {
+            sans: ['Satoshi', 'Inter', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background-color: #f4f4f4;
+      color: #231212;
+    }
+    
+    * {
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #E5E7EB;
+      height: 6px;
+      border-radius: 9999px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #231212;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(35, 18, 18, 0.3);
+    }
+
+    /* SVG Seat Selection Pulse */
+    @keyframes pulseSeat {
+      0% { r: 14; opacity: 1; }
+      50% { r: 17; opacity: 0.8; }
+      100% { r: 14; opacity: 1; }
+    }
+    .pulse-selected {
+      animation: pulseSeat 1.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+  <!-- ========================================================================= -->
+  <!-- 1. TOP NAVBAR (Matching Images 1 & 2)                                      -->
+  <!-- ========================================================================= -->
+  <header class="max-w-7xl mx-auto bg-white rounded-full px-6 py-3 border border-gray-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+    <!-- Brand / Logo -->
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-charcoal text-white flex items-center justify-center font-bold text-lg shadow-sm">
+        🎬
+      </div>
+      <div>
+        <h1 class="text-sm font-black tracking-tight text-charcoal leading-none uppercase">CINEMA SCREENING &amp; TICKETING</h1>
+        <p class="text-[10px] font-bold text-gray-500 tracking-wider uppercase mt-0.5">DBMS ACID RESERVATION ENGINE</p>
+      </div>
+    </div>
+
+    <!-- Center Nav Pills -->
+    <nav class="flex items-center bg-gray-100/90 p-1 rounded-full text-xs font-bold gap-1">
+      <button onclick="setTab('booking')" id="tab-btn-booking" class="px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all">Reservation</button>
+      <button onclick="setTab('screenings')" id="tab-btn-screenings" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Screenings</button>
+      <button onclick="setTab('concessions')" id="tab-btn-concessions" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Concessions</button>
+      <button onclick="setTab('usher')" id="tab-btn-usher" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Usher Gate</button>
+      <button onclick="setTab('reports')" id="tab-btn-reports" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Executive BI</button>
+    </nav>
+
+    <!-- Right Status & Button -->
+    <div class="flex items-center gap-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 border border-gray-200">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]"></span>
+        <span>FastAPI :8000</span>
+      </div>
+      <button onclick="runDiagnosticsModal()" class="px-4 py-1.5 rounded-full border border-charcoal text-charcoal hover:bg-charcoal hover:text-white text-xs font-bold transition-all shadow-sm">
+        Run Diagnostics &rarr;
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto space-y-6">
+
+    <!-- ========================================================================= -->
+    <!-- 2. HERO DISPLAY SECTION (Matching Image 2 Aesthetic)                       -->
+    <!-- ========================================================================= -->
+    <section class="bg-white rounded-[28px] border border-gray-200/80 p-8 md:p-12 shadow-sm">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left Hero Text -->
+        <div class="lg:col-span-7 space-y-5">
+          <span class="inline-block px-3.5 py-1 rounded-full bg-lilac text-lilacDark text-xs font-black tracking-widest uppercase">
+            ACID TRANSACTIONS &bull; ZERO OVERLAP GUARANTEE
+          </span>
+          <h2 class="text-4xl md:text-5xl font-black text-charcoal leading-[1.08] tracking-tight">
+            OPTIMIZE YOUR<br>
+            <span class="font-serif italic font-normal text-charcoal">CINEMA EXPERIENCE</span>
+          </h2>
+          <p class="text-gray-500 text-sm md:text-base leading-relaxed max-w-xl">
+            Formally schedule screenings with 15-minute turnaround triggers, reserve multi-seat auditoriums with cryptographic SHA-256 barcodes, and manage concessions inventory with strict ACID compliance.
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <button onclick="scrollToReservation()" class="px-6 py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-sm font-bold shadow-md flex items-center gap-2">
+              <span>Reserve Seats Now</span>
+              <span>&darr;</span>
+            </button>
+            <button onclick="setTab('reports')" class="px-6 py-3 rounded-full bg-gray-100 hover:bg-gray-200 text-charcoal text-sm font-bold border border-gray-200">
+              Explore Executive BI
+            </button>
+          </div>
+
+          <!-- Hero Metrics -->
+          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-lg">
+            <div>
+              <div class="text-2xl md:text-3xl font-black text-charcoal">100%</div>
+              <div class="text-xs text-gray-500 font-medium mt-0.5">Conflict-Free Triggers</div>
+            </div>
+            <div>
+              <div class="text-2xl md:text-3xl font-black text-charcoal">15 Min</div>
+              <div class="text-xs text-gray-500 font-medium mt-0.5">Clean-down Buffer</div>
+            </div>
+            <div>
+              <div class="text-2xl md:text-3xl font-black text-charcoal">SHA-256</div>
+              <div class="text-xs text-gray-500 font-medium mt-0.5">Cryptographic Passes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Phone Mockup (Image 2) -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="w-full max-w-[310px] bg-charcoal p-3 rounded-[40px] shadow-2xl">
+            <div class="bg-white rounded-[32px] p-5 space-y-3.5 text-charcoal">
+              <!-- Camera Island -->
+              <div class="w-20 h-4 bg-charcoal rounded-full mx-auto"></div>
+              
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-black text-sm text-charcoal">Auditorium Monitor</h3>
+                  <p class="text-[10px] text-gray-400 font-medium">Live Screening Telemetry</p>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 font-bold text-[10px]">Campus PVR</span>
+              </div>
+
+              <!-- Phone Metric Card 1 -->
+              <div class="bg-gray-50/90 border border-gray-100 rounded-2xl p-3.5 flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">AVERAGE LATENCY</div>
+                  <div class="text-xl font-black text-charcoal mt-0.5">2.5 ms</div>
+                </div>
+                <div class="w-7 h-7 rounded-full bg-lilac/70 text-lilacDark flex items-center justify-center font-bold text-xs">
+                  ⚡
+                </div>
+              </div>
+
+              <!-- Phone Metric Card 2 -->
+              <div class="bg-gray-50/90 border border-gray-100 rounded-2xl p-3.5">
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CAPACITY INTEGRITY</div>
+                <div class="text-xs font-bold text-emerald-600 flex items-center gap-1.5 mt-1">
+                  <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[9px] font-black">&check;</span>
+                  <span>100% Feasible</span>
+                </div>
+              </div>
+
+              <!-- Phone Progress -->
+              <div class="bg-gray-50/90 border border-gray-100 rounded-2xl p-3.5 space-y-1.5">
+                <div class="flex justify-between text-[10px] font-bold text-gray-500">
+                  <span>Auditorium Occupancy</span>
+                  <span id="phone-occ-pct">74.2%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="phone-occ-bar" class="bg-charcoal h-full rounded-full transition-all duration-500" style="width: 74.2%;"></div>
+                </div>
+              </div>
+
+              <button onclick="scrollToReservation()" class="w-full py-2.5 rounded-full bg-charcoal text-white text-xs font-bold hover:bg-charcoalHover transition-all shadow-sm">
+                Inspect Active Seats
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. RESERVATION PARAMETERS (Matching Image 1)                               -->
+    <!-- ========================================================================= -->
+    <section id="reservation-section" class="bg-offwhite border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">RESERVATION &amp; SCREENING PARAMETERS</h3>
+        <span class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">Active Config</span>
+      </div>
+
+      <!-- Parameter Inputs Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-5 items-end">
+        <!-- Movie & Showtime -->
+        <div class="md:col-span-2">
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">MOVIE &amp; SHOWTIME PRESET</label>
+          <select id="param-screening" onchange="onScreeningChanged()" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <!-- Populated dynamically via API -->
+          </select>
+        </div>
+
+        <!-- Payment Channel -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">PAYMENT CHANNEL</label>
+          <select id="param-payment" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <option value="UPI" selected>UPI Payment</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Debit Card">Debit Card</option>
+            <option value="Cash">Counter Cash</option>
+          </select>
+        </div>
+
+        <!-- Customer Identity -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">CUSTOMER PROFILE</label>
+          <select id="param-customer" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <option value="1">Rahul Sharma (Cust #1)</option>
+            <option value="2" selected>Priya Reddy (Cust #2)</option>
+            <option value="3">Ananya Verma (Cust #3)</option>
+            <option value="4">Vikram Malhotra (Cust #4)</option>
+          </select>
+        </div>
+
+        <!-- Promo Code -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">PROMO CODE (OPTIONAL)</label>
+          <input type="text" id="param-promo" placeholder="e.g. LUXE20" oninput="calculateTotal()" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal uppercase focus:outline-none focus:border-charcoal shadow-sm">
+        </div>
+      </div>
+
+      <!-- Action Button Row -->
+      <div class="flex flex-col sm:flex-row items-center justify-between pt-2 border-t border-gray-200/60 gap-4">
+        <div class="flex items-center gap-3 text-xs font-semibold text-gray-500">
+          <span id="selected-summary-text">0 Seats Selected</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-charcoal font-black text-sm" id="selected-total-text">Total: Rs. 0.00</span>
+        </div>
+        <button onclick="executeBooking()" id="book-btn" class="px-6 py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-xs font-black shadow-md flex items-center gap-2 transition-all disabled:opacity-50" disabled>
+          <span>&blacktriangleright;</span>
+          <span>Execute Booking Transaction</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 4. 4 KPI METRIC CARDS (Matching Image 1)                                   -->
+    <!-- ========================================================================= -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Card 1: Total Box Office -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">TOTAL BOX OFFICE</div>
+          <div class="flex items-baseline gap-1 mt-2">
+            <span class="text-xs font-bold text-gray-400">Rs.</span>
+            <span id="kpi-boxoffice" class="text-3xl font-black text-charcoal">4,500</span>
+          </div>
+        </div>
+        <div class="text-[11px] text-gray-500 font-medium mt-4">Gross Ticket Collections</div>
+      </div>
+
+      <!-- Card 2: Feasibility Status -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">FEASIBILITY STATUS</div>
+          <div class="text-3xl font-black text-charcoal mt-2">10 / 10</div>
+        </div>
+        <div class="text-[11px] font-bold text-emerald-600 flex items-center gap-1 mt-4">
+          <span>&check;</span>
+          <span>100% Overlap-Free (Triggers)</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Auditorium Occupancy -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">AUDITORIUM OCCUPANCY</div>
+          <div id="kpi-occupancy" class="text-3xl font-black text-charcoal mt-2">74.2%</div>
+        </div>
+        <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mt-4">
+          <div id="kpi-occ-bar" class="bg-charcoal h-full rounded-full transition-all duration-500" style="width: 74.2%;"></div>
+        </div>
+      </div>
+
+      <!-- Card 4: Engine Latency -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">TRANSACTION LATENCY</div>
+          <div class="flex items-baseline gap-1 mt-2">
+            <span class="text-3xl font-black text-charcoal">1.84</span>
+            <span class="text-xs font-bold text-gray-400">ms</span>
+          </div>
+        </div>
+        <div class="text-[11px] text-gray-500 font-medium truncate mt-4">SQLite3 ACID Engine Verified</div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 5. INTERACTIVE PURE SVG AUDITORIUM SEATING MATRIX                          -->
+    <!-- ========================================================================= -->
+    <section id="auditorium-canvas-section" class="bg-white border border-gray-200/90 rounded-[24px] p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">2D AUDITORIUM TOPOLOGY &bull; INTERACTIVE SEATING MATRIX</h3>
+          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Click seats in the SVG vector canvas to toggle selection with real-time capacity rings</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[10px] font-bold uppercase tracking-wider">
+            SVG Vector Engine
+          </span>
+        </div>
+      </div>
+
+      <!-- Curved Screen Arc & SVG Seating Canvas -->
+      <div class="w-full overflow-x-auto bg-[#FAFAFA] rounded-2xl border border-gray-200 p-4">
+        <!-- Minimal Curved Screen Arc -->
+        <div class="max-w-[480px] h-[6px] bg-charcoal rounded-t-full mx-auto shadow-md"></div>
+        <div class="text-center text-[10px] tracking-[4px] font-black text-gray-400 mt-2 mb-6 uppercase">AUDITORIUM PROJECTION SCREEN</div>
+
+        <svg id="seating-svg" viewBox="0 0 860 380" class="w-full h-auto min-w-[650px] max-h-[420px] select-none mx-auto">
+          <g id="svg-seats-group"></g>
+        </svg>
+      </div>
+
+      <!-- Tier Legend -->
+      <div class="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-semibold text-gray-600">
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-md bg-white border border-gray-300"></span>
+          <span>Available</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-md bg-charcoal text-white text-[9px] font-bold flex items-center justify-center">&check;</span>
+          <span>Selected</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-md bg-red-100 text-red-500 text-[9px] font-bold flex items-center justify-center">&cross;</span>
+          <span>Booked / Occupied</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>👑 Platinum (Row E)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>💎 Gold (Rows C, D)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>🎟️ Silver (Rows A, B)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Digital Boarding Pass Modal / Container (rendered upon booking) -->
+    <div id="confirmed-pass-container" class="hidden"></div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. AUDITORIUM SATURATION PROFILES (Matching Image 1 Bottom)                -->
+    <!-- ========================================================================= -->
+    <section class="bg-offwhite border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">AUDITORIUM SATURATION &amp; OCCUPANCY PROFILES (SCREENS &amp; CAPACITY)</h3>
+        <span class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">6 Screens Active</span>
+      </div>
+
+      <!-- Screen Cards Grid -->
+      <div id="saturation-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 7. GOURMET CONCESSIONS, USHER GATE & EXECUTIVE BI TABS                    -->
+    <!-- ========================================================================= -->
+    <section id="concessions-section" class="hidden bg-white border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">GOURMET CONCESSIONS &amp; IN-SEAT DELIVERY</h3>
+        <span class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[11px] font-bold shadow-sm">Auto Stock Depletion</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div class="md:col-span-8">
+          <div id="concessions-menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Populated via API -->
+          </div>
+        </div>
+        <div class="md:col-span-4 bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-4">
+          <h4 class="text-xs font-black uppercase text-charcoal tracking-wider">🛍️ YOUR ORDER TRAY</h4>
+          <div id="tray-items-list" class="text-xs space-y-2 text-gray-600 min-h-[120px]">
+            <p class="text-gray-400 italic">No food or drinks added yet.</p>
+          </div>
+          <div class="border-t border-gray-200 pt-3 flex justify-between items-baseline">
+            <span class="text-xs font-bold text-gray-500">TRAY TOTAL:</span>
+            <span id="tray-total-val" class="text-lg font-black text-charcoal">Rs. 0.00</span>
+          </div>
+          <button onclick="submitConcessionOrder()" id="fnb-order-btn" class="w-full py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-xs font-bold shadow-md transition-all disabled:opacity-50" disabled>
+            Place Concession Order
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Usher Gate Section -->
+    <section id="usher-section" class="hidden bg-white border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">SECURITY USHER GATE &bull; CRYPTOGRAPHIC TICKET SCANNER</h3>
+        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold shadow-sm">Anti-Counterfeit Guard</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <div class="md:col-span-5 space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-5">
+          <label class="block text-xs font-bold text-gray-600 uppercase">SCAN / ENTER DIGITAL TICKET BARCODE</label>
+          <input type="text" id="usher-token-input" placeholder="e.g. TKT-2026-00101 or SHA-256 Hash" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+          <button onclick="verifyTicketToken()" class="w-full py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-xs font-bold shadow-md transition-all">
+            Verify &amp; Admit Guest
+          </button>
+          <div id="usher-result-box" class="hidden p-4 rounded-xl text-xs font-bold"></div>
+        </div>
+        <div class="md:col-span-7 space-y-3">
+          <h4 class="text-xs font-black uppercase text-charcoal tracking-wider">CANCEL BOOKING &amp; DISBURSE REFUND (10% FEE POLICY)</h4>
+          <div class="flex gap-3">
+            <input type="number" id="cancel-bkg-id" placeholder="Booking ID to cancel" class="w-1/2 bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <button onclick="cancelBookingAction()" class="px-5 py-2.5 rounded-full border border-red-500 text-red-600 hover:bg-red-500 hover:text-white text-xs font-bold transition-all shadow-sm">
+              Process 90% Refund
+            </button>
+          </div>
+          <div id="cancel-result-box" class="hidden p-3 rounded-xl text-xs font-semibold bg-gray-50 border border-gray-200"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Executive BI Reports Section -->
+    <section id="reports-section" class="hidden bg-white border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">EXECUTIVE BI &amp; SQL REPORTING VIEWS</h3>
+        <span class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">Analytical Views</span>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <h4 class="text-xs font-black uppercase text-charcoal mb-3">MOVIE BOX OFFICE PERFORMANCE (VIEW_MOVIE_PERFORMANCE)</h4>
+          <div id="boxoffice-table-container" class="overflow-x-auto border border-gray-200 rounded-2xl"></div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-black uppercase text-charcoal mb-3">SHOW OCCUPANCY ANALYSIS (VIEW_SHOW_OCCUPANCY)</h4>
+          <div id="occupancy-table-container" class="overflow-x-auto border border-gray-200 rounded-2xl"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-7xl mx-auto text-center text-xs font-medium text-gray-400 py-8">
+    Cinema Screening &amp; Ticket Booking System &bull; DBMS Project-Based Learning &bull; FastAPI + Uvicorn + Satoshi Zero-Build UI
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 8. JAVASCRIPT LOGIC (VANILLA ES6+ ZERO-BUILD)                              -->
+  <!-- ========================================================================= -->
+  <script>
+    let screeningsList = [];
+    let currentScreeningSeats = null;
+    let selectedSeatIds = new Set();
+    let currentUnitPrice = 0;
+    let trayCart = {};
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadScreenings();
+      await loadSaturationProfiles();
+      await loadConcessions();
+      await loadReports();
+    });
+
+    function setTab(tabName) {
+      const tabs = ['booking', 'screenings', 'concessions', 'usher', 'reports'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) {
+          btn.className = (t === tabName)
+            ? "px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all"
+            : "px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all";
+        }
+      });
+
+      // Show/Hide sections
+      document.getElementById('reservation-section').style.display = (tabName === 'booking' || tabName === 'screenings') ? 'block' : 'none';
+      document.getElementById('auditorium-canvas-section').style.display = (tabName === 'booking' || tabName === 'screenings') ? 'block' : 'none';
+      document.getElementById('concessions-section').style.display = (tabName === 'concessions') ? 'block' : 'none';
+      document.getElementById('usher-section').style.display = (tabName === 'usher') ? 'block' : 'none';
+      document.getElementById('reports-section').style.display = (tabName === 'reports') ? 'block' : 'none';
+    }
+
+    function scrollToReservation() {
+      document.getElementById('reservation-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Load screenings from FastAPI
+    async function loadScreenings() {
+      try {
+        const res = await fetch('/api/screenings');
+        screeningsList = await res.json();
+
+        const select = document.getElementById('param-screening');
+        select.innerHTML = '';
+
+        screeningsList.forEach((s, idx) => {
+          const opt = document.createElement('option');
+          opt.value = s.screening_id;
+          opt.textContent = `${s.movie_title} (${s.show_date} @ ${s.start_time}) - ${s.cinema_name} Scrn ${s.screen_number} [Rs.${parseInt(s.ticket_price)}]`;
+          select.appendChild(opt);
+        });
+
+        if (screeningsList.length > 0) {
+          await loadScreeningSeats(screeningsList[0].screening_id);
+        }
+      } catch (e) {
+        console.error("Error loading screenings:", e);
+      }
+    }
+
+    async function onScreeningChanged() {
+      const sid = parseInt(document.getElementById('param-screening').value);
+      selectedSeatIds.clear();
+      await loadScreeningSeats(sid);
+      calculateTotal();
+    }
+
+    // Load Seat Matrix for screening
+    async function loadScreeningSeats(screeningId) {
+      try {
+        const res = await fetch(`/api/screening/${screeningId}/seats`);
+        currentScreeningSeats = await res.json();
+        currentUnitPrice = currentScreeningSeats.ticket_price;
+
+        renderSVGSeats();
+        calculateTotal();
+
+        // Update Phone Occupancy
+        const occPct = Math.round((currentScreeningSeats.booked_count / currentScreeningSeats.total_seats) * 100);
+        document.getElementById('phone-occ-pct').innerText = `${occPct}%`;
+        document.getElementById('phone-occ-bar').style.width = `${occPct}%`;
+        document.getElementById('kpi-occupancy').innerText = `${occPct}%`;
+        document.getElementById('kpi-occ-bar').style.width = `${occPct}%`;
+      } catch (e) {
+        console.error("Error loading seats:", e);
+      }
+    }
+
+    // Render 2D Auditorium Seating Matrix in Pure SVG
+    function renderSVGSeats() {
+      if (!currentScreeningSeats) return;
+      const gSeats = document.getElementById('svg-seats-group');
+      gSeats.innerHTML = '';
+
+      const seats = currentScreeningSeats.seats;
+      // Group by row_label
+      const rows = {};
+      seats.forEach(s => {
+        if (!rows[s.row_label]) rows[s.row_label] = [];
+        rows[s.row_label].push(s);
+      });
+
+      const sortedRowLabels = Object.keys(rows).sort();
+      const startY = 40;
+      const rowGap = 55;
+      const seatGap = 65;
+
+      sortedRowLabels.forEach((rLbl, rIdx) => {
+        const rowSeats = rows[rLbl].sort((a, b) => a.seat_number - b.seat_number);
+        const y = startY + rIdx * rowGap;
+
+        // Row Label on Left
+        const rowText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        rowText.setAttribute("x", "50");
+        rowText.setAttribute("y", y + 5);
+        rowText.setAttribute("font-size", "14");
+        rowText.setAttribute("font-weight", "900");
+        rowText.setAttribute("fill", "#9CA3AF");
+        rowText.setAttribute("text-anchor", "middle");
+        rowText.textContent = rLbl;
+        gSeats.appendChild(rowText);
+
+        const rowStartX = 430 - ((rowSeats.length - 1) * seatGap) / 2;
+
+        rowSeats.forEach((seat, sIdx) => {
+          const x = rowStartX + sIdx * seatGap;
+          const isSelected = selectedSeatIds.has(seat.seat_id);
+          const isBooked = seat.is_booked;
+
+          const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          g.setAttribute("transform", `translate(${x}, ${y})`);
+          g.setAttribute("class", isBooked ? "cursor-not-allowed" : "cursor-pointer");
+
+          if (!isBooked) {
+            g.onclick = () => toggleSeat(seat.seat_id);
+          }
+
+          // Seat Node Circle / Pill
+          const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          rect.setAttribute("x", "-20");
+          rect.setAttribute("y", "-18");
+          rect.setAttribute("width", "40");
+          rect.setAttribute("height", "36");
+          rect.setAttribute("rx", "10");
+
+          if (isBooked) {
+            rect.setAttribute("fill", "#FEE2E2");
+            rect.setAttribute("stroke", "#FECACA");
+          } else if (isSelected) {
+            rect.setAttribute("fill", "#231212");
+            rect.setAttribute("stroke", "#231212");
+            rect.setAttribute("filter", "drop-shadow(0 4px 8px rgba(35,18,18,0.3))");
+          } else {
+            rect.setAttribute("fill", "#FFFFFF");
+            rect.setAttribute("stroke", "#E5E7EB");
+            rect.setAttribute("stroke-width", "1.5");
+          }
+          g.appendChild(rect);
+
+          // Seat Text
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("y", "4");
+          text.setAttribute("font-size", "11");
+          text.setAttribute("font-weight", "800");
+          text.setAttribute("text-anchor", "middle");
+
+          if (isBooked) {
+            text.setAttribute("fill", "#EF4444");
+            text.textContent = "✕";
+          } else if (isSelected) {
+            text.setAttribute("fill", "#FFFFFF");
+            text.textContent = String(seat.seat_number).padStart(2, '0');
+          } else {
+            text.setAttribute("fill", "#4B5563");
+            text.textContent = String(seat.seat_number).padStart(2, '0');
+          }
+          g.appendChild(text);
+
+          gSeats.appendChild(g);
+        });
+
+        // Row Tier Label on Right
+        const tierText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        tierText.setAttribute("x", "810");
+        tierText.setAttribute("y", y + 5);
+        tierText.setAttribute("font-size", "11");
+        tierText.setAttribute("font-weight", "700");
+        tierText.setAttribute("fill", "#6B7280");
+        tierText.setAttribute("text-anchor", "middle");
+        tierText.textContent = rowSeats[0].seat_tier;
+        gSeats.appendChild(tierText);
+      });
+    }
+
+    function toggleSeat(seatId) {
+      if (selectedSeatIds.has(seatId)) {
+        selectedSeatIds.delete(seatId);
+      } else {
+        selectedSeatIds.add(seatId);
+      }
+      renderSVGSeats();
+      calculateTotal();
+    }
+
+    function calculateTotal() {
+      const count = selectedSeatIds.size;
+      const subtotal = count * currentUnitPrice;
+      let discount = 0;
+      const promo = document.getElementById('param-promo').value.trim().toUpperCase();
+      if (promo === "LUXE20") discount = subtotal * 0.20;
+      if (promo === "DBMS50") discount = Math.min(50, subtotal);
+
+      const total = Math.max(subtotal - discount, 0);
+
+      document.getElementById('selected-summary-text').innerText = `${count} Seats Selected`;
+      document.getElementById('selected-total-text').innerText = `Total: Rs. ${total.toFixed(2)}`;
+      document.getElementById('book-btn').disabled = (count === 0);
+    }
+
+    // Execute atomic booking transaction
+    async function executeBooking() {
+      const sid = parseInt(document.getElementById('param-screening').value);
+      const custId = parseInt(document.getElementById('param-customer').value);
+      const payMethod = document.getElementById('param-payment').value;
+      const promo = document.getElementById('param-promo').value.trim();
+
+      const btn = document.getElementById('book-btn');
+      btn.innerHTML = `<span>⏳</span><span>Processing ACID Transaction...</span>`;
+
+      try {
+        const res = await fetch('/api/book-tickets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            screening_id: sid,
+            seat_ids: Array.from(selectedSeatIds),
+            customer_id: custId,
+            payment_method: payMethod,
+            promo_code: promo || null
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          alert(`Booking Error: ${data.detail}`);
+          return;
+        }
+
+        // Render Apple Wallet / Stripe style Digital Boarding Pass
+        renderConfirmedPass(data);
+        selectedSeatIds.clear();
+        await loadScreeningSeats(sid);
+      } catch (e) {
+        console.error("Booking error:", e);
+      } finally {
+        btn.innerHTML = `<span>&blacktriangleright;</span><span>Execute Booking Transaction</span>`;
+      }
+    }
+
+    function renderConfirmedPass(data) {
+      const passDiv = document.getElementById('confirmed-pass-container');
+      passDiv.className = "block bg-white border border-gray-200 rounded-[24px] p-8 shadow-lg max-w-xl mx-auto border-t-[6px] border-t-charcoal space-y-4 my-6";
+
+      const ticketsList = data.tickets.map(t => 
+        `<div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-xs font-mono">
+           <span>Seat #${t.seat_id}</span>
+           <span class="text-gray-500 font-bold">${t.ticket_number}</span>
+           <span class="text-charcoal font-black">${t.barcode_hash}</span>
+         </div>`
+      ).join('');
+
+      passDiv.innerHTML = `
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="text-[10px] font-black uppercase text-gray-500 tracking-wider">BOARDING PASS &bull; CONFIRMED</div>
+            <h3 class="text-2xl font-black text-charcoal mt-1">Booking Confirmed #${data.booking_id}</h3>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">PAID SUCCESS</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 text-xs">
+          <div>
+            <div class="text-gray-400 font-bold text-[10px]">TICKETS</div>
+            <div class="font-black text-charcoal mt-0.5">${data.tickets.length} Seats</div>
+          </div>
+          <div>
+            <div class="text-gray-400 font-bold text-[10px]">DISCOUNT</div>
+            <div class="font-black text-emerald-600 mt-0.5">Rs. ${data.discount.toFixed(2)}</div>
+          </div>
+          <div>
+            <div class="text-gray-400 font-bold text-[10px]">TOTAL PAID</div>
+            <div class="font-black text-charcoal mt-0.5">Rs. ${data.total_amount.toFixed(2)}</div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CRYPTOGRAPHIC SHA-256 DIGITAL TOKENS:</div>
+          ${ticketsList}
+        </div>
+
+        <div class="text-[10px] text-gray-400 font-mono pt-2 border-t border-gray-100">
+          TXN REF: ${data.transaction_reference}
+        </div>
+      `;
+      passDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Load Saturation Profiles
+    async function loadSaturationProfiles() {
+      try {
+        const res = await fetch('/api/reports');
+        const data = await res.json();
+        const grid = document.getElementById('saturation-grid');
+        grid.innerHTML = '';
+
+        data.screen_utilization.forEach(sc => {
+          const card = document.createElement('div');
+          card.className = "bg-white border border-gray-200/90 rounded-2xl p-4 shadow-sm hover:border-charcoal transition-all";
+          const utilPct = sc.average_capacity_utilization || 45;
+          card.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-xs text-charcoal">Scrn ${sc.screen_number}</span>
+              <span class="text-[11px] font-bold text-gray-500">${utilPct}%</span>
+            </div>
+            <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-3">
+              <div class="bg-charcoal h-full rounded-full transition-all duration-500" style="width: ${utilPct}%;"></div>
+            </div>
+            <div class="flex items-center justify-between text-[10px] font-semibold text-gray-400">
+              <span>${sc.screen_type}</span>
+              <span>${sc.operational_hours_runtime}h</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (e) {
+        console.error("Error loading profiles:", e);
+      }
+    }
+
+    // Concessions
+    async function loadConcessions() {
+      try {
+        const res = await fetch('/api/concessions');
+        const items = await res.json();
+        const grid = document.getElementById('concessions-menu-grid');
+        grid.innerHTML = '';
+
+        items.forEach(it => {
+          const card = document.createElement('div');
+          card.className = "bg-gray-50 border border-gray-200 rounded-xl p-4 flex justify-between items-center";
+          card.innerHTML = `
+            <div>
+              <div class="font-bold text-xs text-charcoal">${it.item_name}</div>
+              <div class="text-[11px] text-gray-500 font-bold">Rs. ${parseInt(it.unit_price)} &bull; Stock: ${it.stock_quantity}</div>
+            </div>
+            <button onclick="addToTray(${it.item_id}, '${it.item_name}', ${it.unit_price})" class="px-3 py-1.5 rounded-full bg-charcoal text-white text-xs font-bold shadow-sm hover:bg-charcoalHover">
+              + Add
+            </button>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (e) {
+        console.error("Error loading concessions:", e);
+      }
+    }
+
+    function addToTray(id, name, price) {
+      if (!trayCart[id]) trayCart[id] = { name, price, qty: 0 };
+      trayCart[id].qty += 1;
+      renderTray();
+    }
+
+    function renderTray() {
+      const list = document.getElementById('tray-items-list');
+      list.innerHTML = '';
+      let total = 0;
+
+      const keys = Object.keys(trayCart);
+      if (keys.length === 0) {
+        list.innerHTML = '<p class="text-gray-400 italic">No food or drinks added yet.</p>';
+      } else {
+        keys.forEach(k => {
+          const it = trayCart[k];
+          const lineTot = it.price * it.qty;
+          total += lineTot;
+          const row = document.createElement('div');
+          row.className = "flex justify-between items-center";
+          row.innerHTML = `<span>${it.qty}x ${it.name}</span> <span class="font-bold text-charcoal">Rs. ${lineTot.toFixed(2)}</span>`;
+          list.appendChild(row);
+        });
+      }
+
+      document.getElementById('tray-total-val').innerText = `Rs. ${total.toFixed(2)}`;
+      document.getElementById('fnb-order-btn').disabled = (keys.length === 0);
+    }
+
+    async function submitConcessionOrder() {
+      const itemsPayload = Object.keys(trayCart).map(k => ({ item_id: parseInt(k), quantity: trayCart[k].qty }));
+      try {
+        const res = await fetch('/api/order-concessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer_id: 2,
+            items: itemsPayload,
+            payment_method: "UPI"
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert(`Order #${data.order_id} placed! Total: Rs.${data.total_amount}`);
+          trayCart = {};
+          renderTray();
+          await loadConcessions();
+        } else {
+          alert(`Order Failed: ${data.detail}`);
+        }
+      } catch (e) {
+        console.error("Order error:", e);
+      }
+    }
+
+    // Usher Gate Scanner
+    async function verifyTicketToken() {
+      const token = document.getElementById('usher-token-input').value.trim();
+      const resBox = document.getElementById('usher-result-box');
+      resBox.className = "hidden";
+      if (!token) return;
+
+      try {
+        const res = await fetch('/api/validate-ticket', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+        const data = await res.json();
+        resBox.className = "block p-4 rounded-xl text-xs font-bold " + (data.valid ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-red-50 text-red-800 border border-red-200");
+        resBox.innerHTML = `
+          <div>${data.message}</div>
+          ${data.details ? `<div class="mt-2 text-gray-600 font-normal">Movie: ${data.details.movie} &bull; Screen ${data.details.screen} &bull; ${data.details.showtime}</div>` : ''}
+        `;
+      } catch (e) {
+        console.error("Verification error:", e);
+      }
+    }
+
+    // Cancel Booking
+    async function cancelBookingAction() {
+      const bkgId = parseInt(document.getElementById('cancel-bkg-id').value);
+      const resBox = document.getElementById('cancel-result-box');
+      if (!bkgId) return;
+
+      try {
+        const res = await fetch('/api/cancel-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ booking_id: bkgId, reason: "Customer cancellation request" })
+        });
+        const data = await res.json();
+        resBox.className = "block p-3 rounded-xl text-xs font-semibold bg-gray-50 border border-gray-200";
+        if (res.ok) {
+          resBox.innerHTML = `✓ Booking #${bkgId} cancelled! Refunded: <b>Rs.${data.refund_amount}</b> (10% Fee Retained: Rs.${data.cancellation_fee}). Ref: <code>${data.refund_reference}</code>`;
+        } else {
+          resBox.innerHTML = `❌ Error: ${data.detail}`;
+        }
+      } catch (e) {
+        console.error("Cancellation error:", e);
+      }
+    }
+
+    // Reports Tables
+    async function loadReports() {
+      try {
+        const res = await fetch('/api/reports');
+        const data = await res.json();
+
+        // Box office table
+        const boxDiv = document.getElementById('boxoffice-table-container');
+        boxDiv.innerHTML = `
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-100 text-gray-500 font-bold uppercase">
+              <tr><th class="p-3">Movie</th><th class="p-3">Genre</th><th class="p-3">Screenings</th><th class="p-3">Tickets Sold</th><th class="p-3">Gross Revenue</th></tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              ${data.box_office.map(r => `<tr><td class="p-3 font-bold">${r.movie_title}</td><td class="p-3">${r.genre}</td><td class="p-3">${r.total_screenings}</td><td class="p-3">${r.tickets_sold}</td><td class="p-3 font-black text-charcoal">Rs. ${r.box_office_gross.toFixed(2)}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+
+        // Occupancy table
+        const occDiv = document.getElementById('occupancy-table-container');
+        occDiv.innerHTML = `
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-100 text-gray-500 font-bold uppercase">
+              <tr><th class="p-3">Movie</th><th class="p-3">Cinema Hall</th><th class="p-3">Screen</th><th class="p-3">Date & Time</th><th class="p-3">Occupancy</th></tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              ${data.occupancy.map(r => `<tr><td class="p-3 font-bold">${r.movie_title}</td><td class="p-3">${r.cinema_name}</td><td class="p-3">Scrn ${r.screen_number}</td><td class="p-3">${r.show_date} ${r.start_time}</td><td class="p-3 font-black text-charcoal">${r.booked_seats}/${r.total_seats} (${r.occupancy_percentage}%)</td></tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      } catch (e) {
+        console.error("Reports error:", e);
+      }
+    }
+
+    // Diagnostics
+    async function runDiagnosticsModal() {
+      try {
+        const res = await fetch('/api/diagnostics', { method: 'POST' });
+        const data = await res.json();
+        const resultsStr = data.map(t => `[${t.status}] ${t.name}: ${t.detail}`).join('\n\n');
+        alert(`=== DBMS SYSTEM DIAGNOSTICS ===\n\n${resultsStr}`);
+      } catch (e) {
+        console.error("Diagnostics error:", e);
+      }
+    }
+  </script>
+</body>
+</html>
