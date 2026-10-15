@@ -350,19 +350,8 @@
           <!-- Date Tabs -->
           <div>
             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Select Date</label>
-            <div class="flex items-center gap-2 overflow-x-auto pb-1" id="showtime-date-tabs">
-              <button onclick="selectDateTab('2026-10-04')" class="px-4 py-2 rounded-2xl bg-white text-charcoal font-black text-xs flex flex-col items-center min-w-[75px] shadow-sm">
-                <span class="text-[10px] uppercase font-semibold text-charcoal/70">TODAY</span>
-                <span class="text-sm font-black">OCT 04</span>
-              </button>
-              <button onclick="selectDateTab('2026-10-05')" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-300 font-black text-xs flex flex-col items-center min-w-[75px]">
-                <span class="text-[10px] uppercase font-semibold text-gray-400">MON</span>
-                <span class="text-sm font-black">OCT 05</span>
-              </button>
-              <button onclick="selectDateTab('2026-10-06')" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-300 font-black text-xs flex flex-col items-center min-w-[75px]">
-                <span class="text-[10px] uppercase font-semibold text-gray-400">TUE</span>
-                <span class="text-sm font-black">OCT 06</span>
-              </button>
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="showtime-date-tabs">
+              <!-- Rendered dynamically via JS renderDateTabs() -->
             </div>
           </div>
 
@@ -983,26 +972,89 @@
       selectedConcessions = {};
       appliedPromo = null;
 
+      // Extract unique dates for this movie
+      const movieDates = Array.from(new Set(
+        allScreenings.filter(s => s.movie_id === selectedMovie.movie_id).map(s => s.show_date)
+      )).sort();
+      
+      // Default to first available date or today
+      if (movieDates.length > 0 && !movieDates.includes(selectedDate)) {
+        selectedDate = movieDates[0];
+      }
+
       document.getElementById('modal-movie-title').innerText = selectedMovie.title;
       document.getElementById('modal-movie-meta').innerText = `${selectedMovie.genre} • ${selectedMovie.duration_minutes} min • ${selectedMovie.rating}`;
       document.getElementById('modal-movie-poster').style.backgroundImage = `url('${selectedMovie.poster}')`;
 
       goToStep(1);
+      renderDateTabs();
       renderScreeningsForMovieAndDate();
       document.getElementById('booking-modal').classList.remove('hidden');
     }
 
+    function renderDateTabs() {
+      const container = document.getElementById('showtime-date-tabs');
+      if (!container) return;
+
+      // Extract all unique dates from all screenings
+      const allDates = Array.from(new Set(allScreenings.map(s => s.show_date))).sort();
+      if (allDates.length === 0) return;
+
+      if (!allDates.includes(selectedDate)) {
+        selectedDate = allDates[0];
+      }
+
+      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+      container.innerHTML = allDates.map((dStr, idx) => {
+        const isSelected = (dStr === selectedDate);
+        const parts = dStr.split('-');
+        const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        const dayLabel = idx === 0 ? 'TODAY' : days[dateObj.getDay()];
+        const monthDay = `${months[dateObj.getMonth()]} ${parts[2]}`;
+
+        const countForMovie = allScreenings.filter(s => s.movie_id === selectedMovie.movie_id && s.show_date === dStr).length;
+
+        const btnClass = isSelected
+          ? "px-4 py-2.5 rounded-2xl bg-white text-charcoal font-black text-xs flex flex-col items-center min-w-[78px] shadow-lg border-2 border-lilac scale-105 transition-all"
+          : "px-4 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-300 font-bold text-xs flex flex-col items-center min-w-[78px] border border-white/10 transition-all";
+
+        const subClass = isSelected ? "text-[10px] uppercase font-bold text-charcoal/70" : "text-[10px] uppercase font-semibold text-gray-400";
+        const mainClass = isSelected ? "text-sm font-black text-charcoal" : "text-sm font-black text-white";
+
+        return `
+          <button onclick="selectDateTab('${dStr}')" class="${btnClass}">
+            <span class="${subClass}">${dayLabel}</span>
+            <span class="${mainClass}">${monthDay}</span>
+            <span class="text-[9px] mt-0.5 ${isSelected ? 'text-charcoal/60' : 'text-gray-500'} font-semibold">${countForMovie} shows</span>
+          </button>
+        `;
+      }).join('');
+    }
+
     function selectDateTab(dateStr) {
       selectedDate = dateStr;
+      renderDateTabs();
       renderScreeningsForMovieAndDate();
     }
 
     function renderScreeningsForMovieAndDate() {
       const list = document.getElementById('screenings-list');
-      const movieScreenings = allScreenings.filter(s => s.movie_id === selectedMovie.movie_id);
+      // Filter by BOTH movie_id AND selectedDate
+      const movieScreenings = allScreenings.filter(s => 
+        s.movie_id === selectedMovie.movie_id && s.show_date === selectedDate
+      );
 
       if (movieScreenings.length === 0) {
-        list.innerHTML = `<div class="p-6 text-center text-gray-400 bg-white/5 rounded-2xl">No screenings currently scheduled for ${selectedMovie.title}.</div>`;
+        list.innerHTML = `
+          <div class="p-8 text-center bg-white/5 border border-white/10 rounded-2xl space-y-2">
+            <span class="text-3xl">📅</span>
+            <h4 class="text-sm font-black text-white">No Showtimes on ${selectedDate}</h4>
+            <p class="text-xs text-gray-400">There are no screenings scheduled for ${selectedMovie.title} on this date.</p>
+            <p class="text-xs text-lilac font-medium">Please pick another date from the tabs above.</p>
+          </div>
+        `;
         return;
       }
 
@@ -1014,10 +1066,13 @@
       });
 
       list.innerHTML = Object.entries(cinemas).map(([cinemaName, scrList]) => `
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3 hover:border-white/20 transition-all">
           <div class="flex items-center justify-between">
-            <h4 class="font-black text-white text-sm">${cinemaName}</h4>
-            <span class="text-[10px] text-gray-400">Dolby Atmos &bull; 4K Laser</span>
+            <h4 class="font-black text-white text-sm flex items-center gap-2">
+              <span>📍</span>
+              <span>${cinemaName}</span>
+            </h4>
+            <span class="text-[10px] text-lilac font-bold px-2 py-0.5 rounded bg-lilac/10 border border-lilac/20">Dolby Atmos &bull; 4K Laser</span>
           </div>
 
           <div class="flex flex-wrap gap-2.5">
