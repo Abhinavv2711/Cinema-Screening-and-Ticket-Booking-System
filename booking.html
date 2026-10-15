@@ -7,6 +7,8 @@
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- API Client with GitHub Pages Standalone Fallback -->
+  <script src="api_fallback.js"></script>
   
   <!-- Satoshi Font & Newsreader Serif -->
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
@@ -74,7 +76,7 @@
     <!-- 1. NAVIGATION BAR                                                          -->
     <!-- ========================================================================= -->
     <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+      <a href="index.html" class="flex items-center gap-3 group cursor-pointer">
         <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           🎬
         </div>
@@ -96,7 +98,7 @@
         <span id="step-pill-3" class="px-4 py-1.5 rounded-full text-slateText">3. Checkout &amp; Pass</span>
       </div>
 
-      <a href="/" class="px-4 py-2 rounded-full border border-gray-200 text-xs font-bold text-charcoal hover:bg-panel transition-all">
+      <a href="index.html" class="px-4 py-2 rounded-full border border-gray-200 text-xs font-bold text-charcoal hover:bg-panel transition-all">
         ✕ Cancel
       </a>
     </header>
@@ -114,7 +116,7 @@
         <div class="flex items-center gap-3">
           <span class="text-slateText">Dynamic Pricing: <strong id="top-price-tier" class="px-2.5 py-1 rounded-full bg-lilac text-lilacDark font-bold">Standard Base Rate</strong></span>
           <span class="hidden sm:inline-block w-px h-4 bg-gray-300"></span>
-          <a id="change-showtime-btn" href="/movie" class="text-xs text-charcoal hover:underline font-bold">&larr; Change Showtime</a>
+          <a id="change-showtime-btn" href="movie.html" class="text-xs text-charcoal hover:underline font-bold">&larr; Change Showtime</a>
         </div>
       </div>
     </div>
@@ -373,8 +375,8 @@
 
           <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button onclick="window.print()" class="px-6 py-2.5 rounded-full bg-charcoal text-white hover:bg-black font-bold text-xs shadow-md transition-all">🖨️ Print Pass</button>
-            <a href="/my-tickets" class="px-6 py-2.5 rounded-full bg-panel text-charcoal border border-gray-200 font-bold text-xs hover:bg-gray-200 transition-all">View in My Passes &rarr;</a>
-            <a href="/" class="px-6 py-2.5 rounded-full bg-lilac text-lilacDark font-bold text-xs hover:bg-lilac/80 transition-all">Done</a>
+            <a href="my_tickets.html" class="px-6 py-2.5 rounded-full bg-panel text-charcoal border border-gray-200 font-bold text-xs hover:bg-gray-200 transition-all">View in My Passes &rarr;</a>
+            <a href="index.html" class="px-6 py-2.5 rounded-full bg-lilac text-lilacDark font-bold text-xs hover:bg-lilac/80 transition-all">Done</a>
           </div>
         </div>
 
@@ -388,13 +390,13 @@
     <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
       <div class="flex items-center gap-2">
         <span class="font-black text-charcoal uppercase">AURA LUXE CINEMAS</span>
-        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
+        <span>&bull; &copy; 2026 Premier Theatrical Exhibition</span>
       </div>
       <div class="flex items-center gap-4 text-xs font-semibold">
-        <a href="/" class="hover:text-charcoal">Home</a>
-        <a href="/concessions" class="hover:text-charcoal">Concessions</a>
-        <a href="/my-tickets" class="hover:text-charcoal">My Passes</a>
-        <a href="/admin" class="text-lilacDark hover:underline">Cinema Manager</a>
+        <a href="index.html" class="hover:text-charcoal">Home</a>
+        <a href="concessions.html" class="hover:text-charcoal">Concessions</a>
+        <a href="my_tickets.html" class="hover:text-charcoal">My Passes</a>
+        <a href="admin.html" class="text-lilacDark hover:underline">Cinema Manager</a>
       </div>
     </footer>
 
