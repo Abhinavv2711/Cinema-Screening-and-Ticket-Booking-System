@@ -7,6 +7,7 @@ import json
 import asyncio
 from typing import List, Dict, Any, Optional, Set
 from fastapi import FastAPI, HTTPException, Header, Request, WebSocket, WebSocketDisconnect, Response
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -85,7 +86,8 @@ init_advanced_db_features()
 app = FastAPI(
     title="Cinema Screening & Ticket Booking Engine | Enterprise Edition",
     description="Production-grade DBMS architecture with WebSockets real-time locking, Optimistic Concurrency Control, Idempotency, and Prometheus metrics.",
-    version="2.0.0"
+    version="2.0.0",
+    docs_url="/api/swagger"
 )
 
 app.add_middleware(
@@ -270,6 +272,14 @@ class OCCSimulationRequest(BaseModel):
     screening_id: int
     seat_id: int
 
+class CreateScreeningRequest(BaseModel):
+    screen_id: int
+    movie_id: int
+    show_date: str
+    start_time: str
+    end_time: str
+    ticket_price: float
+
 # -----------------------------------------------------------------------------
 # 6. REST API ENDPOINTS
 # -----------------------------------------------------------------------------
@@ -322,6 +332,59 @@ def list_screenings():
     rows = [dict(zip(columns, r)) for r in cur.fetchall()]
     conn.close()
     return rows
+
+@app.post("/api/screenings")
+def create_screening_api(req: CreateScreeningRequest):
+    """Schedules a new screening with database trigger overlap validation (trg_prevent_screen_overlap_insert)."""
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO screenings (screen_id, movie_id, show_date, start_time, end_time, ticket_price, status)
+            VALUES (?, ?, ?, ?, ?, ?, 'Scheduled');
+        """, (req.screen_id, req.movie_id, req.show_date, req.start_time, req.end_time, req.ticket_price))
+        new_id = cur.lastrowid
+        conn.commit()
+        record_audit_entry("SCREENING", new_id, "NONE", "SCHEDULED", "SHOW_SCHEDULED", 1, f"Date: {req.show_date} {req.start_time}-{req.end_time}")
+        return {
+            "success": True,
+            "screening_id": new_id,
+            "message": f"Showtime successfully scheduled on Screen #{req.screen_id} for {req.show_date} ({req.start_time} - {req.end_time})!"
+        }
+    except sqlite3.IntegrityError as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=f"Scheduling Conflict: {str(e)}")
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.get("/api/cinemas")
+def list_cinemas():
+    """Lists all registered cinema locations."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT cinema_id, name, city, address FROM cinemas;")
+    cols = [c[0] for c in cur.description]
+    cinemas = [dict(zip(cols, r)) for r in cur.fetchall()]
+    conn.close()
+    return cinemas
+
+@app.get("/api/screens")
+def list_screens():
+    """Lists all auditorium screens with capacity and screen formats."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT s.screen_id, s.cinema_id, c.name AS cinema_name, s.screen_number, s.screen_type, s.seating_capacity
+        FROM screens s
+        JOIN cinemas c ON s.cinema_id = c.cinema_id;
+    """)
+    cols = [c[0] for c in cur.description]
+    screens = [dict(zip(cols, r)) for r in cur.fetchall()]
+    conn.close()
+    return screens
 
 @app.get("/api/movies")
 def list_movies():
@@ -1102,8 +1165,24 @@ def get_executive_reports():
     cur.execute("SELECT cinema_name, ticket_revenue, concession_revenue, cancellation_penalties_retained, total_refunds_disbursed, net_operating_revenue FROM view_total_revenue_breakdown;")
     cols4 = [c[0] for c in cur.description]
     revenue = [dict(zip(cols4, r)) for r in cur.fetchall()]
+
+    cur.execute("SELECT item_id, item_name, category, unit_price, current_stock, total_units_sold, total_revenue FROM view_concession_sales_summary;")
+    cols5 = [c[0] for c in cur.description]
+    concessions_sales = [dict(zip(cols5, r)) for r in cur.fetchall()]
+
+    cur.execute("SELECT cancellation_id, booking_id, customer_name, movie_title, show_date, booking_amount, cancellation_fee, refund_amount, reason, cancellation_time, refund_reference FROM view_cancellations_and_refunds ORDER BY cancellation_id DESC;")
+    cols6 = [c[0] for c in cur.description]
+    cancellations_refunds = [dict(zip(cols6, r)) for r in cur.fetchall()]
+
     conn.close()
-    return {"occupancy": occupancy, "box_office": box_office, "screen_utilization": screen_util, "revenue": revenue}
+    return {
+        "occupancy": occupancy,
+        "box_office": box_office,
+        "screen_utilization": screen_util,
+        "revenue": revenue,
+        "concessions_sales": concessions_sales,
+        "cancellations_refunds": cancellations_refunds
+    }
 
 @app.post("/api/diagnostics")
 def run_db_diagnostics():
@@ -1139,9 +1218,40 @@ def run_db_diagnostics():
     return tests
 
 # -----------------------------------------------------------------------------
-# 16. STATIC SPA MOUNT
+# 16. DEDICATED MULTI-PAGE LANDING ROUTES
 # -----------------------------------------------------------------------------
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+@app.get("/movie")
+@app.get("/movie/{movie_id}")
+def serve_movie_landing(movie_id: Optional[int] = None):
+    return FileResponse(os.path.join(STATIC_DIR, "movie.html"))
+
+@app.get("/booking")
+@app.get("/booking/{screening_id}")
+def serve_booking_landing(screening_id: Optional[int] = None):
+    return FileResponse(os.path.join(STATIC_DIR, "booking.html"))
+
+@app.get("/concessions")
+def serve_concessions_landing():
+    return FileResponse(os.path.join(STATIC_DIR, "concessions.html"))
+
+@app.get("/my-tickets")
+def serve_my_tickets_landing():
+    return FileResponse(os.path.join(STATIC_DIR, "my_tickets.html"))
+
+@app.get("/usher")
+def serve_usher_landing():
+    return FileResponse(os.path.join(STATIC_DIR, "usher.html"))
+
+@app.get("/admin")
+def serve_admin_landing():
+    return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+
+@app.get("/docs")
+def serve_docs_landing():
+    return FileResponse(os.path.join(STATIC_DIR, "docs.html"))
+
 if os.path.exists(STATIC_DIR):
     app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
