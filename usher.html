@@ -16,12 +16,19 @@
       theme: {
         extend: {
           colors: {
-            charcoal: '#231212',
-            charcoalDark: '#120808',
-            charcoalHover: '#321919',
+            bodyBg: '#dbe4eb',
+            canvas: '#ffffff',
+            panel: '#f4f5f8',
+            panelBorder: '#e2e8f0',
+            charcoal: '#181111',
+            charcoalHover: '#000000',
             lilac: '#e3e2f7',
-            lilacDark: '#564488',
-            offwhite: '#f4f4f4',
+            lilacDark: '#3c2a63',
+            lilacBorder: '#d0cbf2',
+            slateText: '#64748b',
+            mintBg: '#ecfdf5',
+            mintText: '#15803d',
+            mintBorder: '#bbf7d0',
           },
           fontFamily: {
             sans: ['Satoshi', 'Inter', 'sans-serif'],
@@ -34,139 +41,146 @@
   <style>
     body {
       font-family: 'Satoshi', sans-serif;
-      background-color: #0d0707;
-      color: #f4f4f4;
+      background-color: #dbe4eb;
+      color: #181111;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-lilac selection:text-charcoal">
+<body class="min-h-screen p-3 sm:p-6 lg:p-8 flex flex-col justify-between selection:bg-lilac selection:text-charcoal font-sans">
 
   <!-- ========================================================================= -->
-  <!-- 1. NAVIGATION BAR                                                          -->
+  <!-- MAIN APPLICATION CANVAS                                                    -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+  <div class="max-w-[1360px] mx-auto w-full bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col min-h-[92vh]">
+    
+    <!-- ========================================================================= -->
+    <!-- 1. NAVIGATION BAR                                                          -->
+    <!-- ========================================================================= -->
+    <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+        <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           ⚡
         </div>
         <div>
           <div class="flex items-center gap-1.5">
-            <span class="text-base font-black tracking-tight text-white uppercase">USHER</span>
-            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 uppercase tracking-wider">GATE SCANNER</span>
+            <span class="text-base font-black tracking-tight text-charcoal uppercase">USHER</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-mintBg text-mintText border border-mintBorder uppercase tracking-wider">GATE SCANNER</span>
           </div>
-          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">AUDITORIUM TURNSTILE STATION</p>
+          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">AUDITORIUM TURNSTILE STATION</p>
         </div>
       </a>
 
-      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
-        <a href="/" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Movies</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</a>
-        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">My Tickets</a>
-        <a href="/usher" class="px-4 py-1.5 rounded-full text-white bg-white/10 font-bold transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
-        <a href="/docs" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
+      <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
+        <a href="/" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Manager BI</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
       </nav>
 
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="text-xs font-bold text-gray-300">Station Active</span>
+      <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mintBg border border-mintBorder text-xs font-bold text-mintText">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Station Active</span>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- ========================================================================= -->
-  <!-- 2. SCANNER WORKBENCH                                                      -->
-  <!-- ========================================================================= -->
-  <main class="flex-1 max-w-4xl mx-auto px-4 md:px-8 py-10 w-full space-y-8">
-    
-    <div class="text-center max-w-lg mx-auto space-y-2">
-      <h1 class="text-2xl sm:text-3xl font-black text-white">Auditorium Turnstile Check-In</h1>
-      <p class="text-xs text-gray-400">Scan digital barcode, ticket hash, or enter booking reference to admit moviegoers.</p>
-    </div>
-
-    <!-- Scanner Box -->
-    <div class="bg-charcoal border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+    <!-- ========================================================================= -->
+    <!-- 2. SCANNER WORKBENCH                                                      -->
+    <!-- ========================================================================= -->
+    <main class="flex-1 max-w-4xl mx-auto p-6 sm:p-10 w-full space-y-8">
       
-      <div class="space-y-3">
-        <label class="block text-xs font-black text-gray-300 uppercase tracking-wider">Scan or Enter Ticket Token</label>
-        <div class="flex gap-3">
-          <input type="text" id="scan-token-input" placeholder="e.g. 73782724907BB553 or TKT-BKG20-S1 or Booking ID #20" 
-                 class="flex-1 px-4 py-3 rounded-2xl bg-white/10 border border-white/20 text-sm text-white font-mono placeholder-gray-500 focus:outline-none focus:border-emerald-400">
-          <button onclick="scanTicket()" class="px-7 py-3 rounded-2xl bg-emerald-500 text-charcoal font-black text-xs hover:bg-emerald-400 transition-all shadow-lg flex items-center gap-2">
-            <span>⚡ Verify Ticket</span>
-          </button>
+      <div class="text-center max-w-lg mx-auto space-y-2">
+        <h1 class="text-2xl sm:text-3xl font-black text-charcoal">Auditorium Turnstile Check-In</h1>
+        <p class="text-xs text-slateText">Scan digital barcode, ticket hash, or enter booking reference to admit moviegoers.</p>
+      </div>
+
+      <!-- Scanner Box -->
+      <div class="bg-panel border border-panelBorder rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        
+        <div class="space-y-3">
+          <label class="block text-xs font-black text-charcoal uppercase tracking-wider">Scan or Enter Ticket Token</label>
+          <div class="flex gap-3">
+            <input type="text" id="scan-token-input" placeholder="e.g. 73782724907BB553 or TKT-BKG20-S1 or Booking ID #20" 
+                   class="flex-1 px-4 py-3 rounded-2xl bg-white border border-gray-300 text-sm text-charcoal font-mono placeholder-gray-400 focus:outline-none focus:border-charcoal">
+            <button onclick="scanTicket()" class="px-7 py-3 rounded-2xl bg-charcoal text-white font-black text-xs hover:bg-black transition-all shadow-md flex items-center gap-2">
+              <span>⚡ Verify Ticket</span>
+            </button>
+          </div>
+
+          <!-- Quick Test Token Chips -->
+          <div class="flex flex-wrap items-center gap-2 pt-2 text-xs">
+            <span class="text-slateText text-[11px] font-bold">Quick Test Tokens:</span>
+            <button onclick="fillToken('1')" class="px-3 py-1 rounded-full bg-white border border-gray-200 text-charcoal text-[11px] font-mono hover:bg-gray-100 font-bold">Booking #1</button>
+            <button onclick="fillToken('2')" class="px-3 py-1 rounded-full bg-white border border-gray-200 text-charcoal text-[11px] font-mono hover:bg-gray-100 font-bold">Booking #2</button>
+            <button onclick="fillToken('TKT-CANCELLED-TEST')" class="px-3 py-1 rounded-full bg-white border border-gray-200 text-charcoal text-[11px] font-mono hover:bg-gray-100 font-bold">Cancelled Token</button>
+          </div>
         </div>
 
-        <!-- Quick Test Tokens -->
-        <div class="flex flex-wrap items-center gap-2 pt-2">
-          <span class="text-[11px] text-gray-500">Quick Test Samples:</span>
-          <button onclick="setTestToken('20')" class="text-[10px] px-2.5 py-1 rounded-lg bg-white/10 text-gray-300 hover:text-white font-mono">Booking #20</button>
-          <button onclick="setTestToken('19')" class="text-[10px] px-2.5 py-1 rounded-lg bg-white/10 text-gray-300 hover:text-white font-mono">Booking #19</button>
-          <button onclick="setTestToken('INVALID-CODE-999')" class="text-[10px] px-2.5 py-1 rounded-lg bg-white/10 text-gray-300 hover:text-white font-mono">Invalid Token</button>
+        <!-- Verification Results Card -->
+        <div id="scan-result-box" class="hidden p-6 rounded-2xl space-y-3 font-mono text-xs"></div>
+
+      </div>
+
+      <!-- Turnstile Telemetry Counters (Matching Screenshot Card Aesthetics) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center">
+          <span class="text-[10px] text-slateText uppercase font-bold block">Admissions Granted Today</span>
+          <span id="stat-granted" class="text-2xl font-black text-charcoal mt-1 block">37</span>
+          <span class="text-[10px] text-mintText font-bold">Validated via ACID Check</span>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center">
+          <span class="text-[10px] text-slateText uppercase font-bold block">Duplicate Admissions Blocked</span>
+          <span id="stat-prevented" class="text-2xl font-black text-amber-700 mt-1 block">4</span>
+          <span class="text-[10px] text-slateText font-medium">Re-entry Rejections</span>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center">
+          <span class="text-[10px] text-slateText uppercase font-bold block">Database Gate Latency</span>
+          <span class="text-2xl font-black text-charcoal mt-1 block">0.82 ms</span>
+          <span class="text-[10px] text-lilacDark font-bold">B-Tree Covering Index</span>
         </div>
       </div>
 
-      <!-- Result Banner -->
-      <div id="scan-result-card" class="hidden p-6 rounded-2xl border transition-all space-y-3">
-        <!-- Rendered dynamically via JS -->
-      </div>
+    </main>
 
-    </div>
-
-    <!-- Live Scanner Activity Log -->
-    <div class="bg-charcoalDark border border-white/10 rounded-3xl p-6 space-y-4">
-      <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <h3 class="text-sm font-black text-white uppercase tracking-wider">Gate Check-In Activity Log</h3>
-        <span id="scan-count-badge" class="text-xs text-lilac font-bold">0 scans this session</span>
-      </div>
-
-      <div id="scan-history-list" class="space-y-2 text-xs font-mono">
-        <div class="py-6 text-center text-gray-500 italic">No tickets scanned in this session yet.</div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ========================================================================= -->
-  <!-- 3. FOOTER                                                                  -->
-  <!-- ========================================================================= -->
-  <footer class="border-t border-white/10 bg-charcoalDark/80 py-6 px-4 md:px-8 text-xs text-gray-500">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <!-- ========================================================================= -->
+    <!-- 3. FOOTER                                                                  -->
+    <!-- ========================================================================= -->
+    <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
       <div class="flex items-center gap-2">
-        <span>⚡</span>
-        <span class="font-bold text-white">AURA USHER GATE</span>
+        <span class="font-black text-charcoal uppercase">AURA LUXE CINEMAS</span>
         <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
       </div>
-      <div class="flex items-center gap-4 text-gray-400">
-        <a href="/" class="hover:text-white">Home</a>
-        <a href="/my-tickets" class="hover:text-white">My Tickets</a>
-        <a href="/admin" class="hover:text-lilac">Cinema Manager</a>
-        <a href="/docs" class="hover:text-white">Project 65 Docs</a>
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="/" class="hover:text-charcoal">Home</a>
+        <a href="/my-tickets" class="hover:text-charcoal">My Passes</a>
+        <a href="/admin" class="text-lilacDark hover:underline">Cinema Manager</a>
+        <a href="/docs" class="hover:text-charcoal">Docs</a>
       </div>
-    </div>
-  </footer>
+    </footer>
+
+  </div>
 
   <!-- ========================================================================= -->
   <!-- 4. JAVASCRIPT LOGIC                                                        -->
   <!-- ========================================================================= -->
   <script>
-    let scanHistory = [];
+    let grantedCount = 37;
+    let blockedCount = 4;
 
-    function setTestToken(token) {
-      document.getElementById('scan-token-input').value = token;
+    function fillToken(val) {
+      document.getElementById('scan-token-input').value = val;
       scanTicket();
     }
 
     async function scanTicket() {
-      const input = document.getElementById('scan-token-input');
-      const token = input.value.trim();
+      const token = document.getElementById('scan-token-input').value.trim();
       if (!token) return;
 
-      const card = document.getElementById('scan-result-card');
-      card.classList.remove('hidden');
-      card.className = "p-6 rounded-2xl border bg-white/5 border-white/15 text-gray-300 space-y-2";
-      card.innerHTML = '<span class="text-lilac">Querying ACID database records for validation...</span>';
+      const resBox = document.getElementById('scan-result-box');
+      resBox.classList.remove('hidden');
+      resBox.className = "p-6 rounded-2xl space-y-3 font-mono text-xs bg-white border border-gray-200 text-charcoal shadow-sm";
+      resBox.innerHTML = '<span>⚡ Querying tickets ledger via B-Tree index...</span>';
 
       try {
         const res = await fetch('/api/validate-ticket', {
@@ -174,74 +188,54 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: token })
         });
-
-        if (!res.ok) {
-          const errData = await res.json();
-          card.className = "p-6 rounded-2xl border bg-rose-500/20 border-rose-500/40 text-rose-300 space-y-2";
-          card.innerHTML = `
-            <div class="text-base font-black text-white">❌ ACCESS DENIED</div>
-            <p class="text-xs text-rose-200">${errData.detail || 'Ticket not found in cinema database.'}</p>
-          `;
-          logScan(token, 'DENIED', 'Invalid Token');
-          return;
-        }
-
         const data = await res.json();
 
         if (data.valid) {
-          card.className = "p-6 rounded-2xl border bg-emerald-500/20 border-emerald-500/40 text-emerald-300 space-y-3";
-          card.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-lg font-black text-white">✅ ACCESS GRANTED</span>
-              <span class="px-2.5 py-0.5 rounded text-[10px] font-black uppercase bg-emerald-500 text-charcoal">ADMIT ONE</span>
+          grantedCount++;
+          document.getElementById('stat-granted').innerText = grantedCount;
+          resBox.className = "p-6 rounded-2xl space-y-3 font-mono text-xs bg-mintBg border border-mintBorder text-mintText shadow-sm";
+          resBox.innerHTML = `
+            <div class="flex items-center justify-between border-b border-mintBorder pb-2">
+              <span class="text-sm font-black">ADMISSION GRANTED</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-emerald-800 font-bold text-[10px]">VERIFIED 100%</span>
             </div>
-            <p class="text-sm font-bold text-white">${data.message}</p>
-            ${data.details ? `
-              <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-emerald-500/30 text-emerald-100 font-mono">
-                <div>Movie: <strong>${data.details.movie}</strong></div>
-                <div>Venue: <strong>${data.details.cinema} (Screen ${data.details.screen})</strong></div>
-                <div>Showtime: <strong>${data.details.showtime}</strong></div>
-                <div>Ticket: <strong>#${data.details.ticket_number}</strong></div>
-              </div>
-            ` : ''}
+            <p class="font-bold text-sm">${data.message}</p>
+            <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+              <div>Movie: <strong>${data.details.movie}</strong></div>
+              <div>Cinema: <strong>${data.details.cinema}</strong></div>
+              <div>Auditorium: <strong>Screen ${data.details.screen}</strong></div>
+              <div>Showtime: <strong>${data.details.showtime}</strong></div>
+            </div>
+            <p class="text-[10px] text-emerald-600 mt-2">State transition: ACTIVE &rarr; USED committed to audit trail.</p>
           `;
-          logScan(token, 'GRANTED', data.details ? `${data.details.movie} (Screen ${data.details.screen})` : 'Admitted');
+        } else if (data.status === 'USED') {
+          blockedCount++;
+          document.getElementById('stat-prevented').innerText = blockedCount;
+          resBox.className = "p-6 rounded-2xl space-y-3 font-mono text-xs bg-amber-50 border border-amber-300 text-amber-900 shadow-sm";
+          resBox.innerHTML = `
+            <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+              <span class="text-sm font-black">ACCESS REJECTED (ALREADY ADMITTED)</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-amber-800 font-bold text-[10px]">DOUBLE-ENTRY PREVENTED</span>
+            </div>
+            <p class="font-bold">${data.message}</p>
+            <p class="text-[11px] text-amber-800">This digital pass has already cleared the gate scanner turnstiles.</p>
+          `;
         } else {
-          const isUsed = data.status === 'USED';
-          card.className = isUsed 
-            ? "p-6 rounded-2xl border bg-amber-500/20 border-amber-500/40 text-amber-300 space-y-2"
-            : "p-6 rounded-2xl border bg-rose-500/20 border-rose-500/40 text-rose-300 space-y-2";
-          card.innerHTML = `
-            <div class="text-base font-black text-white">${isUsed ? '⚠️ ACCESS DENIED (ALREADY USED)' : '❌ ACCESS DENIED'}</div>
-            <p class="text-xs text-gray-200">${data.message}</p>
+          blockedCount++;
+          document.getElementById('stat-prevented').innerText = blockedCount;
+          resBox.className = "p-6 rounded-2xl space-y-3 font-mono text-xs bg-rose-50 border border-rose-300 text-rose-800 shadow-sm";
+          resBox.innerHTML = `
+            <div class="flex items-center justify-between border-b border-rose-200 pb-2">
+              <span class="text-sm font-black">ACCESS DENIED</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-rose-800 font-bold text-[10px]">CANCELLED PASS</span>
+            </div>
+            <p class="font-bold">${data.message || data.detail || 'Ticket not found or cancelled'}</p>
           `;
-          logScan(token, 'DENIED', isUsed ? 'Duplicate Check-in' : 'Cancelled & Refunded');
         }
-
       } catch (err) {
-        card.className = "p-6 rounded-2xl border bg-rose-500/20 border-rose-500/40 text-rose-300";
-        card.innerHTML = `<p class="font-bold">Error: ${err.message}</p>`;
+        resBox.className = "p-6 rounded-2xl space-y-3 font-mono text-xs bg-rose-50 border border-rose-300 text-rose-800";
+        resBox.innerHTML = `<span class="font-bold">Error: ${err.message}</span>`;
       }
-    }
-
-    function logScan(token, status, detail) {
-      const timeStr = new Date().toLocaleTimeString();
-      scanHistory.unshift({ time: timeStr, token, status, detail });
-      const container = document.getElementById('scan-history-list');
-      document.getElementById('scan-count-badge').innerText = `${scanHistory.length} scans this session`;
-
-      container.innerHTML = scanHistory.slice(0, 10).map(s => `
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
-          <div class="flex items-center gap-3">
-            <span class="text-gray-500 text-[10px]">${s.time}</span>
-            <span class="font-bold text-white">${s.token}</span>
-            <span class="text-gray-400 text-[11px]">${s.detail}</span>
-          </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-black ${s.status === 'GRANTED' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}">
-            ${s.status}
-          </span>
-        </div>
-      `).join('');
     }
   </script>
 

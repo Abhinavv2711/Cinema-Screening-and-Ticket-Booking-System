@@ -17,15 +17,19 @@
       theme: {
         extend: {
           colors: {
-            charcoal: '#231212',
-            charcoalDark: '#150a0a',
-            charcoalHover: '#321919',
-            lilac: '#e3e2f7',
-            lilacDark: '#564488',
-            lilacLight: '#f3f2fc',
-            offwhite: '#f4f4f4',
-            gold: '#D4AF37',
-            goldLight: '#FEF3C7',
+            bodyBg: '#dbe4eb',        // Soft cool blue-gray outer frame from screenshot
+            canvas: '#ffffff',        // Main pure white card container
+            panel: '#f4f5f8',         // Light off-white container panels
+            panelBorder: '#e2e8f0',   // Subtle panel border
+            charcoal: '#181111',      // Primary dark charcoal for buttons, text, and active pills
+            charcoalHover: '#000000',
+            lilac: '#e3e2f7',         // Subtle lilac badge accent from screenshot
+            lilacDark: '#3c2a63',     // Dark lilac for badge text
+            lilacBorder: '#d0cbf2',
+            slateText: '#64748b',     // Secondary text
+            mintBg: '#ecfdf5',        // Mint green status badge background
+            mintText: '#15803d',      // Mint green text
+            mintBorder: '#bbf7d0',
           },
           fontFamily: {
             sans: ['Satoshi', 'Inter', 'sans-serif'],
@@ -39,12 +43,12 @@
   <style>
     body {
       font-family: 'Satoshi', sans-serif;
-      background-color: #0d0707;
-      color: #f4f4f4;
+      background-color: #dbe4eb;
+      color: #181111;
     }
     
     * {
-      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
 
     /* Custom Scrollbar */
@@ -53,1706 +57,476 @@
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #150a0a;
+      background: #f4f5f8;
     }
     ::-webkit-scrollbar-thumb {
-      background: #321919;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #564488;
-    }
-
-    /* Curved Screen Projection Glow */
-    .screen-curve {
-      border-top: 4px solid #e3e2f7;
-      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-      box-shadow: 0 -12px 35px rgba(227, 226, 247, 0.45);
-    }
-
-    /* Seat Pulse Animation */
-    @keyframes pulseSelect {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.12); }
-      100% { transform: scale(1); }
-    }
-    .seat-selected {
-      animation: pulseSelect 1.8s infinite ease-in-out;
-    }
-
-    /* Perforated Ticket Divider */
-    .ticket-perforated {
-      background-image: radial-gradient(circle at 0 50%, transparent 12px, #1a0f0f 13px),
-                        radial-gradient(circle at 100% 50%, transparent 12px, #1a0f0f 13px);
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="min-h-screen selection:bg-lilac selection:text-charcoal flex flex-col justify-between">
+<body class="min-h-screen p-3 sm:p-6 lg:p-8 flex flex-col justify-between selection:bg-lilac selection:text-charcoal font-sans">
 
   <!-- ========================================================================= -->
-  <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
+  <!-- MAIN APPLICATION CANVAS (WHITE ROUNDED CONTAINER FROM SCREENSHOT)         -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+  <div class="max-w-[1360px] mx-auto w-full bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col min-h-[92vh]">
+    
+    <!-- ========================================================================= -->
+    <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
+    <!-- ========================================================================= -->
+    <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
       <a href="/" class="flex items-center gap-3 group cursor-pointer">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+        <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           🎬
         </div>
         <div>
           <div class="flex items-center gap-1.5">
-            <span class="text-base font-black tracking-tight text-white uppercase">AURA</span>
-            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac/20 text-lilac uppercase tracking-wider">LUXE</span>
+            <span class="text-base font-black tracking-tight text-charcoal uppercase">AURA</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac text-lilacDark uppercase tracking-wider">LUXE</span>
           </div>
-          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">CINEMAS &amp; EXPERIENCES</p>
+          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">CINEMA SCREENING ENGINE</p>
         </div>
       </a>
 
-      <!-- Center Navigation Links -->
-      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
-        <a href="#movies-section" class="px-3.5 py-1.5 rounded-full text-white bg-white/10 hover:bg-white/20 transition-all">Now Showing</a>
-        <a href="/concessions" class="px-3.5 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</a>
-        <a href="/my-tickets" class="px-3.5 py-1.5 rounded-full text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
-          <span>My Tickets</span>
-          <span id="nav-booking-badge" class="w-4 h-4 rounded-full bg-lilac text-charcoal text-[10px] font-black flex items-center justify-center">0</span>
+      <!-- Center Navigation Pill Switcher (Matching Screenshot) -->
+      <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
+        <a href="/" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Now Showing</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all flex items-center gap-1.5">
+          <span>My Passes</span>
+          <span id="nav-booking-badge" class="w-4 h-4 rounded-full bg-lilac text-lilacDark text-[10px] font-black flex items-center justify-center">0</span>
         </a>
-        <a href="/usher" class="px-3.5 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-3.5 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
-        <a href="/docs" class="px-3.5 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Manager BI</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
       </nav>
 
-      <!-- Right Location Selector & Quick Action -->
+      <!-- Right Telemetry Badge & Quick CTA Button (Matching Screenshot) -->
       <div class="flex items-center gap-3">
-        <!-- City Selector -->
-        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300">
-          <span class="text-lilac">📍</span>
-          <select id="city-selector" class="bg-transparent text-gray-200 outline-none cursor-pointer font-medium text-xs">
-            <option value="Hyderabad" class="bg-charcoal text-white">Hyderabad (Cyberabad)</option>
-            <option value="Bengaluru" class="bg-charcoal text-white">Bengaluru (Whitefield)</option>
-            <option value="Mumbai" class="bg-charcoal text-white">Mumbai (BKC)</option>
-          </select>
+        <!-- Live Engine Status Badge -->
+        <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mintBg border border-mintBorder text-xs font-bold text-mintText">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>FastAPI :8000</span>
         </div>
 
-        <!-- My Bookings Quick Button (Mobile) -->
-        <button onclick="openMyBookingsModal()" class="md:hidden p-2 rounded-full bg-white/10 text-white relative">
-          🎟️
-          <span id="mobile-booking-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-lilac text-charcoal text-[9px] font-bold flex items-center justify-center">0</span>
-        </button>
-
-        <!-- Quick Book CTA -->
-        <button onclick="scrollToSection('movies-section')" class="px-5 py-2 rounded-full bg-gradient-to-r from-lilac to-white text-charcoal font-black text-xs shadow-md hover:shadow-lilac/20 hover:scale-105 transition-all">
-          Book Tickets
-        </button>
+        <!-- Launch / Book Button -->
+        <a href="#movies-section" class="px-5 py-2.5 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs shadow-md hover:scale-105 transition-all flex items-center gap-1.5">
+          <span>Book Tickets</span>
+          <span>&rarr;</span>
+        </a>
       </div>
 
-    </div>
-  </header>
+    </header>
 
-  <!-- ========================================================================= -->
-  <!-- 2. CINEMATIC HERO SPOTLIGHT                                                -->
-  <!-- ========================================================================= -->
-  <section id="hero-spotlight" class="relative overflow-hidden min-h-[520px] md:min-h-[580px] flex items-end pb-12 border-b border-white/10">
-    <!-- Background Image Backdrop with Gradient Mask -->
-    <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700 transform scale-100" style="background-image: url('https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=1600&q=80');">
-      <div class="absolute inset-0 bg-gradient-to-t from-[#0d0707] via-[#0d0707]/80 to-transparent"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-[#0d0707] via-[#0d0707]/60 to-transparent"></div>
-    </div>
-
-    <div class="relative max-w-7xl mx-auto px-4 md:px-8 w-full z-10">
-      <div class="max-w-2xl space-y-4">
+    <!-- ========================================================================= -->
+    <!-- 2. HERO SPOTLIGHT & CLUSTER MONITOR (MATCHING SCREENSHOT LAYOUT)          -->
+    <!-- ========================================================================= -->
+    <section class="px-6 sm:px-10 pt-10 pb-12 border-b border-gray-100 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      
+      <!-- Left Column: Headline, Description & CTAs -->
+      <div class="lg:col-span-7 space-y-6">
         
-        <!-- Experience & Certificate Badges -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span id="hero-badge" class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-lilac text-charcoal shadow-sm">
-            IMAX Exclusive
-          </span>
-          <span id="hero-rating-badge" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/10 text-white border border-white/20 backdrop-blur-sm">
-            UA • 180 min
-          </span>
-          <span id="hero-score" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
-            ★ 8.9 IMDb
-          </span>
-          <span id="hero-genre" class="text-xs font-semibold text-gray-300">
-            Biography / Drama • English
-          </span>
+        <!-- Lilac Badge Pill -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lilac text-lilacDark text-[11px] font-black uppercase tracking-wider">
+          <span>DBMS CINEMA ENGINE</span>
+          <span>•</span>
+          <span>ACID &amp; ZERO-OVERLAP</span>
         </div>
 
-        <!-- Movie Title -->
-        <h1 id="hero-title" class="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-none drop-shadow-md">
-          Oppenheimer
+        <!-- Main Title with Italic Contrast (Screenshot Typography) -->
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-charcoal tracking-tight leading-[1.1]">
+          OPTIMIZE YOUR <br>
+          <span class="font-serif italic font-normal text-charcoal">CINEMA EXPERIENCE</span>
         </h1>
 
-        <!-- Tagline & Synopsis -->
-        <p id="hero-tagline" class="text-base sm:text-lg italic font-serif text-lilac">
-          "The world forever changes."
-        </p>
-        <p id="hero-synopsis" class="text-xs sm:text-sm text-gray-300 line-clamp-2 md:line-clamp-3 leading-relaxed">
-          The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb during World War II.
+        <!-- Subtitle Description -->
+        <p class="text-sm sm:text-base text-slateText leading-relaxed max-w-xl">
+          Formally schedule movie screenings across multi-tier auditoriums with automated turnaround buffer enforcement, real-time seat locks, and ACID transaction compliance.
         </p>
 
-        <!-- CTA Buttons -->
+        <!-- CTA Buttons Row -->
         <div class="flex flex-wrap items-center gap-3 pt-2">
-          <button id="hero-book-btn" onclick="openBookingModalForMovie(1)" class="px-7 py-3 rounded-full bg-white text-charcoal font-black text-sm shadow-xl hover:bg-lilac hover:scale-105 transition-all flex items-center gap-2">
-            <span>🎟️</span>
-            <span>Select Showtimes &amp; Book</span>
-          </button>
-          
-          <button id="hero-trailer-btn" onclick="openTrailerModal()" class="px-5 py-3 rounded-full bg-white/10 text-white border border-white/20 font-bold text-sm backdrop-blur-md hover:bg-white/20 transition-all flex items-center gap-2">
-            <span>▶</span>
-            <span>Watch Trailer</span>
-          </button>
+          <a href="#movies-section" class="px-7 py-3 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs shadow-lg flex items-center gap-2">
+            <span>Explore Now Showing</span>
+            <span>&darr;</span>
+          </a>
+          <a href="/admin" class="px-6 py-3 rounded-full bg-panel border border-panelBorder text-charcoal hover:bg-gray-200/70 font-bold text-xs transition-all flex items-center gap-2">
+            <span>Executive BI &amp; Diagnostics</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+
+        <!-- Three Key Metrics Strip (Directly from Screenshot) -->
+        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-lg">
+          <div>
+            <div class="text-2xl sm:text-3xl font-black text-charcoal">92</div>
+            <p class="text-xs text-slateText mt-0.5 font-medium">Scheduled Shows (7-Day)</p>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-black text-charcoal">1.84 <span class="text-sm font-bold">ms</span></div>
+            <p class="text-xs text-slateText mt-0.5 font-medium">Avg Transaction Latency</p>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-black text-charcoal">&lt; 1%</div>
+            <p class="text-xs text-slateText mt-0.5 font-medium">Concurrency Lock Gap</p>
+          </div>
         </div>
 
       </div>
 
-      <!-- Hero Switcher Thumbnails (Bottom Right) -->
-      <div class="mt-8 flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none" id="hero-switcher-list">
-        <!-- Rendered dynamically via JS -->
-      </div>
-    </div>
-  </section>
+      <!-- Right Column: Interactive Phone Device Preview (Matching Screenshot) -->
+      <div class="lg:col-span-5 flex justify-center">
+        <div class="w-full max-w-sm bg-charcoal rounded-[2.5rem] p-3 shadow-2xl border-4 border-gray-200">
+          <div class="bg-white rounded-[2rem] p-5 space-y-4">
+            
+            <!-- Phone Header -->
+            <div class="flex items-center justify-between text-[11px] font-bold text-slateText border-b border-gray-100 pb-2">
+              <span>9:41</span>
+              <span>AURA Live Mesh</span>
+            </div>
 
-  <!-- ========================================================================= -->
-  <!-- 3. NOW SHOWING MOVIES CATALOG                                              -->
-  <!-- ========================================================================= -->
-  <section id="movies-section" class="max-w-7xl mx-auto px-4 md:px-8 py-12 w-full">
-    
-    <!-- Section Header & Filter Pills -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-      <div>
-        <div class="flex items-center gap-2 text-lilac text-xs font-black tracking-widest uppercase">
-          <span class="w-2 h-2 rounded-full bg-lilac"></span>
-          Now Playing in Theatres
+            <!-- Monitor Card Inside Phone -->
+            <div>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-black text-charcoal text-sm">Auditorium Monitor</h4>
+                  <p class="text-[10px] text-slateText">Live Screening Telemetry</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-panel border border-panelBorder text-[10px] font-bold text-charcoal">
+                  PVR Screen 1
+                </span>
+              </div>
+            </div>
+
+            <!-- Metric Box 1 -->
+            <div class="p-3 rounded-2xl bg-panel border border-panelBorder flex items-center justify-between">
+              <div>
+                <span class="text-[9px] uppercase font-bold text-slateText block">Average Latency</span>
+                <span class="text-lg font-black text-charcoal">1.84 ms</span>
+              </div>
+              <div class="w-8 h-8 rounded-full bg-lilac text-lilacDark flex items-center justify-center text-xs font-black">
+                ⚡
+              </div>
+            </div>
+
+            <!-- Metric Box 2 -->
+            <div class="p-3 rounded-2xl bg-mintBg border border-mintBorder flex items-center justify-between">
+              <div>
+                <span class="text-[9px] uppercase font-bold text-mintText block">ACID Buffer Integrity</span>
+                <span class="text-xs font-black text-mintText">✓ 100% Zero-Overlap Feasible</span>
+              </div>
+              <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">
+                ✓
+              </div>
+            </div>
+
+            <!-- Metric Box 3: Occupancy Bar -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-[10px] font-bold">
+                <span class="text-slateText">Average Hall Saturation</span>
+                <span class="text-charcoal font-black">78.5%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-gray-200 overflow-hidden">
+                <div class="h-full bg-charcoal rounded-full" style="width: 78.5%;"></div>
+              </div>
+            </div>
+
+            <!-- Action Button in Phone -->
+            <a href="/booking?screening_id=1" class="block w-full py-3 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs text-center shadow-md transition-all">
+              Inspect Live Seating Matrix &rarr;
+            </a>
+
+          </div>
         </div>
-        <h2 class="text-2xl md:text-3xl font-black text-white mt-1">Explore Featured Movies</h2>
       </div>
 
-      <!-- Filters & Search -->
-      <div class="flex flex-wrap items-center gap-2">
-        <div class="relative">
-          <input type="text" id="movie-search" oninput="filterMovies()" placeholder="Search title or genre..." 
-                 class="w-48 sm:w-64 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-lilac">
-          <span class="absolute right-3.5 top-2.5 text-xs text-gray-500">🔍</span>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. CINEMA PARAMETERS & QUICK FILTER PANEL (MATCHING SCREENSHOT)            -->
+    <!-- ========================================================================= -->
+    <section class="p-6 sm:px-10 border-b border-gray-100 bg-panel/60">
+      <div class="bg-panel border border-panelBorder rounded-3xl p-6 sm:p-8 space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
+          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider">
+            CINEMA PARAMETERS &amp; SHOWTIME DISCOVERY
+          </h3>
+          <span class="px-2.5 py-0.5 rounded-full bg-white border border-gray-200 text-[10px] font-bold text-slateText">
+            Active Multi-Date Config
+          </span>
         </div>
 
-        <div class="flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/10 text-xs font-bold">
-          <button onclick="setGenreFilter('ALL')" id="genre-ALL" class="px-3.5 py-1.5 rounded-full bg-white text-charcoal transition-all">All</button>
-          <button onclick="setGenreFilter('Sci-Fi')" id="genre-Sci-Fi" class="px-3.5 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Sci-Fi</button>
-          <button onclick="setGenreFilter('Drama')" id="genre-Drama" class="px-3.5 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Drama</button>
-          <button onclick="setGenreFilter('Action')" id="genre-Action" class="px-3.5 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Action</button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+          <!-- City Filter -->
+          <div class="space-y-1.5">
+            <label class="block font-bold text-slateText uppercase text-[10px]">Cinema Location</label>
+            <select id="city-selector" class="w-full px-4 py-2.5 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold focus:outline-none focus:border-charcoal">
+              <option value="Hyderabad">PVR Inorbit (Cyberabad)</option>
+              <option value="Bengaluru">PVR Forum (Bengaluru)</option>
+              <option value="Mumbai">INOX GVK One (Mumbai)</option>
+            </select>
+          </div>
+
+          <!-- Date Filter -->
+          <div class="space-y-1.5">
+            <label class="block font-bold text-slateText uppercase text-[10px]">Screening Date</label>
+            <select id="hero-date-selector" onchange="filterScreeningsByDate(this.value)" class="w-full px-4 py-2.5 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold focus:outline-none focus:border-charcoal">
+              <option value="2026-10-04">Sunday, Oct 04, 2026</option>
+              <option value="2026-10-05">Monday, Oct 05, 2026</option>
+              <option value="2026-10-06">Tuesday, Oct 06, 2026</option>
+              <option value="2026-10-07">Wednesday, Oct 07, 2026</option>
+              <option value="2026-10-08">Thursday, Oct 08, 2026</option>
+              <option value="2026-10-09">Friday, Oct 09, 2026</option>
+              <option value="2026-10-10">Saturday, Oct 10, 2026</option>
+            </select>
+          </div>
+
+          <!-- Format -->
+          <div class="space-y-1.5">
+            <label class="block font-bold text-slateText uppercase text-[10px]">Screen Format</label>
+            <select class="w-full px-4 py-2.5 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold focus:outline-none focus:border-charcoal">
+              <option>All Formats (IMAX, Gold VIP, 4DX)</option>
+              <option>IMAX 3D Laser</option>
+              <option>Gold VIP Recliner</option>
+              <option>4DX Dynamic Motion</option>
+            </select>
+          </div>
+
+          <!-- Isolation Engine -->
+          <div class="space-y-1.5">
+            <label class="block font-bold text-slateText uppercase text-[10px]">Concurrency Engine</label>
+            <div class="px-4 py-2 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold flex items-center justify-between">
+              <span>SERIALIZABLE ACID</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 4. NOW SHOWING MOVIES CATALOG                                              -->
+    <!-- ========================================================================= -->
+    <section id="movies-section" class="px-6 sm:px-10 py-10 w-full">
+      
+      <!-- Section Header & Filter Pills -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div>
+          <div class="flex items-center gap-2 text-lilacDark text-xs font-black tracking-widest uppercase">
+            <span class="w-2 h-2 rounded-full bg-charcoal"></span>
+            Now Playing in Luxury Theatres
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black text-charcoal mt-1">Featured Cinematic Releases</h2>
+        </div>
+
+        <!-- Filters & Search -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="relative">
+            <input type="text" id="movie-search" oninput="filterMovies()" placeholder="Search title or genre..." 
+                   class="w-48 sm:w-64 px-4 py-2 rounded-full bg-panel border border-gray-200 text-xs text-charcoal placeholder-gray-400 focus:outline-none focus:border-charcoal">
+            <span class="absolute right-3.5 top-2.5 text-xs text-gray-400">🔍</span>
+          </div>
+
+          <div class="flex items-center gap-1 bg-panel p-1 rounded-full border border-gray-200 text-xs font-bold">
+            <button onclick="setGenreFilter('ALL')" id="genre-ALL" class="px-3.5 py-1.5 rounded-full bg-charcoal text-white transition-all">All</button>
+            <button onclick="setGenreFilter('Sci-Fi')" id="genre-Sci-Fi" class="px-3.5 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Sci-Fi</button>
+            <button onclick="setGenreFilter('Drama')" id="genre-Drama" class="px-3.5 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Drama</button>
+            <button onclick="setGenreFilter('Action')" id="genre-Action" class="px-3.5 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Action</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Movie Cards Grid -->
-    <div id="movies-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-      <!-- Populated dynamically via JS -->
-      <div class="col-span-full py-16 text-center text-gray-400">Loading movies from cinema database...</div>
-    </div>
+      <!-- Movie Cards Grid -->
+      <div id="movies-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <!-- Populated dynamically via JS -->
+        <div class="col-span-full py-16 text-center text-slateText">Loading movies from database...</div>
+      </div>
 
-  </section>
+    </section>
 
-  <!-- ========================================================================= -->
-  <!-- 4. CINEMA HALLS & PREMIUM FORMATS                                          -->
-  <!-- ========================================================================= -->
-  <section id="cinemas-section" class="border-t border-white/10 bg-charcoalDark/50 py-12 px-4 md:px-8">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-10">
-        <span class="text-xs font-black tracking-widest text-lilac uppercase">World-Class Projection</span>
-        <h3 class="text-2xl md:text-3xl font-black text-white mt-1">Cinemas &amp; Luxury Screens</h3>
-        <p class="text-xs text-gray-400 mt-2">Every hall is calibrated for laser precision audio, zero overlap turnaround, and ultra-plush seating.</p>
+    <!-- ========================================================================= -->
+    <!-- 5. CINEMA HALLS & PREMIUM FORMATS (MATCHING PALETTE)                       -->
+    <!-- ========================================================================= -->
+    <section class="px-6 sm:px-10 py-10 bg-panel/40 border-t border-gray-100">
+      <div class="text-center max-w-xl mx-auto mb-8">
+        <span class="text-xs font-black tracking-widest text-lilacDark uppercase">World-Class Projection</span>
+        <h3 class="text-2xl font-black text-charcoal mt-1">Cinemas &amp; Luxury Screens</h3>
+        <p class="text-xs text-slateText mt-1">Every hall is calibrated for laser precision audio, zero overlap turnaround, and ultra-plush seating.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- IMAX Laser -->
-        <div class="bg-white/5 border border-white/10 rounded-3xl p-6 hover:border-lilac/40 transition-all group">
-          <div class="w-12 h-12 rounded-2xl bg-lilac/20 text-lilac flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition-transform">
+        <div class="bg-white border border-gray-200/80 rounded-3xl p-6 hover:shadow-lg transition-all group">
+          <div class="w-12 h-12 rounded-2xl bg-lilac text-lilacDark flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition-transform">
             ⚡
           </div>
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-blue-500/20 text-blue-300 uppercase">Screen 1</span>
-          <h4 class="text-lg font-black text-white mt-2">IMAX 3D Laser Auditorium</h4>
-          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Dual 4K laser projectors paired with 12-channel spatial immersion sound delivering 40% greater brightness.</p>
-          <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-300 font-semibold">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-blue-50 text-blue-700 uppercase">Screen 1</span>
+          <h4 class="text-lg font-black text-charcoal mt-2">IMAX 3D Laser Auditorium</h4>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">Dual 4K laser projectors paired with 12-channel spatial immersion sound delivering 40% greater brightness.</p>
+          <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-charcoal font-semibold">
             <span>PVR Cyberabad</span>
-            <span class="text-lilac">From ₹450</span>
+            <span class="font-black text-lilacDark">From ₹450</span>
           </div>
         </div>
 
         <!-- Gold VIP Recliner -->
-        <div class="bg-white/5 border border-white/10 rounded-3xl p-6 hover:border-gold/40 transition-all group">
-          <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition-transform">
+        <div class="bg-white border border-gray-200/80 rounded-3xl p-6 hover:shadow-lg transition-all group">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition-transform">
             👑
           </div>
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-300 uppercase">Screen 3</span>
-          <h4 class="text-lg font-black text-white mt-2">Gold VIP Lounge &amp; Recliners</h4>
-          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Fully motorized 180° leather recliners, personal butler service at your seat, and gourmet dine-in menu.</p>
-          <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-300 font-semibold">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-50 text-amber-800 uppercase">Screen 3</span>
+          <h4 class="text-lg font-black text-charcoal mt-2">Gold VIP Lounge &amp; Recliners</h4>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">Fully motorized 180° leather recliners, personal butler service at your seat, and gourmet dine-in menu.</p>
+          <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-charcoal font-semibold">
             <span>PVR Cyberabad</span>
-            <span class="text-gold">From ₹750</span>
+            <span class="font-black text-amber-700">From ₹750</span>
           </div>
         </div>
 
         <!-- 4DX Motion -->
-        <div class="bg-white/5 border border-white/10 rounded-3xl p-6 hover:border-emerald-400/40 transition-all group">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition-transform">
+        <div class="bg-white border border-gray-200/80 rounded-3xl p-6 hover:shadow-lg transition-all group">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition-transform">
             🌪️
           </div>
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 uppercase">Screen 2</span>
-          <h4 class="text-lg font-black text-white mt-2">4DX Dynamic Motion &amp; Atmosphere</h4>
-          <p class="text-xs text-gray-400 mt-1 leading-relaxed">Heave, roll, and pitch motion seats synchronized with environmental wind, mist, scents, and lighting effects.</p>
-          <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-300 font-semibold">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-emerald-50 text-emerald-700 uppercase">Screen 2</span>
+          <h4 class="text-lg font-black text-charcoal mt-2">4DX Dynamic Motion &amp; Atmosphere</h4>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">Heave, roll, and pitch motion seats synchronized with environmental wind, mist, scents, and lighting effects.</p>
+          <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-charcoal font-semibold">
             <span>INOX GVK One</span>
-            <span class="text-emerald-300">From ₹450</span>
+            <span class="font-black text-emerald-700">From ₹450</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========================================================================= -->
-  <!-- 5. INTERACTIVE BOOKING MODAL (THE COMPLETE END-TO-END EXPERIENCE)           -->
-  <!-- ========================================================================= -->
-  <div id="booking-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="bg-charcoalDark border border-white/15 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-      
-      <!-- Modal Header -->
-      <div class="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-charcoal/60">
-        <div class="flex items-center gap-3">
-          <div id="modal-movie-poster" class="w-10 h-14 rounded-lg bg-cover bg-center border border-white/20 hidden sm:block"></div>
-          <div>
-            <h3 id="modal-movie-title" class="text-lg sm:text-xl font-black text-white">Select Movie</h3>
-            <p id="modal-movie-meta" class="text-xs text-gray-400 font-medium">Choose screening time &amp; seats</p>
-          </div>
-        </div>
-
-        <!-- Stepper Indicator -->
-        <div class="hidden md:flex items-center gap-2 text-xs font-bold">
-          <span id="step-pill-1" class="px-3 py-1 rounded-full bg-lilac text-charcoal">1. Showtime</span>
-          <span class="text-gray-600">&rarr;</span>
-          <span id="step-pill-2" class="px-3 py-1 rounded-full bg-white/5 text-gray-400">2. Seats</span>
-          <span class="text-gray-600">&rarr;</span>
-          <span id="step-pill-3" class="px-3 py-1 rounded-full bg-white/5 text-gray-400">3. Snacks</span>
-          <span class="text-gray-600">&rarr;</span>
-          <span id="step-pill-4" class="px-3 py-1 rounded-full bg-white/5 text-gray-400">4. Checkout</span>
-        </div>
-
-        <button onclick="closeBookingModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white flex items-center justify-center text-sm font-bold transition-all">
-          ✕
-        </button>
+    <!-- ========================================================================= -->
+    <!-- 6. FOOTER (INSIDE THE WHITE CANVAS)                                       -->
+    <!-- ========================================================================= -->
+    <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
+      <div class="flex items-center gap-2">
+        <span class="font-black text-charcoal uppercase">AURA LUXE CINEMAS</span>
+        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
       </div>
-
-      <!-- Modal Body (Steps) -->
-      <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-6">
-        
-        <!-- ============================================== -->
-        <!-- STEP 1: DATE & SHOWTIME PICKER                 -->
-        <!-- ============================================== -->
-        <div id="booking-step-1" class="space-y-6">
-          <!-- Date Tabs -->
-          <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Select Date</label>
-            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="showtime-date-tabs">
-              <!-- Rendered dynamically via JS renderDateTabs() -->
-            </div>
-          </div>
-
-          <!-- Grouped Cinemas & Showtimes -->
-          <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Available Showtimes &amp; Formats</label>
-            <div id="screenings-list" class="space-y-4">
-              <!-- Rendered dynamically via JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- ============================================== -->
-        <!-- STEP 2: LUXURY SEAT MATRIX                     -->
-        <!-- ============================================== -->
-        <div id="booking-step-2" class="hidden space-y-6">
-          
-          <!-- Selected Screening Summary -->
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-              <span id="seat-hall-label" class="font-bold text-white">Screen 1 • IMAX 3D</span>
-            </div>
-            <div class="text-gray-300">
-              Showtime: <span id="seat-time-label" class="font-bold text-lilac">10:00 AM</span>
-            </div>
-            <button onclick="goToStep(1)" class="text-xs text-lilac hover:underline font-semibold">&larr; Change Showtime</button>
-          </div>
-
-          <!-- Cinema Projection Screen Graphics -->
-          <div class="py-2 text-center">
-            <div class="w-3/4 max-w-lg mx-auto h-3 screen-curve mb-3"></div>
-            <p class="text-[10px] tracking-widest uppercase font-bold text-gray-500">All Eyes Toward Screen</p>
-          </div>
-
-          <!-- Seating Grid Canvas -->
-          <div class="overflow-x-auto py-2">
-            <div id="seat-grid-container" class="min-w-[480px] max-w-xl mx-auto flex flex-col items-center gap-2.5">
-              <!-- Rendered dynamically via JS -->
-            </div>
-          </div>
-
-          <!-- Legend Bar -->
-          <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] font-semibold text-gray-300 pt-3 border-t border-white/10">
-            <div class="flex items-center gap-1.5">
-              <span class="w-4 h-4 rounded-md bg-white/20 border border-white/30"></span>
-              <span>Available</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-4 h-4 rounded-md bg-lilac border border-white shadow-sm"></span>
-              <span>Selected</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-4 h-4 rounded-md bg-amber-500/30 border border-amber-500 text-[8px] flex items-center justify-center">🔒</span>
-              <span>Locked Real-Time</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-4 h-4 rounded-md bg-white/5 border border-white/5 opacity-30"></span>
-              <span>Booked (Sold Out)</span>
-            </div>
-          </div>
-
-          <!-- Bottom Selection Tray -->
-          <div class="bg-charcoal border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <p class="text-[11px] font-medium text-gray-400">Selected Seats (<span id="tray-seat-count">0</span>):</p>
-              <div id="tray-seat-labels" class="flex flex-wrap gap-1.5 mt-1">
-                <span class="text-xs text-gray-500 italic">None selected</span>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-              <div class="text-right">
-                <p class="text-[10px] text-gray-400 uppercase font-bold">Total Price</p>
-                <p id="tray-total-price" class="text-xl font-black text-white">₹0.00</p>
-              </div>
-              <button id="btn-proceed-to-snacks" onclick="goToStep(3)" disabled class="px-6 py-2.5 rounded-full bg-white text-charcoal font-black text-xs shadow-md disabled:opacity-40 disabled:cursor-not-allowed hover:bg-lilac transition-all">
-                Add Snacks &rarr;
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- ============================================== -->
-        <!-- STEP 3: GOURMET CONCESSIONS & BEVERAGES        -->
-        <!-- ============================================== -->
-        <div id="booking-step-3" class="hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h4 class="text-base font-black text-white">Cinema Refreshments &amp; Gourmet Bites</h4>
-              <p class="text-xs text-gray-400">Pre-order to get hot concessions delivered directly to your auditorium seat.</p>
-            </div>
-            <button onclick="goToStep(4)" class="text-xs text-gray-400 hover:text-white font-semibold underline">
-              Skip Snacks &rarr;
-            </button>
-          </div>
-
-          <!-- Concessions Grid -->
-          <div id="concessions-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <!-- Populated dynamically via JS -->
-          </div>
-
-          <!-- Snacks Tray -->
-          <div class="bg-charcoal border border-white/10 rounded-2xl p-4 flex items-center justify-between">
-            <div>
-              <p class="text-[11px] text-gray-400">Total F&amp;B Added:</p>
-              <p id="fnb-tray-summary" class="text-sm font-bold text-lilac">₹0.00 (0 items)</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button onclick="goToStep(2)" class="px-4 py-2 rounded-full border border-white/20 text-xs font-semibold hover:bg-white/5">&larr; Back to Seats</button>
-              <button onclick="goToStep(4)" class="px-6 py-2 rounded-full bg-white text-charcoal font-black text-xs hover:bg-lilac shadow-md">Proceed to Checkout &rarr;</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ============================================== -->
-        <!-- STEP 4: CHECKOUT & SECURE PAYMENT               -->
-        <!-- ============================================== -->
-        <div id="booking-step-4" class="hidden space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Left: Order Summary -->
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4">
-              <h4 class="text-sm font-black text-white uppercase tracking-wider border-b border-white/10 pb-2">Order Summary</h4>
-              
-              <div class="space-y-2 text-xs">
-                <div class="flex justify-between text-gray-300">
-                  <span id="summary-movie-title" class="font-bold text-white">Movie Title</span>
-                  <span id="summary-seat-count">2 Seats</span>
-                </div>
-                <div class="flex justify-between text-gray-400">
-                  <span id="summary-screening-details">PVR Inorbit • IMAX 3D</span>
-                  <span id="summary-seats-list">Row B4, B5</span>
-                </div>
-                <div class="flex justify-between text-gray-300 pt-2 border-t border-white/10">
-                  <span>Tickets Subtotal:</span>
-                  <span id="summary-ticket-subtotal" class="font-bold">₹0.00</span>
-                </div>
-                <div class="flex justify-between text-gray-300">
-                  <span>Food &amp; Beverages:</span>
-                  <span id="summary-fnb-subtotal" class="font-bold">₹0.00</span>
-                </div>
-                <div id="promo-discount-row" class="hidden flex justify-between text-emerald-400 font-bold">
-                  <span>Promo Discount Applied:</span>
-                  <span id="summary-discount-amt">-₹0.00</span>
-                </div>
-                <div class="flex justify-between text-white font-black text-base pt-3 border-t border-white/10">
-                  <span>Grand Total:</span>
-                  <span id="summary-grand-total" class="text-lilac">₹0.00</span>
-                </div>
-              </div>
-
-              <!-- Promo Code Input -->
-              <div class="pt-3 border-t border-white/10">
-                <label class="block text-[11px] font-bold text-gray-300 mb-1.5">Apply Promo Code</label>
-                <div class="flex gap-2">
-                  <input type="text" id="promo-code-input" placeholder="e.g. LUXE20 or DBMS50" 
-                         class="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs text-white uppercase placeholder-gray-500 focus:outline-none focus:border-lilac">
-                  <button onclick="applyPromoCode()" class="px-4 py-2 rounded-xl bg-lilac text-charcoal font-black text-xs hover:bg-white transition-all">Apply</button>
-                </div>
-                <div class="flex gap-2 mt-2">
-                  <button onclick="quickPromo('LUXE20')" class="text-[10px] px-2 py-0.5 rounded bg-white/10 text-gray-300 hover:text-white">LUXE20 (20% Off)</button>
-                  <button onclick="quickPromo('DBMS50')" class="text-[10px] px-2 py-0.5 rounded bg-white/10 text-gray-300 hover:text-white">DBMS50 (Flat ₹50 Off)</button>
-                </div>
-                <p id="promo-status-msg" class="text-[11px] mt-1.5 hidden"></p>
-              </div>
-            </div>
-
-            <!-- Right: Customer Info & Payment Method -->
-            <div class="space-y-4">
-              <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
-                <h4 class="text-sm font-black text-white uppercase tracking-wider">Contact Details (Ticket Delivery)</h4>
-                <div>
-                  <label class="block text-[11px] text-gray-400 mb-1">Full Name</label>
-                  <input type="text" id="cust-name" value="Abhinav Sharma" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs text-white focus:outline-none focus:border-lilac">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Email</label>
-                    <input type="email" id="cust-email" value="guest@cinema.com" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs text-white focus:outline-none focus:border-lilac">
-                  </div>
-                  <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Phone</label>
-                    <input type="tel" id="cust-phone" value="+91 9876543210" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs text-white focus:outline-none focus:border-lilac">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Payment Method Selection -->
-              <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
-                <h4 class="text-sm font-black text-white uppercase tracking-wider">Select Payment Mode</h4>
-                <div class="space-y-2 text-xs">
-                  <label class="flex items-center justify-between p-3 rounded-xl bg-white/10 border border-lilac cursor-pointer">
-                    <div class="flex items-center gap-2.5">
-                      <input type="radio" name="payment-method" value="UPI" checked class="text-lilac">
-                      <span class="font-bold text-white">Instant UPI (GPay / PhonePe / Paytm)</span>
-                    </div>
-                    <span>⚡ Fast</span>
-                  </label>
-                  <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
-                    <div class="flex items-center gap-2.5">
-                      <input type="radio" name="payment-method" value="Card" class="text-lilac">
-                      <span class="font-bold text-white">Credit / Debit Card (Visa, Mastercard)</span>
-                    </div>
-                    <span>💳</span>
-                  </label>
-                  <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
-                    <div class="flex items-center gap-2.5">
-                      <input type="radio" name="payment-method" value="NetBanking" class="text-lilac">
-                      <span class="font-bold text-white">Net Banking (HDFC, ICICI, SBI)</span>
-                    </div>
-                    <span>🏦</span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Final Confirmation CTA -->
-              <button id="btn-confirm-pay" onclick="submitBookingOrder()" class="w-full py-3.5 rounded-full bg-gradient-to-r from-lilac to-white text-charcoal font-black text-sm shadow-xl hover:scale-102 hover:shadow-lilac/30 transition-all flex items-center justify-center gap-2">
-                <span>🔒</span>
-                <span>Confirm &amp; Pay Now</span>
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- ============================================== -->
-        <!-- STEP 5: LUXURY DIGITAL PASS (CONFIRMATION)     -->
-        <!-- ============================================== -->
-        <div id="booking-step-5" class="hidden space-y-6">
-          <div class="text-center max-w-md mx-auto space-y-2">
-            <div class="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center text-2xl font-black shadow-lg">
-              ✓
-            </div>
-            <h4 class="text-2xl font-black text-white">Booking Confirmed!</h4>
-            <p class="text-xs text-gray-400">Your tickets have been issued and saved to your account. Present this pass at the gate.</p>
-          </div>
-
-          <!-- Perforated Luxury Digital Cinema Pass -->
-          <div id="ticket-pass-container" class="max-w-md mx-auto bg-[#1a0f0f] border border-white/20 rounded-3xl overflow-hidden shadow-2xl relative">
-            <!-- Top Ticket Section -->
-            <div class="p-6 bg-gradient-to-br from-charcoal via-[#231212] to-[#120808] border-b border-dashed border-white/20">
-              <div class="flex items-center justify-between text-xs text-lilac font-bold uppercase tracking-wider mb-2">
-                <span>AURA LUXE CINEMAS</span>
-                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">CONFIRMED</span>
-              </div>
-              <h3 id="ticket-movie-title" class="text-2xl font-black text-white leading-tight">Oppenheimer</h3>
-              <p id="ticket-cinema-screen" class="text-xs text-gray-300 mt-1">PVR Inorbit Cyberabad • Screen 1 (IMAX 3D)</p>
-              
-              <div class="grid grid-cols-2 gap-4 mt-5 text-xs">
-                <div>
-                  <span class="text-gray-400 text-[10px] uppercase font-bold block">DATE &amp; TIME</span>
-                  <span id="ticket-datetime" class="font-black text-white text-sm">Oct 04 • 10:00 AM</span>
-                </div>
-                <div>
-                  <span class="text-gray-400 text-[10px] uppercase font-bold block">SEATS ISSUED</span>
-                  <span id="ticket-seats" class="font-black text-lilac text-sm">Row B4, B5</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Perforation Cutout Dots -->
-            <div class="relative h-6 bg-[#120808] flex items-center justify-between px-4">
-              <span class="w-4 h-4 rounded-full bg-charcoalDark -ml-6"></span>
-              <div class="w-full border-t-2 border-dashed border-white/20"></div>
-              <span class="w-4 h-4 rounded-full bg-charcoalDark -mr-6"></span>
-            </div>
-
-            <!-- Bottom Ticket Section (Barcode & Verification) -->
-            <div class="p-6 bg-[#120808] text-center space-y-4">
-              <div class="flex justify-between items-center text-xs text-gray-400 border-b border-white/10 pb-3">
-                <span>Booking ID: <strong id="ticket-booking-id" class="text-white">#0</strong></span>
-                <span>Txn: <strong id="ticket-txn-id" class="text-white">TXN-000</strong></span>
-              </div>
-
-              <!-- Barcode SVG Render -->
-              <div class="bg-white p-3 rounded-xl inline-block shadow-inner">
-                <svg id="ticket-barcode-svg" class="h-12 w-48 mx-auto" viewBox="0 0 200 40">
-                  <!-- Generated dynamically via JS -->
-                </svg>
-                <span id="ticket-barcode-hash" class="block text-[9px] font-mono font-bold text-gray-800 mt-1">AUTH-99A8F7D2</span>
-              </div>
-
-              <p class="text-[10px] text-gray-500">Scan at Cinema Turnstile Gate for instant admission.</p>
-            </div>
-          </div>
-
-          <!-- Ticket Actions -->
-          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button onclick="window.print()" class="px-5 py-2.5 rounded-full bg-white text-charcoal font-bold text-xs hover:bg-lilac transition-all">
-              🖨️ Print / Save Ticket
-            </button>
-            <button onclick="closeBookingModal(); openMyBookingsModal();" class="px-5 py-2.5 rounded-full bg-white/10 text-white border border-white/20 font-bold text-xs hover:bg-white/20 transition-all">
-              🎟️ View All My Bookings
-            </button>
-            <button onclick="closeBookingModal()" class="px-5 py-2.5 rounded-full bg-lilac/20 text-lilac font-bold text-xs hover:bg-lilac/30 transition-all">
-              Done
-            </button>
-          </div>
-
-        </div>
-
+      <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
+        <a href="/" class="text-charcoal hover:underline">Now Showing</a>
+        <a href="/concessions" class="hover:text-charcoal transition-colors">Gourmet Food</a>
+        <a href="/my-tickets" class="hover:text-charcoal transition-colors">My Passes</a>
+        <a href="/usher" class="hover:text-charcoal transition-colors">Gate Scanner</a>
+        <a href="/admin" class="text-lilacDark hover:underline">Manager BI</a>
+        <a href="/docs" class="hover:text-charcoal transition-colors">Docs</a>
+        <a href="/metrics" target="_blank" class="text-slateText hover:text-charcoal">/metrics</a>
       </div>
+    </footer>
 
-    </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 6. "MY BOOKINGS" & TICKET WALLET MODAL                                     -->
-  <!-- ========================================================================= -->
-  <div id="my-bookings-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="bg-charcoalDark border border-white/15 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-      
-      <div class="p-5 border-b border-white/10 flex items-center justify-between bg-charcoal/60">
-        <div>
-          <h3 class="text-lg font-black text-white flex items-center gap-2">
-            <span>🎟️</span>
-            <span>My Bookings &amp; Digital Passes</span>
-          </h3>
-          <p class="text-xs text-gray-400">View upcoming tickets, download passes, or request refunds.</p>
-        </div>
-        <button onclick="closeMyBookingsModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white flex items-center justify-center text-sm font-bold transition-all">
-          ✕
-        </button>
-      </div>
-
-      <div class="p-5 overflow-y-auto flex-1 space-y-4" id="my-bookings-list">
-        <!-- Rendered dynamically via JS -->
-      </div>
-
-      <div class="p-4 bg-charcoal/40 border-t border-white/10 flex items-center justify-between text-xs text-gray-400">
-        <span>Cinema Policy: 10% cancellation charge applies to refunds.</span>
-        <button onclick="closeMyBookingsModal()" class="px-4 py-1.5 rounded-full bg-white/10 text-white font-bold hover:bg-white/20">Close</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- 7. VIDEO TRAILER MODAL                                                     -->
-  <!-- ========================================================================= -->
-  <div id="trailer-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="w-full max-w-3xl bg-black rounded-3xl overflow-hidden border border-white/20 shadow-2xl relative">
-      <div class="p-4 flex items-center justify-between bg-charcoal border-b border-white/10">
-        <h4 id="trailer-modal-title" class="text-sm font-bold text-white">Movie Trailer</h4>
-        <button onclick="closeTrailerModal()" class="text-gray-400 hover:text-white text-sm font-bold">✕ Close</button>
-      </div>
-      <div class="aspect-video w-full bg-black">
-        <iframe id="trailer-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- 8. HIDDEN BACKEND / DISCREET DEVELOPER CONSOLE DRAWER                      -->
-  <!-- ========================================================================= -->
-  <div id="dev-console-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-charcoalDark border border-white/20 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-      
-      <div class="p-5 border-b border-white/10 flex items-center justify-between bg-charcoal">
-        <div class="flex items-center gap-2.5">
-          <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-          <div>
-            <h3 class="text-sm font-black text-white uppercase tracking-wider">DBMS Engine Telemetry &amp; Developer Console</h3>
-            <p class="text-[11px] text-gray-400">ACID Isolation, OCC Locks, EXPLAIN QUERY PLAN, Turnaround Buffers &amp; Audit Trail</p>
-          </div>
-        </div>
-        <button onclick="closeDevConsole()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
-      </div>
-
-      <!-- Dev Tabs -->
-      <div class="flex items-center gap-2 p-3 bg-white/5 border-b border-white/10 overflow-x-auto text-xs font-bold">
-        <button onclick="setDevTab('occ')" id="dev-tab-occ" class="px-4 py-1.5 rounded-full bg-white text-charcoal">OCC Concurrency Simulator</button>
-        <button onclick="setDevTab('explain')" id="dev-tab-explain" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white">EXPLAIN QUERY PLAN</button>
-        <button onclick="setDevTab('buffers')" id="dev-tab-buffers" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white">15m Turnaround Buffers</button>
-        <button onclick="setDevTab('audit')" id="dev-tab-audit" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white">Audit Event Log</button>
-        <a href="/metrics" target="_blank" class="px-4 py-1.5 rounded-full text-lilac border border-lilac/30 hover:bg-lilac/10 ml-auto flex items-center gap-1">
-          <span>Prometheus /metrics</span> &rarr;
-        </a>
-      </div>
-
-      <div class="p-6 overflow-y-auto flex-1 space-y-6 text-xs text-gray-300">
-        
-        <!-- OCC Panel -->
-        <div id="dev-panel-occ" class="space-y-4">
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <h4 class="text-sm font-bold text-white mb-2">Simulate Race Condition (2 Users Grabbing Same Seat)</h4>
-            <p class="text-gray-400 mb-3">Dispatches 2 parallel threads simultaneously targeting Seat #1. Demonstrates Optimistic Concurrency Control using version_id verification.</p>
-            <button onclick="runOCCSimulation()" class="px-5 py-2 rounded-full bg-lilac text-charcoal font-black text-xs hover:bg-white transition-all">
-              ⚡ Execute OCC Race Simulation
-            </button>
-            <div id="occ-result-box" class="mt-4 p-4 rounded-xl bg-charcoal border border-white/10 hidden font-mono text-[11px] space-y-1"></div>
-          </div>
-        </div>
-
-        <!-- EXPLAIN Panel -->
-        <div id="dev-panel-explain" class="hidden space-y-4">
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-sm font-bold text-white">SQLite B-Tree Query Optimizer Execution Plan</h4>
-              <button onclick="loadExplainPlan()" class="text-xs text-lilac hover:underline font-bold">Refresh Plan</button>
-            </div>
-            <div id="explain-steps-box" class="space-y-2 font-mono text-[11px]"></div>
-          </div>
-        </div>
-
-        <!-- Buffers Panel -->
-        <div id="dev-panel-buffers" class="hidden space-y-4">
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <h4 class="text-sm font-bold text-white mb-2">15-Minute Turnaround Clean-down Buffer Enforcement</h4>
-            <p class="text-gray-400 mb-3">Enforced automatically by database trigger <code class="text-lilac">trg_prevent_screen_overlap_insert</code>.</p>
-            <div id="timeline-schedule-box" class="space-y-3"></div>
-          </div>
-        </div>
-
-        <!-- Audit Panel -->
-        <div id="dev-panel-audit" class="hidden space-y-4">
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <h4 class="text-sm font-bold text-white mb-2">Immutable Audit Event Sourcing Trail</h4>
-            <div id="audit-table-box" class="overflow-x-auto mt-2"></div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- 9. CONSUMER FOOTER (CLEAN & PROFESSIONAL)                                  -->
-  <!-- ========================================================================= -->
-  <footer class="border-t border-white/10 bg-charcoalDark/80 py-8 px-4 md:px-8 mt-16 text-xs text-gray-500">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center font-black text-sm">
-          🎬
-        </div>
-        <div>
-          <span class="font-black text-white tracking-wider uppercase">AURA LUXE CINEMAS</span>
-          <p class="text-[10px] text-gray-500">&copy; 2026 Aura Entertainment Ltd. All Rights Reserved.</p>
-        </div>
-      </div>
-
-      <!-- Consumer Footer Links -->
-      <div class="flex flex-wrap items-center justify-center gap-6 text-gray-400 font-medium">
-        <a href="#movies-section" class="hover:text-white transition-colors">Movies</a>
-        <a href="/concessions" class="hover:text-white transition-colors">Gourmet Food</a>
-        <a href="/my-tickets" class="hover:text-white transition-colors">My Tickets</a>
-        <a href="/usher" class="hover:text-white transition-colors">Gate Scanner</a>
-        <a href="/admin" class="hover:text-lilac transition-colors">Cinema Manager &amp; BI</a>
-        <a href="/docs" class="hover:text-white transition-colors">Project 65 Docs</a>
-        <span class="text-gray-700">|</span>
-        <!-- Discreet Developer Toggle (Backend hidden from main view) -->
-        <button onclick="openDevConsole()" class="text-gray-500 hover:text-lilac flex items-center gap-1.5 transition-colors">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          <span>Engine Status: Operational &bull; Developer Mode ⚙️</span>
-        </button>
-      </div>
-
-    </div>
-  </footer>
-
-  <!-- ========================================================================= -->
-  <!-- 10. JAVASCRIPT APP LOGIC (CONSUMER FRONTEND + ROBUST BACKEND INTEGRATION)   -->
+  <!-- JAVASCRIPT LOGIC                                                           -->
   <!-- ========================================================================= -->
   <script>
-    // Global State
     let allMovies = [];
     let allScreenings = [];
-    let allConcessions = [];
-    let currentHeroIndex = 0;
-    let selectedMovie = null;
-    let selectedScreening = null;
-    let selectedDate = '2026-10-04';
-    let selectedSeats = []; // [{seat_id, row_label, seat_number, price}]
-    let selectedConcessions = {}; // item_id -> { item_name, unit_price, quantity }
-    let appliedPromo = null;
-    let socket = null;
-    const CUSTOMER_ID = 2; // Default logged in consumer
+    let selectedGenre = 'ALL';
 
-    // Initialization
     window.addEventListener('DOMContentLoaded', async () => {
-      await loadInitialData();
-      updateBookingBadge();
-      initHeroAutoRotate();
-    });
-
-    async function loadInitialData() {
       try {
-        const [moviesRes, screeningsRes, concessionsRes] = await Promise.all([
+        const [moviesRes, scrRes] = await Promise.all([
           fetch('/api/movies'),
-          fetch('/api/screenings'),
-          fetch('/api/concessions')
+          fetch('/api/screenings')
         ]);
         allMovies = await moviesRes.json();
-        allScreenings = await screeningsRes.json();
-        allConcessions = await concessionsRes.json();
-
-        renderHeroSpotlight(0);
-        renderHeroSwitcher();
+        allScreenings = await scrRes.json();
         renderMoviesGrid(allMovies);
-      } catch (err) {
-        console.error("Failed to load cinema data:", err);
+      } catch (e) {
+        console.error("Failed to load movie data:", e);
       }
-    }
+    });
 
-    // ---------------------------------------------------------------------------
-    // HERO SPOTLIGHT CONTROLLER
-    // ---------------------------------------------------------------------------
-    function renderHeroSpotlight(index) {
-      if (!allMovies || allMovies.length === 0) return;
-      currentHeroIndex = index % allMovies.length;
-      const movie = allMovies[currentHeroIndex];
-
-      document.getElementById('hero-title').innerText = movie.title;
-      document.getElementById('hero-tagline').innerText = `"${movie.tagline}"`;
-      document.getElementById('hero-synopsis').innerText = movie.synopsis;
-      document.getElementById('hero-badge').innerText = movie.badge;
-      document.getElementById('hero-rating-badge').innerText = `${movie.rating} • ${movie.duration_minutes} min`;
-      document.getElementById('hero-score').innerText = `★ ${movie.imdb_score} IMDb`;
-      document.getElementById('hero-genre').innerText = `${movie.genre} • ${movie.language}`;
-      
-      const backdrop = document.getElementById('hero-backdrop');
-      backdrop.style.backgroundImage = `url('${movie.backdrop}')`;
-
-      document.getElementById('hero-book-btn').onclick = () => openBookingModalForMovie(movie.movie_id);
-      document.getElementById('hero-trailer-btn').onclick = () => openTrailerModal(movie.title, movie.trailer_url);
-    }
-
-    function renderHeroSwitcher() {
-      const container = document.getElementById('hero-switcher-list');
-      container.innerHTML = allMovies.map((m, idx) => `
-        <button onclick="renderHeroSpotlight(${idx})" class="w-16 h-22 sm:w-20 sm:h-28 rounded-xl overflow-hidden border-2 ${idx === currentHeroIndex ? 'border-lilac shadow-lg scale-105' : 'border-white/20 opacity-70 hover:opacity-100'} transition-all flex-shrink-0 group">
-          <img src="${m.poster}" alt="${m.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-        </button>
-      `).join('');
-    }
-
-    function initHeroAutoRotate() {
-      setInterval(() => {
-        if (!document.getElementById('booking-modal').classList.contains('hidden')) return;
-        renderHeroSpotlight(currentHeroIndex + 1);
-        renderHeroSwitcher();
-      }, 9000);
-    }
-
-    // ---------------------------------------------------------------------------
-    // MOVIE CATALOG & FILTERING
-    // ---------------------------------------------------------------------------
     function renderMoviesGrid(movies) {
       const grid = document.getElementById('movies-grid');
-      if (movies.length === 0) {
-        grid.innerHTML = '<div class="col-span-full py-12 text-center text-gray-500">No movies found matching criteria.</div>';
+      if (!movies || movies.length === 0) {
+        grid.innerHTML = '<div class="col-span-full py-12 text-center text-slateText">No movies match the selected filters.</div>';
         return;
       }
 
       grid.innerHTML = movies.map(m => `
-        <div class="bg-charcoalDark border border-white/10 rounded-2xl overflow-hidden hover:border-lilac/50 hover:shadow-xl transition-all group flex flex-col justify-between">
-          <a href="/movie?id=${m.movie_id}" class="relative aspect-[2/3] overflow-hidden bg-charcoal block cursor-pointer">
+        <div class="bg-white border border-gray-200/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-gray-300 transition-all group flex flex-col justify-between">
+          <a href="/movie?id=${m.movie_id}" class="relative aspect-[2/3] overflow-hidden bg-panel block cursor-pointer">
             <img src="${m.poster}" alt="${m.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-charcoalDark/80 text-white backdrop-blur-md border border-white/20">
+            <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-white/95 text-charcoal shadow-sm">
               ${m.badge}
             </span>
-            <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-black bg-amber-500 text-charcoal">
+            <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-200 shadow-sm">
               ★ ${m.imdb_score}
             </span>
           </a>
 
-          <div class="p-3.5 space-y-2 flex-1 flex flex-col justify-between">
+          <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
             <div>
-              <a href="/movie?id=${m.movie_id}" class="font-black text-white text-sm line-clamp-1 hover:text-lilac transition-colors block">${m.title}</a>
-              <p class="text-[11px] text-gray-400 mt-0.5">${m.genre}</p>
-              <p class="text-[10px] text-gray-500">${m.language} • ${m.duration_minutes} min</p>
+              <a href="/movie?id=${m.movie_id}" class="font-black text-charcoal text-sm sm:text-base line-clamp-1 hover:text-lilacDark transition-colors block">
+                ${m.title}
+              </a>
+              <p class="text-xs text-slateText mt-0.5">${m.genre}</p>
+              <p class="text-[11px] text-gray-400 mt-0.5">${m.language} • ${m.duration_minutes} min</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 pt-1">
-              <a href="/movie?id=${m.movie_id}" class="py-2 text-center rounded-xl bg-white/5 border border-white/10 text-gray-300 font-bold text-xs hover:bg-white/10 hover:text-white transition-all">
+            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+              <a href="/movie?id=${m.movie_id}" class="py-2 text-center rounded-full bg-panel border border-panelBorder text-charcoal font-bold text-xs hover:bg-gray-200/70 transition-all">
                 Details
               </a>
-              <button onclick="openBookingModalForMovie(${m.movie_id})" class="py-2 rounded-xl bg-white text-charcoal font-black text-xs hover:bg-lilac transition-all shadow-sm">
+              <a href="/booking?screening_id=${getDefaultScreeningId(m.movie_id)}" class="py-2 text-center rounded-full bg-charcoal text-white hover:bg-black font-black text-xs shadow-sm transition-all">
                 Book
-              </button>
+              </a>
             </div>
           </div>
         </div>
       `).join('');
+    }
+
+    function getDefaultScreeningId(movieId) {
+      const show = allScreenings.find(s => s.movie_id === movieId);
+      return show ? show.screening_id : 1;
+    }
+
+    function setGenreFilter(genre) {
+      selectedGenre = genre;
+      ['ALL', 'Sci-Fi', 'Drama', 'Action'].forEach(g => {
+        const btn = document.getElementById(`genre-${g}`);
+        if (btn) {
+          if (g === genre) {
+            btn.className = "px-3.5 py-1.5 rounded-full bg-charcoal text-white transition-all shadow-sm";
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all";
+          }
+        }
+      });
+      filterMovies();
     }
 
     function filterMovies() {
       const q = document.getElementById('movie-search').value.toLowerCase();
-      const filtered = allMovies.filter(m => 
-        m.title.toLowerCase().includes(q) || 
-        m.genre.toLowerCase().includes(q) ||
-        m.language.toLowerCase().includes(q)
-      );
+      const filtered = allMovies.filter(m => {
+        const matchesQuery = m.title.toLowerCase().includes(q) || m.genre.toLowerCase().includes(q);
+        const matchesGenre = (selectedGenre === 'ALL') || m.genre.includes(selectedGenre);
+        return matchesQuery && matchesGenre;
+      });
       renderMoviesGrid(filtered);
     }
 
-    function setGenreFilter(genre) {
-      ['ALL', 'Sci-Fi', 'Drama', 'Action'].forEach(g => {
-        const btn = document.getElementById(`genre-${g}`);
-        if (!btn) return;
-        if (g === genre) {
-          btn.className = "px-3.5 py-1.5 rounded-full bg-white text-charcoal transition-all";
-        } else {
-          btn.className = "px-3.5 py-1.5 rounded-full text-gray-400 hover:text-white transition-all";
-        }
-      });
-
-      if (genre === 'ALL') {
-        renderMoviesGrid(allMovies);
-      } else {
-        renderMoviesGrid(allMovies.filter(m => m.genre.includes(genre)));
+    function filterScreeningsByDate(dStr) {
+      // Find show on this date
+      const show = allScreenings.find(s => s.show_date === dStr);
+      if (show) {
+        window.location.href = `/movie?id=${show.movie_id}`;
       }
-    }
-
-    // ---------------------------------------------------------------------------
-    // BOOKING FLOW (STEP 1: SHOWTIMES)
-    // ---------------------------------------------------------------------------
-    function openBookingModalForMovie(movieId) {
-      selectedMovie = allMovies.find(m => m.movie_id === movieId) || allMovies[0];
-      selectedSeats = [];
-      selectedConcessions = {};
-      appliedPromo = null;
-
-      // Extract unique dates for this movie
-      const movieDates = Array.from(new Set(
-        allScreenings.filter(s => s.movie_id === selectedMovie.movie_id).map(s => s.show_date)
-      )).sort();
-      
-      // Default to first available date or today
-      if (movieDates.length > 0 && !movieDates.includes(selectedDate)) {
-        selectedDate = movieDates[0];
-      }
-
-      document.getElementById('modal-movie-title').innerText = selectedMovie.title;
-      document.getElementById('modal-movie-meta').innerText = `${selectedMovie.genre} • ${selectedMovie.duration_minutes} min • ${selectedMovie.rating}`;
-      document.getElementById('modal-movie-poster').style.backgroundImage = `url('${selectedMovie.poster}')`;
-
-      goToStep(1);
-      renderDateTabs();
-      renderScreeningsForMovieAndDate();
-      document.getElementById('booking-modal').classList.remove('hidden');
-    }
-
-    function renderDateTabs() {
-      const container = document.getElementById('showtime-date-tabs');
-      if (!container) return;
-
-      // Extract all unique dates from all screenings
-      const allDates = Array.from(new Set(allScreenings.map(s => s.show_date))).sort();
-      if (allDates.length === 0) return;
-
-      if (!allDates.includes(selectedDate)) {
-        selectedDate = allDates[0];
-      }
-
-      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
-      container.innerHTML = allDates.map((dStr, idx) => {
-        const isSelected = (dStr === selectedDate);
-        const parts = dStr.split('-');
-        const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-        const dayLabel = idx === 0 ? 'TODAY' : days[dateObj.getDay()];
-        const monthDay = `${months[dateObj.getMonth()]} ${parts[2]}`;
-
-        const countForMovie = allScreenings.filter(s => s.movie_id === selectedMovie.movie_id && s.show_date === dStr).length;
-
-        const btnClass = isSelected
-          ? "px-4 py-2.5 rounded-2xl bg-white text-charcoal font-black text-xs flex flex-col items-center min-w-[78px] shadow-lg border-2 border-lilac scale-105 transition-all"
-          : "px-4 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-300 font-bold text-xs flex flex-col items-center min-w-[78px] border border-white/10 transition-all";
-
-        const subClass = isSelected ? "text-[10px] uppercase font-bold text-charcoal/70" : "text-[10px] uppercase font-semibold text-gray-400";
-        const mainClass = isSelected ? "text-sm font-black text-charcoal" : "text-sm font-black text-white";
-
-        return `
-          <button onclick="selectDateTab('${dStr}')" class="${btnClass}">
-            <span class="${subClass}">${dayLabel}</span>
-            <span class="${mainClass}">${monthDay}</span>
-            <span class="text-[9px] mt-0.5 ${isSelected ? 'text-charcoal/60' : 'text-gray-500'} font-semibold">${countForMovie} shows</span>
-          </button>
-        `;
-      }).join('');
-    }
-
-    function selectDateTab(dateStr) {
-      selectedDate = dateStr;
-      renderDateTabs();
-      renderScreeningsForMovieAndDate();
-    }
-
-    function renderScreeningsForMovieAndDate() {
-      const list = document.getElementById('screenings-list');
-      // Filter by BOTH movie_id AND selectedDate
-      const movieScreenings = allScreenings.filter(s => 
-        s.movie_id === selectedMovie.movie_id && s.show_date === selectedDate
-      );
-
-      if (movieScreenings.length === 0) {
-        list.innerHTML = `
-          <div class="p-8 text-center bg-white/5 border border-white/10 rounded-2xl space-y-2">
-            <span class="text-3xl">📅</span>
-            <h4 class="text-sm font-black text-white">No Showtimes on ${selectedDate}</h4>
-            <p class="text-xs text-gray-400">There are no screenings scheduled for ${selectedMovie.title} on this date.</p>
-            <p class="text-xs text-lilac font-medium">Please pick another date from the tabs above.</p>
-          </div>
-        `;
-        return;
-      }
-
-      // Group by cinema
-      const cinemas = {};
-      movieScreenings.forEach(s => {
-        if (!cinemas[s.cinema_name]) cinemas[s.cinema_name] = [];
-        cinemas[s.cinema_name].push(s);
-      });
-
-      list.innerHTML = Object.entries(cinemas).map(([cinemaName, scrList]) => `
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3 hover:border-white/20 transition-all">
-          <div class="flex items-center justify-between">
-            <h4 class="font-black text-white text-sm flex items-center gap-2">
-              <span>📍</span>
-              <span>${cinemaName}</span>
-            </h4>
-            <span class="text-[10px] text-lilac font-bold px-2 py-0.5 rounded bg-lilac/10 border border-lilac/20">Dolby Atmos &bull; 4K Laser</span>
-          </div>
-
-          <div class="flex flex-wrap gap-2.5">
-            ${scrList.map(s => `
-              <button onclick="selectScreeningShowtime(${s.screening_id})" class="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-lilac hover:text-charcoal text-left group transition-all">
-                <div class="text-xs font-black text-white group-hover:text-charcoal">${s.start_time}</div>
-                <div class="text-[10px] text-gray-400 group-hover:text-charcoal/80 font-medium">${s.screen_type} &bull; ₹${s.ticket_price}</div>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function selectScreeningShowtime(screeningId) {
-      selectedScreening = allScreenings.find(s => s.screening_id === screeningId);
-      if (!selectedScreening) return;
-
-      document.getElementById('seat-hall-label').innerText = `${selectedScreening.cinema_name} • Screen ${selectedScreening.screen_number} (${selectedScreening.screen_type})`;
-      document.getElementById('seat-time-label').innerText = `${selectedScreening.show_date} at ${selectedScreening.start_time}`;
-
-      // Open WebSocket for live locking
-      connectScreeningWebSocket(screeningId);
-
-      // Load seats
-      await loadSeatingLayout(screeningId);
-      goToStep(2);
-    }
-
-    // ---------------------------------------------------------------------------
-    // BOOKING FLOW (STEP 2: SEATS MATRIX)
-    // ---------------------------------------------------------------------------
-    async function loadSeatingLayout(screeningId) {
-      const container = document.getElementById('seat-grid-container');
-      container.innerHTML = '<div class="py-8 text-gray-400 text-xs">Loading auditorium seating layout...</div>';
-
-      try {
-        const res = await fetch(`/api/screening/${screeningId}/seats`);
-        const data = await res.json();
-        const seats = data.seats || [];
-
-        // Group seats by row
-        const rows = {};
-        seats.forEach(s => {
-          if (!rows[s.row_label]) rows[s.row_label] = [];
-          rows[s.row_label].push(s);
-        });
-
-        container.innerHTML = Object.entries(rows).map(([rowLabel, rowSeats]) => `
-          <div class="flex items-center gap-2">
-            <span class="w-5 text-center text-xs font-black text-gray-400">${rowLabel}</span>
-            <div class="flex items-center gap-1.5">
-              ${rowSeats.map(s => {
-                let seatStyle = "bg-white/20 border-white/30 text-gray-300 hover:bg-white hover:text-charcoal cursor-pointer";
-                let disabled = false;
-                let lockIcon = "";
-
-                if (s.is_booked) {
-                  seatStyle = "bg-white/5 border-transparent text-gray-600 opacity-20 cursor-not-allowed";
-                  disabled = true;
-                } else if (s.is_locked_realtime) {
-                  seatStyle = "bg-amber-500/30 border-amber-500/80 text-amber-300 cursor-not-allowed";
-                  disabled = true;
-                  lockIcon = "🔒";
-                } else if (selectedSeats.some(sel => sel.seat_id === s.seat_id)) {
-                  seatStyle = "bg-lilac border-white text-charcoal font-black shadow-md seat-selected";
-                }
-
-                return `
-                  <button id="seat-btn-${s.seat_id}" onclick="toggleSeatSelection(${s.seat_id}, '${s.row_label}', ${s.seat_number}, ${s.base_price})" 
-                          ${disabled ? 'disabled' : ''} 
-                          title="Row ${s.row_label} Seat ${s.seat_number} (₹${s.base_price})"
-                          class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border text-[10px] font-bold flex items-center justify-center transition-all ${seatStyle}">
-                    ${lockIcon || s.seat_number}
-                  </button>
-                `;
-              }).join('')}
-            </div>
-            <span class="w-5 text-center text-xs font-black text-gray-400">${rowLabel}</span>
-          </div>
-        `).join('');
-
-        updateSeatTray();
-      } catch (err) {
-        container.innerHTML = '<div class="py-8 text-rose-400 text-xs">Failed to load seat layout.</div>';
-      }
-    }
-
-    function toggleSeatSelection(seatId, rowLabel, seatNumber, price) {
-      const idx = selectedSeats.findIndex(s => s.seat_id === seatId);
-      const btn = document.getElementById(`seat-btn-${seatId}`);
-
-      if (idx >= 0) {
-        selectedSeats.splice(idx, 1);
-        if (btn) {
-          btn.className = "w-7 h-7 sm:w-8 sm:h-8 rounded-lg border text-[10px] font-bold flex items-center justify-center transition-all bg-white/20 border-white/30 text-gray-300 hover:bg-white hover:text-charcoal cursor-pointer";
-        }
-        // Send unlock over WebSocket
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({ action: "RELEASE_SEAT", seat_id: seatId }));
-        }
-      } else {
-        selectedSeats.push({ seat_id: seatId, row_label: rowLabel, seat_number: seatNumber, price: price });
-        if (btn) {
-          btn.className = "w-7 h-7 sm:w-8 sm:h-8 rounded-lg border text-[10px] font-bold flex items-center justify-center transition-all bg-lilac border-white text-charcoal font-black shadow-md seat-selected";
-        }
-        // Broadcast lock over WebSocket
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({ action: "LOCK_SEAT", seat_id: seatId, user: "Abhinav" }));
-        }
-      }
-
-      updateSeatTray();
-    }
-
-    function updateSeatTray() {
-      const count = selectedSeats.length;
-      document.getElementById('tray-seat-count').innerText = count;
-      const proceedBtn = document.getElementById('btn-proceed-to-snacks');
-      proceedBtn.disabled = count === 0;
-
-      const labelsDiv = document.getElementById('tray-seat-labels');
-      if (count === 0) {
-        labelsDiv.innerHTML = '<span class="text-xs text-gray-500 italic">None selected</span>';
-        document.getElementById('tray-total-price').innerText = '₹0.00';
-      } else {
-        labelsDiv.innerHTML = selectedSeats.map(s => `
-          <span class="px-2 py-0.5 rounded-md bg-lilac/20 text-lilac font-black text-xs border border-lilac/30">
-            ${s.row_label}${s.seat_number}
-          </span>
-        `).join('');
-
-        const total = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-        document.getElementById('tray-total-price').innerText = `₹${total.toFixed(2)}`;
-      }
-    }
-
-    // ---------------------------------------------------------------------------
-    // BOOKING FLOW (STEP 3: CONCESSIONS)
-    // ---------------------------------------------------------------------------
-    function renderConcessionsList() {
-      const grid = document.getElementById('concessions-grid');
-      grid.innerHTML = allConcessions.map(c => {
-        const qty = selectedConcessions[c.item_id]?.quantity || 0;
-        const icon = c.category === 'Popcorn' ? '🍿' : (c.category === 'Beverage' ? '🥤' : '🍔');
-        return `
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 flex items-center justify-between hover:border-white/20 transition-all">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-white/10 text-white flex items-center justify-center text-lg">
-                ${icon}
-              </div>
-              <div>
-                <h5 class="text-xs font-bold text-white">${c.item_name}</h5>
-                <p class="text-[10px] text-gray-400 font-semibold">₹${c.unit_price} &bull; ${c.category}</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button onclick="changeConcessionQty(${c.item_id}, -1)" class="w-7 h-7 rounded-lg bg-white/10 text-white hover:bg-white/20 flex items-center justify-center font-bold text-xs">-</button>
-              <span id="conc-qty-${c.item_id}" class="w-6 text-center text-xs font-black text-white">${qty}</span>
-              <button onclick="changeConcessionQty(${c.item_id}, 1)" class="w-7 h-7 rounded-lg bg-lilac text-charcoal hover:bg-white flex items-center justify-center font-bold text-xs">+</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-      updateConcessionsTray();
-    }
-
-    function changeConcessionQty(itemId, delta) {
-      const item = allConcessions.find(c => c.item_id === itemId);
-      if (!item) return;
-
-      const current = selectedConcessions[itemId]?.quantity || 0;
-      const next = Math.max(0, current + delta);
-
-      if (next === 0) {
-        delete selectedConcessions[itemId];
-      } else {
-        selectedConcessions[itemId] = {
-          item_name: item.item_name,
-          unit_price: item.unit_price,
-          quantity: next
-        };
-      }
-
-      const label = document.getElementById(`conc-qty-${itemId}`);
-      if (label) label.innerText = next;
-      updateConcessionsTray();
-    }
-
-    function updateConcessionsTray() {
-      let total = 0;
-      let count = 0;
-      Object.values(selectedConcessions).forEach(c => {
-        total += c.unit_price * c.quantity;
-        count += c.quantity;
-      });
-      document.getElementById('fnb-tray-summary').innerText = `₹${total.toFixed(2)} (${count} items)`;
-    }
-
-    // ---------------------------------------------------------------------------
-    // BOOKING FLOW (STEP 4: CHECKOUT)
-    // ---------------------------------------------------------------------------
-    function renderCheckoutSummary() {
-      document.getElementById('summary-movie-title').innerText = selectedMovie.title;
-      document.getElementById('summary-seat-count').innerText = `${selectedSeats.length} Seats`;
-      document.getElementById('summary-screening-details').innerText = `${selectedScreening.cinema_name} • ${selectedScreening.screen_type}`;
-      document.getElementById('summary-seats-list').innerText = selectedSeats.map(s => `${s.row_label}${s.seat_number}`).join(', ');
-
-      const tktSubtotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      let fnbSubtotal = 0;
-      Object.values(selectedConcessions).forEach(c => fnbSubtotal += (c.unit_price * c.quantity));
-
-      document.getElementById('summary-ticket-subtotal').innerText = `₹${tktSubtotal.toFixed(2)}`;
-      document.getElementById('summary-fnb-subtotal').innerText = `₹${fnbSubtotal.toFixed(2)}`;
-
-      let discount = 0;
-      if (appliedPromo) {
-        if (appliedPromo.code === 'LUXE20') {
-          discount = Math.round(tktSubtotal * 0.20);
-        } else if (appliedPromo.code === 'DBMS50') {
-          discount = Math.min(50, tktSubtotal);
-        }
-        document.getElementById('promo-discount-row').classList.remove('hidden');
-        document.getElementById('summary-discount-amt').innerText = `-₹${discount.toFixed(2)}`;
-      } else {
-        document.getElementById('promo-discount-row').classList.add('hidden');
-      }
-
-      const grandTotal = Math.max(0, tktSubtotal + fnbSubtotal - discount);
-      document.getElementById('summary-grand-total').innerText = `₹${grandTotal.toFixed(2)}`;
-    }
-
-    function quickPromo(code) {
-      document.getElementById('promo-code-input').value = code;
-      applyPromoCode();
-    }
-
-    function applyPromoCode() {
-      const code = document.getElementById('promo-code-input').value.trim().toUpperCase();
-      const statusMsg = document.getElementById('promo-status-msg');
-      statusMsg.classList.remove('hidden');
-
-      if (code === 'LUXE20') {
-        appliedPromo = { code: 'LUXE20', desc: '20% Off Tickets Applied!' };
-        statusMsg.className = 'text-[11px] text-emerald-400 font-bold mt-1.5';
-        statusMsg.innerText = '✓ Promo Code LUXE20 Applied! 20% discount granted.';
-      } else if (code === 'DBMS50') {
-        appliedPromo = { code: 'DBMS50', desc: 'Flat ₹50 Off Applied!' };
-        statusMsg.className = 'text-[11px] text-emerald-400 font-bold mt-1.5';
-        statusMsg.innerText = '✓ Promo Code DBMS50 Applied! ₹50 discount granted.';
-      } else {
-        appliedPromo = null;
-        statusMsg.className = 'text-[11px] text-rose-400 font-bold mt-1.5';
-        statusMsg.innerText = '✗ Invalid promo code. Try LUXE20 or DBMS50.';
-      }
-      renderCheckoutSummary();
-    }
-
-    async function submitBookingOrder() {
-      const btn = document.getElementById('btn-confirm-pay');
-      btn.disabled = true;
-      btn.innerHTML = '<span>⏳</span><span>Processing ACID Transaction...</span>';
-
-      try {
-        const seatIds = selectedSeats.map(s => s.seat_id);
-        const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'UPI';
-        const idempotencyKey = `aura-bkg-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-
-        // 1. Submit Ticket Booking to FastAPI backend
-        const bookPayload = {
-          screening_id: selectedScreening.screening_id,
-          seat_ids: seatIds,
-          customer_id: CUSTOMER_ID,
-          payment_method: paymentMethod,
-          promo_code: appliedPromo ? appliedPromo.code : null
-        };
-
-        const res = await fetch('/api/book-tickets', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Idempotency-Key': idempotencyKey
-          },
-          body: JSON.stringify(bookPayload)
-        });
-
-        if (!res.ok) {
-          const errData = await res.json();
-          throw new Error(errData.detail || 'Booking failed');
-        }
-
-        const bookingResult = await res.json();
-
-        // 2. Submit F&B Concessions if any selected
-        const concItems = Object.entries(selectedConcessions).map(([id, item]) => ({
-          item_id: parseInt(id),
-          quantity: item.quantity
-        }));
-
-        if (concItems.length > 0) {
-          await fetch('/api/order-concessions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              customer_id: CUSTOMER_ID,
-              booking_id: bookingResult.booking_id,
-              items: concItems,
-              payment_method: paymentMethod
-            })
-          });
-        }
-
-        // 3. Render Confirmed Ticket Pass (Step 5)
-        renderDigitalTicketPass(bookingResult);
-        goToStep(5);
-        updateBookingBadge();
-
-      } catch (err) {
-        alert(`Booking Error: ${err.message}`);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<span>🔒</span><span>Confirm &amp; Pay Now</span>';
-      }
-    }
-
-    function renderDigitalTicketPass(bkg) {
-      document.getElementById('ticket-movie-title').innerText = selectedMovie.title;
-      document.getElementById('ticket-cinema-screen').innerText = `${selectedScreening.cinema_name} • Screen ${selectedScreening.screen_number} (${selectedScreening.screen_type})`;
-      document.getElementById('ticket-datetime').innerText = `${selectedScreening.show_date} • ${selectedScreening.start_time}`;
-      document.getElementById('ticket-seats').innerText = selectedSeats.map(s => `${s.row_label}${s.seat_number}`).join(', ');
-      document.getElementById('ticket-booking-id').innerText = `#${bkg.booking_id}`;
-      document.getElementById('ticket-txn-id').innerText = bkg.transaction_reference;
-
-      // Draw SVG Barcode
-      const barcodeSvg = document.getElementById('ticket-barcode-svg');
-      let rects = '';
-      for (let i = 0; i < 40; i++) {
-        const w = (i % 3 === 0) ? 4 : (i % 2 === 0 ? 2 : 1);
-        const x = i * 5;
-        rects += `<rect x="${x}" y="0" width="${w}" height="40" fill="#231212" />`;
-      }
-      barcodeSvg.innerHTML = rects;
-
-      const firstTicket = (bkg.tickets && bkg.tickets[0]) ? bkg.tickets[0].barcode_hash : 'AUTH-VALID-OK';
-      document.getElementById('ticket-barcode-hash').innerText = `HASH: ${firstTicket}`;
-    }
-
-    // ---------------------------------------------------------------------------
-    // NAVIGATION & STEP CONTROLLER
-    // ---------------------------------------------------------------------------
-    function goToStep(stepNum) {
-      [1, 2, 3, 4, 5].forEach(s => {
-        const el = document.getElementById(`booking-step-${s}`);
-        const pill = document.getElementById(`step-pill-${s}`);
-        if (el) el.classList.toggle('hidden', s !== stepNum);
-        if (pill) {
-          if (s === stepNum) {
-            pill.className = "px-3 py-1 rounded-full bg-lilac text-charcoal font-black";
-          } else if (s < stepNum) {
-            pill.className = "px-3 py-1 rounded-full bg-white/20 text-white font-bold";
-          } else {
-            pill.className = "px-3 py-1 rounded-full bg-white/5 text-gray-500 font-medium";
-          }
-        }
-      });
-
-      if (stepNum === 3) renderConcessionsList();
-      if (stepNum === 4) renderCheckoutSummary();
-    }
-
-    function closeBookingModal() {
-      document.getElementById('booking-modal').classList.add('hidden');
-      if (socket) {
-        socket.close();
-        socket = null;
-      }
-    }
-
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // ---------------------------------------------------------------------------
-    // "MY BOOKINGS" MODAL
-    // ---------------------------------------------------------------------------
-    async function openMyBookingsModal() {
-      const modal = document.getElementById('my-bookings-modal');
-      const list = document.getElementById('my-bookings-list');
-      modal.classList.remove('hidden');
-      list.innerHTML = '<div class="text-center py-8 text-gray-400 text-xs">Fetching your active tickets &amp; history...</div>';
-
-      try {
-        const res = await fetch(`/api/customer/${CUSTOMER_ID}/bookings`);
-        const bookings = await res.json();
-
-        if (bookings.length === 0) {
-          list.innerHTML = `
-            <div class="text-center py-12 text-gray-400 space-y-3">
-              <span class="text-3xl">🎟️</span>
-              <p class="text-sm font-bold text-white">No active bookings found</p>
-              <p class="text-xs">Browse our Now Showing catalog and book your tickets today!</p>
-              <button onclick="closeMyBookingsModal(); scrollToSection('movies-section');" class="px-5 py-2 rounded-full bg-lilac text-charcoal font-black text-xs">Explore Movies</button>
-            </div>
-          `;
-          return;
-        }
-
-        list.innerHTML = bookings.map(b => {
-          const isCancelled = b.booking_status === 'Cancelled';
-          const badgeClass = isCancelled ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300';
-          return `
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4.5 space-y-3 hover:border-white/20 transition-all">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${badgeClass}">
-                    ${b.booking_status}
-                  </span>
-                  <h4 class="text-base font-black text-white mt-1">${b.movie_title}</h4>
-                  <p class="text-xs text-gray-400">${b.cinema_name} &bull; Screen ${b.screen_number} (${b.screen_type})</p>
-                </div>
-                <div class="text-right">
-                  <span class="text-[10px] text-gray-400 uppercase font-bold block">TOTAL PAID</span>
-                  <span class="text-sm font-black text-white">₹${b.total_amount}</span>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-gray-300 pt-2 border-t border-white/10">
-                <div>
-                  <span class="text-[10px] text-gray-500 block uppercase font-bold">Showtime</span>
-                  <span class="font-semibold text-white">${b.show_date} at ${b.start_time}</span>
-                </div>
-                <div>
-                  <span class="text-[10px] text-gray-500 block uppercase font-bold">Seats</span>
-                  <span class="font-bold text-lilac">${b.seat_labels.join(', ')}</span>
-                </div>
-                <div>
-                  <span class="text-[10px] text-gray-500 block uppercase font-bold">Booking ID</span>
-                  <span class="font-mono text-gray-300">#${b.booking_id}</span>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between pt-2 border-t border-white/10">
-                <span class="text-[10px] text-gray-500 font-mono">Ref: ${b.transaction_reference || 'N/A'}</span>
-                ${!isCancelled ? `
-                  <button onclick="requestBookingCancellation(${b.booking_id}, ${b.total_amount})" class="px-3 py-1 rounded-full text-xs font-semibold text-rose-400 hover:bg-rose-500/20 transition-all">
-                    Cancel &amp; Refund
-                  </button>
-                ` : '<span class="text-xs text-gray-500 italic">Refund Processed</span>'}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-      } catch (err) {
-        list.innerHTML = '<div class="text-center py-8 text-rose-400 text-xs">Failed to load bookings.</div>';
-      }
-    }
-
-    function closeMyBookingsModal() {
-      document.getElementById('my-bookings-modal').classList.add('hidden');
-    }
-
-    async function updateBookingBadge() {
-      try {
-        const res = await fetch(`/api/customer/${CUSTOMER_ID}/bookings`);
-        const data = await res.json();
-        const active = data.filter(b => b.booking_status !== 'Cancelled').length;
-        document.getElementById('nav-booking-badge').innerText = active;
-        const mob = document.getElementById('mobile-booking-badge');
-        if (mob) mob.innerText = active;
-      } catch (e) {}
-    }
-
-    async function requestBookingCancellation(bookingId, amount) {
-      const fee = (amount * 0.10).toFixed(2);
-      const refund = (amount - fee).toFixed(2);
-      const confirmCanc = confirm(`Cancel Booking #${bookingId}?\n\n• Original Amount: ₹${amount}\n• 10% Cancellation Fee: ₹${fee}\n• Instant Refund to UPI: ₹${refund}\n\nProceed?`);
-      if (!confirmCanc) return;
-
-      try {
-        const res = await fetch('/api/cancel-booking', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ booking_id: bookingId, reason: 'Customer plans changed' })
-        });
-        if (!res.ok) throw new Error('Cancellation failed');
-        alert(`✓ Booking #${bookingId} successfully cancelled! Refund of ₹${refund} credited to your account.`);
-        openMyBookingsModal();
-        updateBookingBadge();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    function openConcessionsDirect() {
-      // Direct shortcut from header
-      if (allMovies.length > 0) {
-        openBookingModalForMovie(allMovies[0].movie_id);
-        goToStep(3);
-      }
-    }
-
-    // ---------------------------------------------------------------------------
-    // TRAILER MODAL
-    // ---------------------------------------------------------------------------
-    function openTrailerModal(title = "Oppenheimer", url = "https://www.youtube.com/watch?v=uYPbbksJxIg") {
-      document.getElementById('trailer-modal-title').innerText = `${title} - Official Trailer`;
-      // Convert watch URL to embed URL
-      const embedUrl = url.includes('embed') ? url : url.replace('watch?v=', 'embed/');
-      document.getElementById('trailer-iframe').src = embedUrl;
-      document.getElementById('trailer-modal').classList.remove('hidden');
-    }
-
-    function closeTrailerModal() {
-      document.getElementById('trailer-iframe').src = '';
-      document.getElementById('trailer-modal').classList.add('hidden');
-    }
-
-    // ---------------------------------------------------------------------------
-    // WEBSOCKET REAL-TIME LOCKS
-    // ---------------------------------------------------------------------------
-    function connectScreeningWebSocket(screeningId) {
-      if (socket) socket.close();
-      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${wsProtocol}//${window.location.host}/ws/screening/${screeningId}`;
-      
-      try {
-        socket = new WebSocket(wsUrl);
-        socket.onmessage = (evt) => {
-          try {
-            const data = JSON.parse(evt.data);
-            if (data.event === 'SEAT_LOCKED') {
-              const btn = document.getElementById(`seat-btn-${data.seat_id}`);
-              if (btn && !selectedSeats.some(s => s.seat_id === data.seat_id)) {
-                btn.className = "w-7 h-7 sm:w-8 sm:h-8 rounded-lg border text-[10px] font-bold flex items-center justify-center transition-all bg-amber-500/30 border-amber-500/80 text-amber-300 cursor-not-allowed";
-                btn.disabled = true;
-                btn.innerText = '🔒';
-              }
-            } else if (data.event === 'SEAT_RELEASED') {
-              const btn = document.getElementById(`seat-btn-${data.seat_id}`);
-              if (btn && !selectedSeats.some(s => s.seat_id === data.seat_id)) {
-                btn.className = "w-7 h-7 sm:w-8 sm:h-8 rounded-lg border text-[10px] font-bold flex items-center justify-center transition-all bg-white/20 border-white/30 text-gray-300 hover:bg-white hover:text-charcoal cursor-pointer";
-                btn.disabled = false;
-                btn.innerText = btn.getAttribute('title').split(' ')[3] || '';
-              }
-            }
-          } catch (e) {}
-        };
-      } catch (e) {}
-    }
-
-    // ---------------------------------------------------------------------------
-    // HIDDEN BACKEND / DEVELOPER TELEMETRY CONSOLE
-    // ---------------------------------------------------------------------------
-    function openDevConsole() {
-      document.getElementById('dev-console-modal').classList.remove('hidden');
-      loadExplainPlan();
-      loadTimelineSchedule();
-      loadAuditLogs();
-    }
-
-    function closeDevConsole() {
-      document.getElementById('dev-console-modal').classList.add('hidden');
-    }
-
-    function setDevTab(tab) {
-      ['occ', 'explain', 'buffers', 'audit'].forEach(t => {
-        document.getElementById(`dev-panel-${t}`).classList.toggle('hidden', t !== tab);
-        const btn = document.getElementById(`dev-tab-${t}`);
-        if (btn) {
-          btn.className = t === tab ? "px-4 py-1.5 rounded-full bg-white text-charcoal font-bold" : "px-4 py-1.5 rounded-full text-gray-400 hover:text-white";
-        }
-      });
-    }
-
-    async function runOCCSimulation() {
-      const box = document.getElementById('occ-result-box');
-      box.classList.remove('hidden');
-      box.innerHTML = '<span class="text-lilac">Dispatching Thread A and Thread B simultaneously on Seat #1...</span>';
-
-      try {
-        const res = await fetch('/api/occ-simulate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ screening_id: 1, seat_id: 1 })
-        });
-        const data = await res.json();
-        box.innerHTML = `
-          <div class="text-emerald-400 font-bold">&bull; Target: ${data.seat} (Read Version: ${data.initial_read_version})</div>
-          <div class="text-emerald-300">&bull; Thread A: ${data.thread_a_status}</div>
-          <div class="text-rose-400">&bull; Thread B: ${data.thread_b_status}</div>
-          <div class="text-gray-300">&bull; Concurrency Model: ${data.db_lock_type}</div>
-          <div class="text-amber-300">&bull; Resolution: ${data.resolution}</div>
-        `;
-      } catch (err) {
-        box.innerHTML = `<span class="text-rose-400">Simulation error: ${err.message}</span>`;
-      }
-    }
-
-    async function loadExplainPlan() {
-      const box = document.getElementById('explain-steps-box');
-      try {
-        const res = await fetch('/api/explain-query');
-        const data = await res.json();
-        box.innerHTML = `
-          <div class="text-lilac font-bold mb-2">&bull; Executed Query: ${data.executed_query}</div>
-          ${data.execution_steps.map((s, i) => `
-            <div class="p-2 rounded bg-charcoal border border-white/5 flex items-center justify-between">
-              <span>${i+1}. ${s.detail}</span>
-              <span class="px-2 py-0.5 rounded text-[9px] ${s.is_index_scan ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/10 text-gray-400'}">${s.optimization_score}</span>
-            </div>
-          `).join('')}
-        `;
-      } catch (e) {}
-    }
-
-    async function loadTimelineSchedule() {
-      const box = document.getElementById('timeline-schedule-box');
-      try {
-        const res = await fetch('/api/schedule-timeline');
-        const screens = await res.json();
-        box.innerHTML = screens.map(sc => `
-          <div class="p-3 bg-charcoal rounded-xl border border-white/10 space-y-2">
-            <div class="font-bold text-white flex justify-between">
-              <span>Screen ${sc.screen_number} (${sc.screen_type})</span>
-              <span class="text-emerald-400 text-[10px]">&check; 15m Buffer Verified</span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              ${sc.blocks.map(b => `
-                <div class="px-2.5 py-1 rounded bg-white/10 text-gray-200 text-[10px]">
-                  <strong>${b.movie}</strong>: ${b.start} &rarr; ${b.end} <span class="text-lilac">(+15m clean)</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `).join('');
-      } catch (e) {}
-    }
-
-    async function loadAuditLogs() {
-      const box = document.getElementById('audit-table-box');
-      try {
-        const res = await fetch('/api/audit-logs');
-        const logs = await res.json();
-        box.innerHTML = `
-          <table class="w-full text-left text-[11px] font-mono">
-            <thead>
-              <tr class="text-gray-500 border-b border-white/10">
-                <th class="py-1">Time</th>
-                <th>Entity</th>
-                <th>Transition</th>
-                <th>Action</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${logs.slice(0, 8).map(l => `
-                <tr class="border-b border-white/5 text-gray-300">
-                  <td class="py-1 text-gray-500">${l.timestamp.split(' ')[1]}</td>
-                  <td class="text-lilac">${l.entity_type} #${l.entity_id}</td>
-                  <td>${l.previous_state || 'INIT'} &rarr; ${l.new_state}</td>
-                  <td class="text-emerald-300">${l.action_type}</td>
-                  <td class="text-gray-400">${l.details}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
-      } catch (e) {}
     }
   </script>
 
