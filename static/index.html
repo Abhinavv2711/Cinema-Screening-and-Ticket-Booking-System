@@ -125,12 +125,10 @@
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. HERO SPOTLIGHT & CLUSTER MONITOR (MATCHING SCREENSHOT LAYOUT)          -->
+    <!-- 2. CINEMA HERO SPOTLIGHT                                                  -->
     <!-- ========================================================================= -->
-    <section class="px-6 sm:px-10 pt-10 pb-12 border-b border-gray-100 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-      
-      <!-- Left Column: Headline, Description & CTAs -->
-      <div class="lg:col-span-7 space-y-6">
+    <section class="px-6 sm:px-10 pt-12 pb-14 border-b border-gray-100">
+      <div class="max-w-3xl space-y-6">
         
         <!-- Lilac Badge Pill -->
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lilac text-lilacDark text-[11px] font-black uppercase tracking-wider">
@@ -146,7 +144,7 @@
         </h1>
 
         <!-- Subtitle Description -->
-        <p class="text-sm sm:text-base text-slateText leading-relaxed max-w-xl">
+        <p class="text-sm sm:text-base text-slateText leading-relaxed max-w-2xl">
           Formally schedule movie screenings across multi-tier auditoriums with automated turnaround buffer enforcement, real-time seat locks, and ACID transaction compliance.
         </p>
 
@@ -162,8 +160,8 @@
           </a>
         </div>
 
-        <!-- Three Key Metrics Strip (Directly from Screenshot) -->
-        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-lg">
+        <!-- Three Key Metrics Strip -->
+        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-xl">
           <div>
             <div class="text-2xl sm:text-3xl font-black text-charcoal">92</div>
             <p class="text-xs text-slateText mt-0.5 font-medium">Scheduled Shows (7-Day)</p>
@@ -179,73 +177,6 @@
         </div>
 
       </div>
-
-      <!-- Right Column: Interactive Phone Device Preview (Matching Screenshot) -->
-      <div class="lg:col-span-5 flex justify-center">
-        <div class="w-full max-w-sm bg-charcoal rounded-[2.5rem] p-3 shadow-2xl border-4 border-gray-200">
-          <div class="bg-white rounded-[2rem] p-5 space-y-4">
-            
-            <!-- Phone Header -->
-            <div class="flex items-center justify-between text-[11px] font-bold text-slateText border-b border-gray-100 pb-2">
-              <span>9:41</span>
-              <span>AURA Live Mesh</span>
-            </div>
-
-            <!-- Monitor Card Inside Phone -->
-            <div>
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-black text-charcoal text-sm">Auditorium Monitor</h4>
-                  <p class="text-[10px] text-slateText">Live Screening Telemetry</p>
-                </div>
-                <span class="px-2 py-0.5 rounded-full bg-panel border border-panelBorder text-[10px] font-bold text-charcoal">
-                  PVR Screen 1
-                </span>
-              </div>
-            </div>
-
-            <!-- Metric Box 1 -->
-            <div class="p-3 rounded-2xl bg-panel border border-panelBorder flex items-center justify-between">
-              <div>
-                <span class="text-[9px] uppercase font-bold text-slateText block">Average Latency</span>
-                <span class="text-lg font-black text-charcoal">1.84 ms</span>
-              </div>
-              <div class="w-8 h-8 rounded-full bg-lilac text-lilacDark flex items-center justify-center text-xs font-black">
-                ⚡
-              </div>
-            </div>
-
-            <!-- Metric Box 2 -->
-            <div class="p-3 rounded-2xl bg-mintBg border border-mintBorder flex items-center justify-between">
-              <div>
-                <span class="text-[9px] uppercase font-bold text-mintText block">ACID Buffer Integrity</span>
-                <span class="text-xs font-black text-mintText">✓ 100% Zero-Overlap Feasible</span>
-              </div>
-              <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">
-                ✓
-              </div>
-            </div>
-
-            <!-- Metric Box 3: Occupancy Bar -->
-            <div class="space-y-1.5">
-              <div class="flex justify-between text-[10px] font-bold">
-                <span class="text-slateText">Average Hall Saturation</span>
-                <span class="text-charcoal font-black">78.5%</span>
-              </div>
-              <div class="w-full h-2 rounded-full bg-gray-200 overflow-hidden">
-                <div class="h-full bg-charcoal rounded-full" style="width: 78.5%;"></div>
-              </div>
-            </div>
-
-            <!-- Action Button in Phone -->
-            <a href="/booking?screening_id=1" class="block w-full py-3 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs text-center shadow-md transition-all">
-              Inspect Live Seating Matrix &rarr;
-            </a>
-
-          </div>
-        </div>
-      </div>
-
     </section>
 
     <!-- ========================================================================= -->
