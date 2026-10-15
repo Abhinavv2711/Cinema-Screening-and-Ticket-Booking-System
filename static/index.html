@@ -7,6 +7,8 @@
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- API Client with GitHub Pages Standalone Fallback -->
+  <script src="api_fallback.js"></script>
   
   <!-- Satoshi Font & Newsreader Serif -->
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
@@ -81,7 +83,7 @@
     <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
-      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+      <a href="index.html" class="flex items-center gap-3 group cursor-pointer">
         <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           🎬
         </div>
@@ -96,10 +98,10 @@
 
       <!-- Center Navigation Pill Switcher -->
       <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
-        <a href="/" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Now Showing</a>
+        <a href="index.html" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Now Showing</a>
         <a href="#screens-section" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Experiences</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Dining</a>
-        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all flex items-center gap-1.5">
+        <a href="concessions.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Dining</a>
+        <a href="my_tickets.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all flex items-center gap-1.5">
           <span>My Passes</span>
           <span id="nav-booking-badge" class="w-4 h-4 rounded-full bg-lilac text-lilacDark text-[10px] font-black flex items-center justify-center">0</span>
         </a>
@@ -154,7 +156,7 @@
             <span>Explore Now Showing</span>
             <span>&darr;</span>
           </a>
-          <a href="/concessions" class="px-6 py-3 rounded-full bg-panel border border-panelBorder text-charcoal hover:bg-gray-200/70 font-bold text-xs transition-all flex items-center gap-2">
+          <a href="concessions.html" class="px-6 py-3 rounded-full bg-panel border border-panelBorder text-charcoal hover:bg-gray-200/70 font-bold text-xs transition-all flex items-center gap-2">
             <span>Gourmet Dining Menu</span>
             <span>&rarr;</span>
           </a>
@@ -234,7 +236,7 @@
             </div>
 
             <!-- Action Button in Card -->
-            <a href="/booking?screening_id=1" class="block w-full py-3 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs text-center shadow-md transition-all">
+            <a href="booking.html?screening_id=1" class="block w-full py-3 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs text-center shadow-md transition-all">
               Book Tickets for Oppenheimer &rarr;
             </a>
 
@@ -415,15 +417,15 @@
         <span>&bull; &copy; 2026 Premier Theatrical Exhibition</span>
       </div>
       <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
-        <a href="/" class="text-charcoal hover:underline">Now Showing</a>
+        <a href="index.html" class="text-charcoal hover:underline">Now Showing</a>
         <a href="#screens-section" class="hover:text-charcoal transition-colors">Experiences</a>
-        <a href="/concessions" class="hover:text-charcoal transition-colors">Gourmet Dining</a>
-        <a href="/my-tickets" class="hover:text-charcoal transition-colors">My Passes</a>
+        <a href="concessions.html" class="hover:text-charcoal transition-colors">Gourmet Dining</a>
+        <a href="my_tickets.html" class="hover:text-charcoal transition-colors">My Passes</a>
         <span class="text-gray-300">|</span>
         <span class="text-gray-400">Staff &amp; Admin:</span>
-        <a href="/admin" class="text-slateText hover:text-charcoal">Management Portal</a>
-        <a href="/usher" class="text-slateText hover:text-charcoal">Turnstile Scanner</a>
-        <a href="/docs" class="text-slateText hover:text-charcoal">Viva Documentation</a>
+        <a href="admin.html" class="text-slateText hover:text-charcoal">Management Portal</a>
+        <a href="usher.html" class="text-slateText hover:text-charcoal">Turnstile Scanner</a>
+        <a href="docs.html" class="text-slateText hover:text-charcoal">Viva Documentation</a>
       </div>
     </footer>
 
@@ -460,7 +462,7 @@
 
       grid.innerHTML = movies.map(m => `
         <div class="bg-white border border-gray-200/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-gray-300 transition-all group flex flex-col justify-between">
-          <a href="/movie?id=${m.movie_id}" class="relative aspect-[2/3] overflow-hidden bg-panel block cursor-pointer">
+          <a href="movie.html?id=${m.movie_id}" class="relative aspect-[2/3] overflow-hidden bg-panel block cursor-pointer">
             <img src="${m.poster}" alt="${m.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
             <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-white/95 text-charcoal shadow-sm">
               ${m.badge}
@@ -472,7 +474,7 @@
 
           <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
             <div>
-              <a href="/movie?id=${m.movie_id}" class="font-black text-charcoal text-sm sm:text-base line-clamp-1 hover:text-lilacDark transition-colors block">
+              <a href="movie.html?id=${m.movie_id}" class="font-black text-charcoal text-sm sm:text-base line-clamp-1 hover:text-lilacDark transition-colors block">
                 ${m.title}
               </a>
               <p class="text-xs text-slateText mt-0.5">${m.genre}</p>
@@ -480,10 +482,10 @@
             </div>
 
             <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
-              <a href="/movie?id=${m.movie_id}" class="py-2 text-center rounded-full bg-panel border border-panelBorder text-charcoal font-bold text-xs hover:bg-gray-200/70 transition-all">
+              <a href="movie.html?id=${m.movie_id}" class="py-2 text-center rounded-full bg-panel border border-panelBorder text-charcoal font-bold text-xs hover:bg-gray-200/70 transition-all">
                 Details
               </a>
-              <a href="/booking?screening_id=${getDefaultScreeningId(m.movie_id)}" class="py-2 text-center rounded-full bg-charcoal text-white hover:bg-black font-black text-xs shadow-sm transition-all">
+              <a href="booking.html?screening_id=${getDefaultScreeningId(m.movie_id)}" class="py-2 text-center rounded-full bg-charcoal text-white hover:bg-black font-black text-xs shadow-sm transition-all">
                 Book
               </a>
             </div>
@@ -526,7 +528,7 @@
       // Find show on this date
       const show = allScreenings.find(s => s.show_date === dStr);
       if (show) {
-        window.location.href = `/movie?id=${show.movie_id}`;
+        window.location.href = `movie.html?id=${show.movie_id}`;
       }
     }
   </script>

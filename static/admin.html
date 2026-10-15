@@ -7,6 +7,8 @@
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- API Client with GitHub Pages Standalone Fallback -->
+  <script src="api_fallback.js"></script>
   
   <!-- Satoshi Font & Newsreader Serif -->
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
@@ -59,7 +61,7 @@
     <!-- 1. NAVIGATION BAR                                                          -->
     <!-- ========================================================================= -->
     <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+      <a href="index.html" class="flex items-center gap-3 group cursor-pointer">
         <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           📊
         </div>
@@ -73,12 +75,12 @@
       </a>
 
       <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
-        <a href="/" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
-        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
-        <a href="/usher" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Cinema Manager</a>
-        <a href="/docs" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
+        <a href="index.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
+        <a href="concessions.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
+        <a href="my_tickets.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
+        <a href="usher.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
+        <a href="admin.html" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Cinema Manager</a>
+        <a href="docs.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
       </nav>
 
       <div class="flex items-center gap-2">
@@ -299,13 +301,13 @@
     <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
       <div class="flex items-center gap-2">
         <span class="font-black text-charcoal uppercase">AURA LUXE CINEMAS</span>
-        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
+        <span>&bull; &copy; 2026 Premier Theatrical Exhibition</span>
       </div>
       <div class="flex items-center gap-4 text-xs font-semibold">
-        <a href="/" class="hover:text-charcoal">Home</a>
-        <a href="/my-tickets" class="hover:text-charcoal">My Passes</a>
-        <a href="/usher" class="hover:text-charcoal">Gate Scanner</a>
-        <a href="/docs" class="hover:text-charcoal">Docs</a>
+        <a href="index.html" class="hover:text-charcoal">Home</a>
+        <a href="my_tickets.html" class="hover:text-charcoal">My Passes</a>
+        <a href="usher.html" class="hover:text-charcoal">Gate Scanner</a>
+        <a href="docs.html" class="hover:text-charcoal">Docs</a>
         <a href="/metrics" target="_blank" class="text-slateText hover:text-charcoal">/metrics</a>
       </div>
     </footer>

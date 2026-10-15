@@ -7,6 +7,8 @@
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- API Client with GitHub Pages Standalone Fallback -->
+  <script src="api_fallback.js"></script>
   
   <!-- Satoshi Font & Newsreader Serif -->
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
@@ -59,7 +61,7 @@
     <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
     <!-- ========================================================================= -->
     <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+      <a href="index.html" class="flex items-center gap-3 group cursor-pointer">
         <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           🎬
         </div>
@@ -68,20 +70,20 @@
             <span class="text-base font-black tracking-tight text-charcoal uppercase">AURA</span>
             <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac text-lilacDark uppercase tracking-wider">LUXE</span>
           </div>
-          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">CINEMA SCREENING ENGINE</p>
+          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">PREMIER CINEMAS</p>
         </div>
       </a>
 
       <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
-        <a href="/" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
-        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
-        <a href="/usher" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Manager BI</a>
-        <a href="/docs" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
+        <a href="index.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
+        <a href="concessions.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
+        <a href="my_tickets.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
+        <a href="usher.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
+        <a href="admin.html" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Manager BI</a>
+        <a href="docs.html" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
       </nav>
 
-      <a href="/" class="px-5 py-2 rounded-full border border-gray-200 text-xs font-bold text-charcoal hover:bg-panel transition-all flex items-center gap-1.5">
+      <a href="index.html" class="px-5 py-2 rounded-full border border-gray-200 text-xs font-bold text-charcoal hover:bg-panel transition-all flex items-center gap-1.5">
         <span>&larr;</span>
         <span>Back to Movies</span>
       </a>
@@ -167,11 +169,11 @@
         <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
       </div>
       <div class="flex items-center gap-4 text-xs font-semibold">
-        <a href="/" class="hover:text-charcoal">Home</a>
-        <a href="/concessions" class="hover:text-charcoal">Concessions</a>
-        <a href="/my-tickets" class="hover:text-charcoal">My Passes</a>
-        <a href="/admin" class="text-lilacDark hover:underline">Cinema Manager</a>
-        <a href="/docs" class="hover:text-charcoal">Docs</a>
+        <a href="index.html" class="hover:text-charcoal">Home</a>
+        <a href="concessions.html" class="hover:text-charcoal">Concessions</a>
+        <a href="my_tickets.html" class="hover:text-charcoal">My Passes</a>
+        <a href="admin.html" class="text-lilacDark hover:underline">Cinema Manager</a>
+        <a href="docs.html" class="hover:text-charcoal">Docs</a>
       </div>
     </footer>
 
@@ -303,7 +305,7 @@
 
           <div class="flex flex-wrap gap-3">
             ${scrList.map(s => `
-              <a href="/booking?screening_id=${s.screening_id}" class="px-5 py-3 rounded-2xl border border-gray-200 bg-panel hover:bg-lilac/40 hover:border-lilacBorder group transition-all min-w-[150px] shadow-sm flex flex-col justify-between">
+              <a href="booking.html?screening_id=${s.screening_id}" class="px-5 py-3 rounded-2xl border border-gray-200 bg-panel hover:bg-lilac/40 hover:border-lilacBorder group transition-all min-w-[150px] shadow-sm flex flex-col justify-between">
                 <div class="text-sm font-black text-charcoal group-hover:text-black">${s.start_time}</div>
                 <div class="text-[11px] text-slateText font-bold mt-1">${s.screen_type}</div>
                 <div class="text-[10px] text-lilacDark font-black mt-0.5">From ₹${s.ticket_price}</div>

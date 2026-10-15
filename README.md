@@ -1,7 +1,24 @@
 # AURA LUXE CINEMAS — Screening & Ticket Booking Engine
 > **Project 65: Comprehensive DBMS PBL & High-Performance Theatrical Exhibition Engine**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Portal-GitHub%20Pages-22c55e?style=for-the-badge&logo=githubpages&logoColor=white)](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/)
+[![DBMS](https://img.shields.io/badge/Database-SQLite3%203NF%20ACID-3b82f6?style=for-the-badge&logo=sqlite&logoColor=white)](https://github.com/Abhinavv2711/Cinema-Screening-and-Ticket-Booking-System)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20REST-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/Abhinavv2711/Cinema-Screening-and-Ticket-Booking-System)
+
+🌐 **Live Deployed Web Application:**  
+**[https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/)**
+
 A production-grade, ACID-compliant **Cinema Screening & Ticket Booking Engine** built with **FastAPI**, **SQLite3**, and a zero-build **Tailwind CSS** modernist frontend. Designed for real-world cinema operations with multi-screen conflict prevention, real-time seat locking, dynamic pricing yield management, and staff turnstile admission.
+
+---
+
+## 🌐 Live Cloud Deployment & Hosting
+
+The complete multi-page cinema exhibition system is hosted online via **GitHub Pages**:
+- **Production URL:** [https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/)
+- **Hosting Engine:** GitHub Pages with automated CI/CD workflow (`.github/workflows/deploy-pages.yml`).
+- **High-Availability Client Bridge (`api_fallback.js`):** When accessed via cloud static hosting without an active Python uvicorn daemon, an embedded client database bridge seamlessly fulfills API queries using `api_data.json` and persistent client storage. Evaluators can explore all 5 films, 92 multi-date screenings across 7 days, interactive SVG seat reservation, concession orders, pass downloads, cancellation refunds, usher gate scanning, and all 6 BI analytical reports without needing a local runtime.
+- **Full Backend Execution:** Running `cinema_server.py` executes directly on the native SQLite3 database with ACID transactions, custom SQL triggers, and real-time WebSockets.
 
 ---
 
@@ -37,20 +54,20 @@ Built using clean, modern HTML5 and Tailwind CSS:
 
 ## 📑 Dedicated Landing Pages
 
-| Page | URL Path | Description |
-| :--- | :--- | :--- |
-| **Cinema Home & Catalog** | `/` | Showcase hero, 7-day showtime discovery bar, genre filters, and movie gallery |
-| **Movie Details & Showtimes** | `/movie?id=1` | 7-day pill calendar, format badges (IMAX, 4DX, Dolby), cast, and showtimes |
-| **Auditorium Seating Matrix** | `/booking?screening_id=1` | Interactive SVG curved screen, dynamic pricing tier, add-on snacks, and pass |
-| **Gourmet Concessions Dining**| `/concessions` | Food & beverage menu, stock tracker, and live shopping cart drawer |
-| **Customer Pass Wallet** | `/my-tickets` | Scannable digital boarding passes and 1-click 90% refund engine |
-| **Staff Turnstile Scanner** | `/usher` | Usher turnstile admission station with double-entry prevention |
-| **Executive BI & Admin Console**| `/admin` | 6 SQL views, OCC concurrency simulator, and B-Tree `EXPLAIN QUERY PLAN` |
-| **Academic Viva Documentation**| `/docs` | Comprehensive project viva notes, relational schema, and trigger definitions |
+| Page | Relative File | Live Cloud Link | Description |
+| :--- | :--- | :--- | :--- |
+| **Cinema Home & Catalog** | [`index.html`](static/index.html) | [Launch Home](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/index.html) | Showcase hero, 7-day showtime discovery bar, genre filters, and movie gallery |
+| **Movie Details & Showtimes** | [`movie.html`](static/movie.html) | [Launch Movie](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/movie.html?id=1) | 7-day pill calendar, format badges (IMAX, 4DX, Dolby), cast, and showtimes |
+| **Auditorium Seating Matrix** | [`booking.html`](static/booking.html) | [Launch Booking](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/booking.html?screening_id=1) | Interactive SVG curved screen, dynamic pricing tier, add-on snacks, and pass |
+| **Gourmet Concessions Dining**| [`concessions.html`](static/concessions.html) | [Launch Concessions](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/concessions.html) | Food & beverage menu, stock tracker, and live shopping cart drawer |
+| **Customer Pass Wallet** | [`my_tickets.html`](static/my_tickets.html) | [Launch Passes](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/my_tickets.html) | Scannable digital boarding passes and 1-click 90% refund engine |
+| **Staff Turnstile Scanner** | [`usher.html`](static/usher.html) | [Launch Scanner](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/usher.html) | Staff turnstile admission station with double-entry prevention |
+| **Executive BI & Admin Console**| [`admin.html`](static/admin.html) | [Launch Manager](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/admin.html) | 6 SQL views, OCC concurrency simulator, and B-Tree `EXPLAIN QUERY PLAN` |
+| **Academic Viva Documentation**| [`docs.html`](static/docs.html) | [Launch Docs](https://abhinavv2711.github.io/Cinema-Screening-and-Ticket-Booking-System/docs.html) | Comprehensive project viva notes, relational schema, and trigger definitions |
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Quickstart (Running Locally with Live Backend)
 
 ### 1. Requirements
 - Python 3.9+
