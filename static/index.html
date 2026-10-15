@@ -78,6 +78,8 @@
     <!-- ========================================================================= -->
     <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
     <!-- ========================================================================= -->
+    <!-- 1. TOP CONSUMER NAVIGATION BAR                                             -->
+    <!-- ========================================================================= -->
     <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
@@ -90,29 +92,27 @@
             <span class="text-base font-black tracking-tight text-charcoal uppercase">AURA</span>
             <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac text-lilacDark uppercase tracking-wider">LUXE</span>
           </div>
-          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">CINEMA SCREENING ENGINE</p>
+          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">PREMIER CINEMAS</p>
         </div>
       </a>
 
-      <!-- Center Navigation Pill Switcher (Matching Screenshot) -->
+      <!-- Center Navigation Pill Switcher (Matching Modernist Design) -->
       <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
         <a href="/" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Now Showing</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
+        <a href="#screens-section" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Experiences</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Dining</a>
         <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all flex items-center gap-1.5">
           <span>My Passes</span>
           <span id="nav-booking-badge" class="w-4 h-4 rounded-full bg-lilac text-lilacDark text-[10px] font-black flex items-center justify-center">0</span>
         </a>
-        <a href="/usher" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Manager BI</a>
-        <a href="/docs" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
       </nav>
 
-      <!-- Right Telemetry Badge & Quick CTA Button (Matching Screenshot) -->
+      <!-- Right Status Badge & Quick CTA Button -->
       <div class="flex items-center gap-3">
-        <!-- Live Engine Status Badge -->
+        <!-- Live Box Office Status Badge -->
         <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mintBg border border-mintBorder text-xs font-bold text-mintText">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>FastAPI :8000</span>
+          <span>Box Office Open</span>
         </div>
 
         <!-- Launch / Book Button -->
@@ -125,27 +125,29 @@
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. CINEMA HERO SPOTLIGHT                                                  -->
+    <!-- 2. CINEMA HERO SPOTLIGHT & FEATURED PREMIERE CARD                         -->
     <!-- ========================================================================= -->
-    <section class="px-6 sm:px-10 pt-12 pb-14 border-b border-gray-100">
-      <div class="max-w-3xl space-y-6">
+    <section class="px-6 sm:px-10 pt-10 pb-12 border-b border-gray-100 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      
+      <!-- Left Column: Headline, Description & CTAs -->
+      <div class="lg:col-span-7 space-y-6">
         
         <!-- Lilac Badge Pill -->
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lilac text-lilacDark text-[11px] font-black uppercase tracking-wider">
-          <span>DBMS CINEMA ENGINE</span>
+          <span>PREMIER THEATRES</span>
           <span>•</span>
-          <span>ACID &amp; ZERO-OVERLAP</span>
+          <span>NOW IN 4K LASER &amp; IMAX</span>
         </div>
 
-        <!-- Main Title with Italic Contrast (Screenshot Typography) -->
+        <!-- Main Title with Italic Contrast (Modernist Typography) -->
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-charcoal tracking-tight leading-[1.1]">
-          OPTIMIZE YOUR <br>
-          <span class="font-serif italic font-normal text-charcoal">CINEMA EXPERIENCE</span>
+          EXPERIENCE MOVIES IN <br>
+          <span class="font-serif italic font-normal text-charcoal">IMMERSIVE LUXURY</span>
         </h1>
 
         <!-- Subtitle Description -->
-        <p class="text-sm sm:text-base text-slateText leading-relaxed max-w-2xl">
-          Formally schedule movie screenings across multi-tier auditoriums with automated turnaround buffer enforcement, real-time seat locks, and ACID transaction compliance.
+        <p class="text-sm sm:text-base text-slateText leading-relaxed max-w-xl">
+          Discover current releases in dual 4K laser projection, relax in motorized leather recliners, and reserve your seats with real-time seat lock and instant digital pass generation.
         </p>
 
         <!-- CTA Buttons Row -->
@@ -154,50 +156,118 @@
             <span>Explore Now Showing</span>
             <span>&darr;</span>
           </a>
-          <a href="/admin" class="px-6 py-3 rounded-full bg-panel border border-panelBorder text-charcoal hover:bg-gray-200/70 font-bold text-xs transition-all flex items-center gap-2">
-            <span>Executive BI &amp; Diagnostics</span>
+          <a href="/concessions" class="px-6 py-3 rounded-full bg-panel border border-panelBorder text-charcoal hover:bg-gray-200/70 font-bold text-xs transition-all flex items-center gap-2">
+            <span>Gourmet Dining Menu</span>
             <span>&rarr;</span>
           </a>
         </div>
 
-        <!-- Three Key Metrics Strip -->
-        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-xl">
+        <!-- Three Key Metrics Strip (Luxury Cinema Focus) -->
+        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-lg">
           <div>
             <div class="text-2xl sm:text-3xl font-black text-charcoal">92</div>
-            <p class="text-xs text-slateText mt-0.5 font-medium">Scheduled Shows (7-Day)</p>
+            <p class="text-xs text-slateText mt-0.5 font-medium">Weekly Screenings</p>
           </div>
           <div>
-            <div class="text-2xl sm:text-3xl font-black text-charcoal">1.84 <span class="text-sm font-bold">ms</span></div>
-            <p class="text-xs text-slateText mt-0.5 font-medium">Avg Transaction Latency</p>
+            <div class="text-2xl sm:text-3xl font-black text-charcoal">6</div>
+            <p class="text-xs text-slateText mt-0.5 font-medium">IMAX &amp; VIP Screens</p>
           </div>
           <div>
-            <div class="text-2xl sm:text-3xl font-black text-charcoal">&lt; 1%</div>
-            <p class="text-xs text-slateText mt-0.5 font-medium">Concurrency Lock Gap</p>
+            <div class="text-2xl sm:text-3xl font-black text-charcoal">100%</div>
+            <p class="text-xs text-slateText mt-0.5 font-medium">Instant Mobile Ticket</p>
           </div>
         </div>
 
       </div>
+
+      <!-- Right Column: Featured Premiere Showcase Card (Matching Aesthetic) -->
+      <div class="lg:col-span-5 flex justify-center">
+        <div class="w-full max-w-sm bg-charcoal rounded-[2.5rem] p-3 shadow-2xl border-4 border-gray-200">
+          <div class="bg-white rounded-[2rem] p-5 space-y-4">
+            
+            <!-- Card Header -->
+            <div class="flex items-center justify-between text-[11px] font-bold text-slateText border-b border-gray-100 pb-2">
+              <span class="flex items-center gap-1.5 text-lilacDark font-black">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                PREMIERE SPOTLIGHT
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-lilac text-lilacDark text-[10px] font-black uppercase">
+                IMAX Laser 3D
+              </span>
+            </div>
+
+            <!-- Movie Poster & Metadata -->
+            <div class="relative rounded-2xl overflow-hidden aspect-[16/10] bg-charcoal shadow-md group">
+              <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80" 
+                   alt="Oppenheimer Premiere" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+              <div class="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-transparent"></div>
+              
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-amber-300">
+                  <span>★ 8.9 IMDb</span>
+                  <span>•</span>
+                  <span>93% Critics</span>
+                </div>
+                <h4 class="text-lg font-black tracking-tight text-white leading-tight">Oppenheimer</h4>
+                <p class="text-[11px] text-gray-200 line-clamp-1">Christopher Nolan • 180 min • UA</p>
+              </div>
+            </div>
+
+            <!-- Screening Details Pill Card -->
+            <div class="p-3 rounded-2xl bg-panel border border-panelBorder flex items-center justify-between">
+              <div>
+                <span class="text-[9px] uppercase font-bold text-slateText block">Auditorium &amp; Time</span>
+                <span class="text-xs font-black text-charcoal">Screen 1 (IMAX) • 6:30 PM</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[9px] uppercase font-bold text-slateText block">From</span>
+                <span class="text-xs font-black text-lilacDark">₹450 / seat</span>
+              </div>
+            </div>
+
+            <!-- Seat Availability Meter -->
+            <div class="p-3 rounded-2xl bg-mintBg border border-mintBorder flex items-center justify-between">
+              <div>
+                <span class="text-[9px] uppercase font-bold text-mintText block">Auditorium Status</span>
+                <span class="text-xs font-black text-mintText">🟢 Seating Open &bull; Recliners Available</span>
+              </div>
+              <span class="text-xs font-black text-mintText">85% Open</span>
+            </div>
+
+            <!-- Action Button in Card -->
+            <a href="/booking?screening_id=1" class="block w-full py-3 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs text-center shadow-md transition-all">
+              Book Tickets for Oppenheimer &rarr;
+            </a>
+
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 3. CINEMA PARAMETERS & QUICK FILTER PANEL (MATCHING SCREENSHOT)            -->
+    <!-- 3. SHOWTIME & TICKET DISCOVERY BAR                                        -->
     <!-- ========================================================================= -->
     <section class="p-6 sm:px-10 border-b border-gray-100 bg-panel/60">
       <div class="bg-panel border border-panelBorder rounded-3xl p-6 sm:p-8 space-y-6">
         
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
-          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider">
-            CINEMA PARAMETERS &amp; SHOWTIME DISCOVERY
-          </h3>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-charcoal"></span>
+            <h3 class="text-xs font-black text-charcoal uppercase tracking-wider">
+              QUICK SHOWTIME DISCOVERY &amp; RESERVATIONS
+            </h3>
+          </div>
           <span class="px-2.5 py-0.5 rounded-full bg-white border border-gray-200 text-[10px] font-bold text-slateText">
-            Active Multi-Date Config
+            7-Day Theatrical Schedule
           </span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <!-- City Filter -->
           <div class="space-y-1.5">
-            <label class="block font-bold text-slateText uppercase text-[10px]">Cinema Location</label>
+            <label class="block font-bold text-slateText uppercase text-[10px]">Select Cinema</label>
             <select id="city-selector" class="w-full px-4 py-2.5 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold focus:outline-none focus:border-charcoal">
               <option value="Hyderabad">PVR Inorbit (Cyberabad)</option>
               <option value="Bengaluru">PVR Forum (Bengaluru)</option>
@@ -209,7 +279,7 @@
           <div class="space-y-1.5">
             <label class="block font-bold text-slateText uppercase text-[10px]">Screening Date</label>
             <select id="hero-date-selector" onchange="filterScreeningsByDate(this.value)" class="w-full px-4 py-2.5 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold focus:outline-none focus:border-charcoal">
-              <option value="2026-10-04">Sunday, Oct 04, 2026</option>
+              <option value="2026-10-04">Sunday, Oct 04, 2026 (Today)</option>
               <option value="2026-10-05">Monday, Oct 05, 2026</option>
               <option value="2026-10-06">Tuesday, Oct 06, 2026</option>
               <option value="2026-10-07">Wednesday, Oct 07, 2026</option>
@@ -221,22 +291,22 @@
 
           <!-- Format -->
           <div class="space-y-1.5">
-            <label class="block font-bold text-slateText uppercase text-[10px]">Screen Format</label>
+            <label class="block font-bold text-slateText uppercase text-[10px]">Auditorium Format</label>
             <select class="w-full px-4 py-2.5 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold focus:outline-none focus:border-charcoal">
-              <option>All Formats (IMAX, Gold VIP, 4DX)</option>
-              <option>IMAX 3D Laser</option>
-              <option>Gold VIP Recliner</option>
+              <option>All Experiences (IMAX, Gold, 4DX)</option>
+              <option>IMAX 3D Laser Auditorium</option>
+              <option>Gold VIP Luxury Recliner</option>
               <option>4DX Dynamic Motion</option>
             </select>
           </div>
 
-          <!-- Isolation Engine -->
+          <!-- Quick Book CTA -->
           <div class="space-y-1.5">
-            <label class="block font-bold text-slateText uppercase text-[10px]">Concurrency Engine</label>
-            <div class="px-4 py-2 rounded-full bg-white border border-gray-200 text-xs text-charcoal font-bold flex items-center justify-between">
-              <span>SERIALIZABLE ACID</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            </div>
+            <label class="block font-bold text-slateText uppercase text-[10px]">Showtimes</label>
+            <a href="#movies-section" class="w-full px-4 py-2.5 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs text-center flex items-center justify-center gap-1.5 shadow-sm transition-all">
+              <span>View Movies &amp; Passes</span>
+              <span>&darr;</span>
+            </a>
           </div>
         </div>
 
@@ -286,11 +356,11 @@
     <!-- ========================================================================= -->
     <!-- 5. CINEMA HALLS & PREMIUM FORMATS (MATCHING PALETTE)                       -->
     <!-- ========================================================================= -->
-    <section class="px-6 sm:px-10 py-10 bg-panel/40 border-t border-gray-100">
+    <section id="screens-section" class="px-6 sm:px-10 py-10 bg-panel/40 border-t border-gray-100">
       <div class="text-center max-w-xl mx-auto mb-8">
         <span class="text-xs font-black tracking-widest text-lilacDark uppercase">World-Class Projection</span>
         <h3 class="text-2xl font-black text-charcoal mt-1">Cinemas &amp; Luxury Screens</h3>
-        <p class="text-xs text-slateText mt-1">Every hall is calibrated for laser precision audio, zero overlap turnaround, and ultra-plush seating.</p>
+        <p class="text-xs text-slateText mt-1">Every auditorium is calibrated for crystal-clear laser clarity, spatial Dolby audio, and ultra-plush recliners.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -344,16 +414,18 @@
     <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
       <div class="flex items-center gap-2">
         <span class="font-black text-charcoal uppercase">AURA LUXE CINEMAS</span>
-        <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
+        <span>&bull; &copy; 2026 Premier Theatrical Exhibition</span>
       </div>
       <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
         <a href="/" class="text-charcoal hover:underline">Now Showing</a>
-        <a href="/concessions" class="hover:text-charcoal transition-colors">Gourmet Food</a>
+        <a href="#screens-section" class="hover:text-charcoal transition-colors">Experiences</a>
+        <a href="/concessions" class="hover:text-charcoal transition-colors">Gourmet Dining</a>
         <a href="/my-tickets" class="hover:text-charcoal transition-colors">My Passes</a>
-        <a href="/usher" class="hover:text-charcoal transition-colors">Gate Scanner</a>
-        <a href="/admin" class="text-lilacDark hover:underline">Manager BI</a>
-        <a href="/docs" class="hover:text-charcoal transition-colors">Docs</a>
-        <a href="/metrics" target="_blank" class="text-slateText hover:text-charcoal">/metrics</a>
+        <span class="text-gray-300">|</span>
+        <span class="text-gray-400">Staff &amp; Admin:</span>
+        <a href="/admin" class="text-slateText hover:text-charcoal">Management Portal</a>
+        <a href="/usher" class="text-slateText hover:text-charcoal">Turnstile Scanner</a>
+        <a href="/docs" class="text-slateText hover:text-charcoal">Viva Documentation</a>
       </div>
     </footer>
 
