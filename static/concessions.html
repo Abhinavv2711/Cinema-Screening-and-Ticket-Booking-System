@@ -17,13 +17,19 @@
       theme: {
         extend: {
           colors: {
-            charcoal: '#231212',
-            charcoalDark: '#120808',
-            charcoalHover: '#321919',
+            bodyBg: '#dbe4eb',
+            canvas: '#ffffff',
+            panel: '#f4f5f8',
+            panelBorder: '#e2e8f0',
+            charcoal: '#181111',
+            charcoalHover: '#000000',
             lilac: '#e3e2f7',
-            lilacDark: '#564488',
-            offwhite: '#f4f4f4',
-            gold: '#D4AF37',
+            lilacDark: '#3c2a63',
+            lilacBorder: '#d0cbf2',
+            slateText: '#64748b',
+            mintBg: '#ecfdf5',
+            mintText: '#15803d',
+            mintBorder: '#bbf7d0',
           },
           fontFamily: {
             sans: ['Satoshi', 'Inter', 'sans-serif'],
@@ -37,227 +43,213 @@
   <style>
     body {
       font-family: 'Satoshi', sans-serif;
-      background-color: #0d0707;
-      color: #f4f4f4;
+      background-color: #dbe4eb;
+      color: #181111;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-lilac selection:text-charcoal">
+<body class="min-h-screen p-3 sm:p-6 lg:p-8 flex flex-col justify-between selection:bg-lilac selection:text-charcoal font-sans">
 
   <!-- ========================================================================= -->
-  <!-- 1. NAVIGATION BAR                                                          -->
+  <!-- MAIN APPLICATION CANVAS                                                    -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+  <div class="max-w-[1360px] mx-auto w-full bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col min-h-[92vh]">
+    
+    <!-- ========================================================================= -->
+    <!-- 1. NAVIGATION BAR                                                          -->
+    <!-- ========================================================================= -->
+    <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+        <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           🍿
         </div>
         <div>
           <div class="flex items-center gap-1.5">
-            <span class="text-base font-black tracking-tight text-white uppercase">AURA</span>
-            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac/20 text-lilac uppercase tracking-wider">GOURMET</span>
+            <span class="text-base font-black tracking-tight text-charcoal uppercase">AURA</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac text-lilacDark uppercase tracking-wider">GOURMET</span>
           </div>
-          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">CINEMA DINING &amp; CONCESSIONS</p>
+          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">CINEMA DINING &amp; CONCESSIONS</p>
         </div>
       </a>
 
-      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
-        <a href="/" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Movies</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-white bg-white/10 font-bold transition-all">Gourmet Food</a>
-        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">My Tickets</a>
-        <a href="/usher" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
-        <a href="/docs" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">Docs</a>
+      <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
+        <a href="/" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Manager BI</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Docs</a>
       </nav>
 
       <div class="flex items-center gap-3">
-        <button onclick="scrollToCart()" class="px-4 py-2 rounded-full bg-lilac text-charcoal font-black text-xs shadow-md flex items-center gap-2 hover:bg-white transition-all">
+        <button onclick="scrollToCart()" class="px-4 py-2 rounded-full bg-lilac text-lilacDark font-black text-xs shadow-sm flex items-center gap-2 hover:bg-lilac/80 transition-all">
           <span>🛒 Cart</span>
           <span id="nav-cart-count" class="w-5 h-5 rounded-full bg-charcoal text-white text-[10px] flex items-center justify-center font-bold">0</span>
         </button>
       </div>
-    </div>
-  </header>
-
-  <!-- ========================================================================= -->
-  <!-- 2. HERO SPOTLIGHT                                                          -->
-  <!-- ========================================================================= -->
-  <main class="flex-1 max-w-7xl mx-auto px-4 md:px-8 py-10 w-full space-y-10">
-    <div class="relative rounded-3xl overflow-hidden border border-white/15 bg-gradient-to-r from-amber-950/60 via-charcoal to-[#180d0d] p-8 sm:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
-      <div class="space-y-3 max-w-xl">
-        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gold/20 text-gold border border-gold/30">
-          Chef-Crafted Cinema Dining
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">Artisanal Popcorn &amp; Gourmet Bites</h1>
-        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed font-serif italic">
-          "Freshly popped French caramel kernels, warm Spanish salsa nachos, and handcrafted artisan combos delivered directly to your recliner."
-        </p>
-      </div>
-
-      <div class="flex items-center gap-4 text-center">
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[100px]">
-          <span class="text-2xl block mb-1">🍿</span>
-          <span class="text-xs font-bold text-white block">100% Corn</span>
-          <span class="text-[10px] text-gray-400">Non-GMO</span>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[100px]">
-          <span class="text-2xl block mb-1">🧈</span>
-          <span class="text-xs font-bold text-white block">Pure Butter</span>
-          <span class="text-[10px] text-gray-400">Fresh Popped</span>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[100px]">
-          <span class="text-2xl block mb-1">⚡</span>
-          <span class="text-xs font-bold text-white block">At-Seat</span>
-          <span class="text-[10px] text-gray-400">Intermission</span>
-        </div>
-      </div>
-    </div>
+    </header>
 
     <!-- ========================================================================= -->
-    <!-- 3. MENU SECTION & LIVE CART                                               -->
+    <!-- 2. HERO SPOTLIGHT                                                          -->
     <!-- ========================================================================= -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <main class="flex-1 p-6 sm:p-10 space-y-10">
       
-      <!-- Left: Menu Items (2 Cols) -->
-      <div class="lg:col-span-2 space-y-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-black text-white">Concessions Menu</h2>
-          <div class="flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/10 text-xs font-bold">
-            <button onclick="filterCategory('ALL')" id="cat-ALL" class="px-3.5 py-1 rounded-full bg-white text-charcoal">All</button>
-            <button onclick="filterCategory('Popcorn')" id="cat-Popcorn" class="px-3.5 py-1 rounded-full text-gray-400 hover:text-white">Popcorn</button>
-            <button onclick="filterCategory('Beverage')" id="cat-Beverage" class="px-3.5 py-1 rounded-full text-gray-400 hover:text-white">Beverages</button>
-            <button onclick="filterCategory('Snack')" id="cat-Snack" class="px-3.5 py-1 rounded-full text-gray-400 hover:text-white">Snacks &amp; Combos</button>
-          </div>
+      <div class="rounded-3xl border border-panelBorder bg-panel p-8 sm:p-10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="space-y-3 max-w-xl">
+          <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-lilac text-lilacDark border border-lilacBorder">
+            Chef-Crafted Cinema Dining
+          </span>
+          <h1 class="text-3xl sm:text-5xl font-black text-charcoal tracking-tight">Artisanal Popcorn &amp; Gourmet Bites</h1>
+          <p class="text-xs sm:text-sm text-slateText leading-relaxed font-serif italic">
+            "Freshly popped French caramel kernels, warm Spanish salsa nachos, and handcrafted artisan combos delivered directly to your recliner."
+          </p>
         </div>
 
-        <div id="concessions-menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <!-- Populated dynamically via JS -->
+        <div class="flex items-center gap-4 text-center">
+          <div class="bg-white border border-gray-200 rounded-2xl p-4 min-w-[100px] shadow-sm">
+            <span class="text-2xl block mb-1">🍿</span>
+            <span class="text-xs font-black text-charcoal block">100% Corn</span>
+            <span class="text-[10px] text-slateText">Non-GMO</span>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-2xl p-4 min-w-[100px] shadow-sm">
+            <span class="text-2xl block mb-1">🧈</span>
+            <span class="text-xs font-black text-charcoal block">Pure Butter</span>
+            <span class="text-[10px] text-slateText">Fresh Popped</span>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-2xl p-4 min-w-[100px] shadow-sm">
+            <span class="text-2xl block mb-1">⚡</span>
+            <span class="text-xs font-black text-charcoal block">At-Seat</span>
+            <span class="text-[10px] text-slateText">Intermission</span>
+          </div>
         </div>
       </div>
 
-      <!-- Right: Live Shopping Cart (1 Col) -->
-      <div id="cart-sidebar" class="bg-charcoalDark border border-white/15 rounded-3xl p-6 space-y-5 sticky top-24 shadow-2xl">
-        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-          <h3 class="font-black text-white text-base flex items-center gap-2">
-            <span>🛒</span>
-            <span>Your Gourmet Order</span>
-          </h3>
-          <span id="cart-items-count" class="text-xs text-lilac font-bold">0 items</span>
-        </div>
-
-        <div id="cart-items-list" class="space-y-3 max-h-64 overflow-y-auto text-xs text-gray-300">
-          <div class="py-8 text-center text-gray-500 italic">No food items added yet.</div>
-        </div>
-
-        <div class="border-t border-white/10 pt-4 space-y-2 text-xs">
-          <div class="flex justify-between text-gray-300">
-            <span>Subtotal:</span>
-            <span id="cart-subtotal" class="font-bold">₹0.00</span>
+      <!-- ========================================================================= -->
+      <!-- 3. MENU SECTION & LIVE CART                                               -->
+      <!-- ========================================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        
+        <!-- Left: Menu Items (2 Cols) -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-black text-charcoal">Concessions Menu</h2>
+            <div class="flex items-center gap-1 bg-panel p-1 rounded-full border border-gray-200 text-xs font-bold">
+              <button onclick="filterCategory('ALL')" id="cat-ALL" class="px-3.5 py-1 rounded-full bg-charcoal text-white">All</button>
+              <button onclick="filterCategory('Popcorn')" id="cat-Popcorn" class="px-3.5 py-1 rounded-full text-slateText hover:text-charcoal">Popcorn</button>
+              <button onclick="filterCategory('Beverage')" id="cat-Beverage" class="px-3.5 py-1 rounded-full text-slateText hover:text-charcoal">Beverages</button>
+              <button onclick="filterCategory('Snack')" id="cat-Snack" class="px-3.5 py-1 rounded-full text-slateText hover:text-charcoal">Snacks</button>
+            </div>
           </div>
-          <div class="flex justify-between text-gray-300">
-            <span>GST &amp; Packaging (5%):</span>
-            <span id="cart-tax" class="font-bold">₹0.00</span>
-          </div>
-          <div class="flex justify-between text-white font-black text-base pt-2 border-t border-white/10">
-            <span>Total Payable:</span>
-            <span id="cart-grand-total" class="text-lilac font-black">₹0.00</span>
+
+          <div id="concessions-menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Populated dynamically via JS -->
           </div>
         </div>
 
-        <!-- Payment Method -->
-        <div class="space-y-2 pt-2 border-t border-white/10">
-          <label class="block text-[11px] font-bold text-gray-400 uppercase">Select Payment</label>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white/10 border border-lilac cursor-pointer">
-              <input type="radio" name="order-pay" value="UPI" checked class="text-lilac">
-              <span class="font-bold text-white text-xs">UPI / GPay</span>
-            </label>
-            <label class="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
-              <input type="radio" name="order-pay" value="Card" class="text-lilac">
-              <span class="font-bold text-white text-xs">Card / POS</span>
-            </label>
+        <!-- Right: Live Shopping Cart (1 Col) -->
+        <div id="cart-sidebar" class="bg-panel border border-panelBorder rounded-3xl p-6 space-y-5 sticky top-24 shadow-sm">
+          <div class="flex items-center justify-between border-b border-gray-200 pb-3">
+            <h3 class="text-base font-black text-charcoal">Your Order Cart</h3>
+            <span id="cart-items-count" class="text-xs text-slateText font-medium">0 items</span>
           </div>
+
+          <div id="cart-items-list" class="space-y-3 max-h-72 overflow-y-auto">
+            <div class="text-center py-8 text-xs text-slateText">Your cart is currently empty.<br>Add snacks from the menu.</div>
+          </div>
+
+          <div class="border-t border-gray-200 pt-3 space-y-2 text-xs">
+            <div class="flex justify-between font-bold text-slateText">
+              <span>Subtotal</span>
+              <span id="cart-subtotal" class="text-charcoal">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-slateText">
+              <span>GST &amp; Service (5%)</span>
+              <span id="cart-tax">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-base font-black text-charcoal pt-2 border-t border-gray-300">
+              <span>Total Payable</span>
+              <span id="cart-grand-total">₹0.00</span>
+            </div>
+          </div>
+
+          <button id="btn-cart-checkout" onclick="checkoutConcessions()" disabled class="w-full py-3.5 rounded-full bg-charcoal text-white hover:bg-black font-black text-xs shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+            Place Gourmet Order &rarr;
+          </button>
         </div>
 
-        <button id="btn-place-fnb" onclick="submitConcessionOrder()" disabled class="w-full py-3.5 rounded-full bg-gradient-to-r from-lilac to-white text-charcoal font-black text-xs shadow-xl disabled:opacity-40 disabled:cursor-not-allowed hover:scale-102 transition-all">
-          Place Gourmet Order &rarr;
-        </button>
-
-        <div id="order-success-banner" class="hidden p-4 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs space-y-1">
-          <p class="font-bold">✓ Order Successfully Placed!</p>
-          <p class="text-[11px] text-gray-300">Order ID: <strong id="succ-order-id" class="text-white">#0</strong></p>
-          <p class="text-[11px] text-gray-300">Txn: <strong id="succ-txn-id" class="text-white">TXN-000</strong></p>
-        </div>
       </div>
 
-    </div>
-  </main>
+    </main>
 
-  <!-- ========================================================================= -->
-  <!-- 4. FOOTER                                                                  -->
-  <!-- ========================================================================= -->
-  <footer class="border-t border-white/10 bg-charcoalDark/80 py-6 px-4 md:px-8 text-xs text-gray-500">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <!-- ========================================================================= -->
+    <!-- 4. FOOTER                                                                  -->
+    <!-- ========================================================================= -->
+    <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
       <div class="flex items-center gap-2">
-        <span>🍿</span>
-        <span class="font-bold text-white">AURA GOURMET DINING</span>
+        <span class="font-black text-charcoal uppercase">AURA LUXE CINEMAS</span>
         <span>&bull; &copy; 2026 DBMS Cinema Architecture</span>
       </div>
-      <div class="flex items-center gap-4 text-gray-400">
-        <a href="/" class="hover:text-white">Home</a>
-        <a href="/my-tickets" class="hover:text-white">My Tickets</a>
-        <a href="/usher" class="hover:text-white">Gate Scanner</a>
-        <a href="/admin" class="hover:text-lilac">Cinema Manager</a>
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="/" class="hover:text-charcoal">Home</a>
+        <a href="/my-tickets" class="hover:text-charcoal">My Passes</a>
+        <a href="/usher" class="hover:text-charcoal">Gate Scanner</a>
+        <a href="/admin" class="text-lilacDark hover:underline">Cinema Manager</a>
+        <a href="/docs" class="hover:text-charcoal">Docs</a>
       </div>
-    </div>
-  </footer>
+    </footer>
+
+  </div>
 
   <!-- ========================================================================= -->
   <!-- 5. JAVASCRIPT LOGIC                                                        -->
   <!-- ========================================================================= -->
   <script>
-    let allConcessions = [];
-    let cart = {}; // item_id -> quantity
+    let allItems = [];
+    let cart = {}; // item_id -> { item_name, unit_price, quantity }
+    let selectedCat = 'ALL';
     const CUSTOMER_ID = 2;
+
+    const IMAGES = {
+      "Large Caramel Popcorn": "https://images.unsplash.com/photo-1578849278619-e73505e9610f?auto=format&fit=crop&w=400&q=80",
+      "Salted Butter Popcorn (Regular)": "https://images.unsplash.com/photo-1585647347483-22b66260dfff?auto=format&fit=crop&w=400&q=80",
+      "Coca Cola (500ml)": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80",
+      "Loaded Cheese Nachos": "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?auto=format&fit=crop&w=400&q=80",
+      "Peri Peri Chicken Popcorn": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=400&q=80",
+      "Cold Brew Coffee": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=400&q=80",
+      "Luxe Combo Box": "https://images.unsplash.com/photo-1585647347483-22b66260dfff?auto=format&fit=crop&w=400&q=80"
+    };
 
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const res = await fetch('/api/concessions');
-        allConcessions = await res.json();
-        renderMenu(allConcessions);
+        allItems = await res.json();
+        renderMenu();
       } catch (err) {
-        console.error("Failed to load concessions:", err);
+        console.error(err);
       }
     });
 
-    function renderMenu(items) {
+    function renderMenu() {
       const grid = document.getElementById('concessions-menu-grid');
-      grid.innerHTML = items.map(item => {
-        const icon = item.category === 'Popcorn' ? '🍿' : (item.category === 'Beverage' ? '🥤' : '🍔');
-        const qty = cart[item.item_id] || 0;
-        return `
-          <div class="bg-charcoal border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-lilac/40 transition-all space-y-4">
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-white/10 text-white flex items-center justify-center text-2xl flex-shrink-0">
-                  ${icon}
-                </div>
-                <div>
-                  <h4 class="font-black text-white text-sm">${item.item_name}</h4>
-                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/10 text-lilac uppercase tracking-wider">${item.category}</span>
-                </div>
-              </div>
-              <span class="text-sm font-black text-white">₹${item.unit_price}</span>
-            </div>
+      const filtered = (selectedCat === 'ALL') ? allItems : allItems.filter(i => i.category.toLowerCase().includes(selectedCat.toLowerCase()));
 
-            <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
-              <span class="text-[11px] text-gray-400">Stock: <strong class="text-emerald-400 font-bold">${item.stock_quantity} available</strong></span>
-              
-              <div class="flex items-center gap-2">
-                <button onclick="updateCartQty(${item.item_id}, -1)" class="w-7 h-7 rounded-lg bg-white/10 text-white hover:bg-white/20 font-bold flex items-center justify-center">-</button>
-                <span id="menu-qty-${item.item_id}" class="w-6 text-center font-black text-white">${qty}</span>
-                <button onclick="updateCartQty(${item.item_id}, 1)" class="w-7 h-7 rounded-lg bg-lilac text-charcoal hover:bg-white font-bold flex items-center justify-center">+</button>
+      grid.innerHTML = filtered.map(item => {
+        const img = IMAGES[item.item_name] || "https://images.unsplash.com/photo-1585647347483-22b66260dfff?auto=format&fit=crop&w=400&q=80";
+        const inCartQty = cart[item.item_id]?.quantity || 0;
+
+        return `
+          <div class="bg-white border border-gray-200 rounded-3xl p-4 flex gap-4 items-center shadow-sm hover:shadow-md hover:border-gray-300 transition-all">
+            <div class="w-20 h-20 rounded-2xl overflow-hidden bg-panel flex-shrink-0">
+              <img src="${img}" alt="${item.item_name}" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+              <span class="text-[10px] font-black uppercase text-lilacDark">${item.category}</span>
+              <h4 class="font-black text-charcoal text-sm line-clamp-1">${item.item_name}</h4>
+              <p class="text-xs font-black text-charcoal mt-1">₹${item.unit_price}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <button onclick="changeQty(${item.item_id}, -1)" class="w-7 h-7 rounded-full bg-panel text-charcoal border border-gray-200 font-bold hover:bg-gray-200">-</button>
+                <span id="qty-${item.item_id}" class="w-6 text-center text-xs font-black text-charcoal">${inCartQty}</span>
+                <button onclick="changeQty(${item.item_id}, 1)" class="w-7 h-7 rounded-full bg-charcoal text-white font-bold hover:bg-black">+</button>
               </div>
             </div>
           </div>
@@ -265,121 +257,118 @@
       }).join('');
     }
 
-    function filterCategory(cat) {
-      ['ALL', 'Popcorn', 'Beverage', 'Snack'].forEach(c => {
-        const btn = document.getElementById(`cat-${c}`);
-        if (!btn) return;
-        btn.className = (c === cat) ? "px-3.5 py-1 rounded-full bg-white text-charcoal font-bold" : "px-3.5 py-1 rounded-full text-gray-400 hover:text-white";
-      });
+    function changeQty(itemId, delta) {
+      const item = allItems.find(i => i.item_id === itemId);
+      if (!item) return;
 
-      if (cat === 'ALL') renderMenu(allConcessions);
-      else if (cat === 'Snack') renderMenu(allConcessions.filter(i => i.category === 'Snack' || i.category === 'Combo'));
-      else renderMenu(allConcessions.filter(i => i.category === cat));
-    }
+      const cur = cart[itemId]?.quantity || 0;
+      const next = Math.max(0, cur + delta);
 
-    function updateCartQty(itemId, delta) {
-      const current = cart[itemId] || 0;
-      const next = Math.max(0, current + delta);
-      if (next === 0) delete cart[itemId];
-      else cart[itemId] = next;
-
-      const label = document.getElementById(`menu-qty-${itemId}`);
-      if (label) label.innerText = next;
-
-      renderCartSidebar();
-    }
-
-    function renderCartSidebar() {
-      const list = document.getElementById('cart-items-list');
-      const itemIds = Object.keys(cart);
-
-      let subtotal = 0;
-      let totalItems = 0;
-
-      if (itemIds.length === 0) {
-        list.innerHTML = '<div class="py-8 text-center text-gray-500 italic">No food items added yet.</div>';
+      if (next === 0) {
+        delete cart[itemId];
       } else {
-        list.innerHTML = itemIds.map(id => {
-          const item = allConcessions.find(c => c.item_id === parseInt(id));
-          const qty = cart[id];
-          const itemSub = item.unit_price * qty;
-          subtotal += itemSub;
-          totalItems += qty;
+        cart[itemId] = { item_name: item.item_name, unit_price: item.unit_price, quantity: next };
+      }
 
+      const qLabel = document.getElementById(`qty-${itemId}`);
+      if (qLabel) qLabel.innerText = next;
+
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const listEl = document.getElementById('cart-items-list');
+      const countEl = document.getElementById('cart-items-count');
+      const navCount = document.getElementById('nav-cart-count');
+      const subtotalEl = document.getElementById('cart-subtotal');
+      const taxEl = document.getElementById('cart-tax');
+      const totalEl = document.getElementById('cart-grand-total');
+      const btn = document.getElementById('btn-cart-checkout');
+
+      const items = Object.entries(cart);
+      let count = 0, subtotal = 0;
+
+      if (items.length === 0) {
+        listEl.innerHTML = '<div class="text-center py-8 text-xs text-slateText">Your cart is currently empty.<br>Add snacks from the menu.</div>';
+        subtotalEl.innerText = '₹0.00';
+        taxEl.innerText = '₹0.00';
+        totalEl.innerText = '₹0.00';
+        btn.disabled = true;
+      } else {
+        listEl.innerHTML = items.map(([id, it]) => {
+          count += it.quantity;
+          subtotal += (it.unit_price * it.quantity);
           return `
-            <div class="flex items-center justify-between bg-white/5 p-2.5 rounded-xl">
+            <div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-100">
               <div>
-                <p class="font-bold text-white">${item.item_name}</p>
-                <p class="text-[10px] text-gray-400">₹${item.unit_price} &times; ${qty}</p>
+                <strong class="text-charcoal block">${it.item_name}</strong>
+                <span class="text-slateText">₹${it.unit_price} &times; ${it.quantity}</span>
               </div>
-              <div class="flex items-center gap-2">
-                <span class="font-black text-white">₹${itemSub}</span>
-                <button onclick="updateCartQty(${item.item_id}, -${qty})" class="text-rose-400 hover:text-rose-300 font-bold ml-1 text-xs">✕</button>
-              </div>
+              <span class="font-bold text-charcoal">₹${(it.unit_price * it.quantity).toFixed(2)}</span>
             </div>
           `;
         }).join('');
+
+        const tax = subtotal * 0.05;
+        const total = subtotal + tax;
+
+        subtotalEl.innerText = `₹${subtotal.toFixed(2)}`;
+        taxEl.innerText = `₹${tax.toFixed(2)}`;
+        totalEl.innerText = `₹${total.toFixed(2)}`;
+        btn.disabled = false;
       }
 
-      const tax = Math.round(subtotal * 0.05);
-      const grandTotal = subtotal + tax;
-
-      document.getElementById('nav-cart-count').innerText = totalItems;
-      document.getElementById('cart-items-count').innerText = `${totalItems} items`;
-      document.getElementById('cart-subtotal').innerText = `₹${subtotal.toFixed(2)}`;
-      document.getElementById('cart-tax').innerText = `₹${tax.toFixed(2)}`;
-      document.getElementById('cart-grand-total').innerText = `₹${grandTotal.toFixed(2)}`;
-      document.getElementById('btn-place-fnb').disabled = totalItems === 0;
+      countEl.innerText = `${count} items`;
+      navCount.innerText = count;
     }
 
-    async function submitConcessionOrder() {
-      const btn = document.getElementById('btn-place-fnb');
-      btn.disabled = true;
-      btn.innerText = 'Processing Order...';
+    function filterCategory(cat) {
+      selectedCat = cat;
+      ['ALL', 'Popcorn', 'Beverage', 'Snack'].forEach(c => {
+        const btn = document.getElementById(`cat-${c}`);
+        if (btn) {
+          if (c === cat) {
+            btn.className = "px-3.5 py-1 rounded-full bg-charcoal text-white";
+          } else {
+            btn.className = "px-3.5 py-1 rounded-full text-slateText hover:text-charcoal";
+          }
+        }
+      });
+      renderMenu();
+    }
+
+    function scrollToCart() {
+      document.getElementById('cart-sidebar').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function checkoutConcessions() {
+      const items = Object.entries(cart).map(([id, it]) => ({ item_id: parseInt(id), quantity: it.quantity }));
+      if (items.length === 0) return;
 
       try {
-        const payMethod = document.querySelector('input[name="order-pay"]:checked')?.value || 'UPI';
-        const items = Object.entries(cart).map(([id, qty]) => ({
-          item_id: parseInt(id),
-          quantity: qty
-        }));
-
         const res = await fetch('/api/order-concessions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             customer_id: CUSTOMER_ID,
-            booking_id: null,
             items: items,
-            payment_method: payMethod
+            payment_method: 'UPI'
           })
         });
 
-        if (!res.ok) throw new Error('Failed to submit food order');
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Failed to place order');
+        }
+
         const data = await res.json();
-
-        // Show success
-        document.getElementById('order-success-banner').classList.remove('hidden');
-        document.getElementById('succ-order-id').innerText = `#${data.order_id}`;
-        document.getElementById('succ-txn-id').innerText = data.transaction_reference;
-
+        alert(`✓ Concession Order #${data.order_id} placed successfully!\nTotal: ₹${data.total_amount}\nRef: ${data.transaction_reference}\n\nFood will be delivered to your seat during intermission.`);
         cart = {};
-        renderCartSidebar();
-        // Refresh menu stock
-        const freshRes = await fetch('/api/concessions');
-        allConcessions = await freshRes.json();
-        renderMenu(allConcessions);
-
-      } catch (err) {
-        alert(err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Place Gourmet Order →';
+        updateCartUI();
+        renderMenu();
+      } catch (e) {
+        alert(e.message);
       }
-    }
-
-    function scrollToCart() {
-      document.getElementById('cart-sidebar').scrollIntoView({ behavior: 'smooth' });
     }
   </script>
 

@@ -17,13 +17,19 @@
       theme: {
         extend: {
           colors: {
-            charcoal: '#231212',
-            charcoalDark: '#120808',
-            charcoalHover: '#321919',
+            bodyBg: '#dbe4eb',
+            canvas: '#ffffff',
+            panel: '#f4f5f8',
+            panelBorder: '#e2e8f0',
+            charcoal: '#181111',
+            charcoalHover: '#000000',
             lilac: '#e3e2f7',
-            lilacDark: '#564488',
-            offwhite: '#f4f4f4',
-            gold: '#D4AF37',
+            lilacDark: '#3c2a63',
+            lilacBorder: '#d0cbf2',
+            slateText: '#64748b',
+            mintBg: '#ecfdf5',
+            mintText: '#15803d',
+            mintBorder: '#bbf7d0',
           },
           fontFamily: {
             sans: ['Satoshi', 'Inter', 'sans-serif'],
@@ -37,241 +43,243 @@
   <style>
     body {
       font-family: 'Satoshi', sans-serif;
-      background-color: #0d0707;
-      color: #f4f4f4;
+      background-color: #dbe4eb;
+      color: #181111;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-lilac selection:text-charcoal">
+<body class="min-h-screen p-3 sm:p-6 lg:p-8 flex flex-col justify-between selection:bg-lilac selection:text-charcoal font-sans">
 
   <!-- ========================================================================= -->
-  <!-- 1. NAVIGATION BAR                                                          -->
+  <!-- MAIN APPLICATION CANVAS                                                    -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-charcoalDark/90 border-b border-white/10 px-4 md:px-8 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-charcoal to-lilac text-white flex items-center justify-center font-black text-xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+  <div class="max-w-[1360px] mx-auto w-full bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col min-h-[92vh]">
+    
+    <!-- ========================================================================= -->
+    <!-- 1. NAVIGATION BAR                                                          -->
+    <!-- ========================================================================= -->
+    <header class="px-6 sm:px-10 py-5 border-b border-gray-100 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 group cursor-pointer">
+        <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
           📑
         </div>
         <div>
           <div class="flex items-center gap-1.5">
-            <span class="text-base font-black tracking-tight text-white uppercase">PROJECT 65</span>
-            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac/20 text-lilac uppercase tracking-wider">ACADEMIC VIVA</span>
+            <span class="text-base font-black tracking-tight text-charcoal uppercase">PROJECT 65</span>
+            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-lilac text-lilacDark uppercase tracking-wider">ACADEMIC VIVA</span>
           </div>
-          <p class="text-[10px] font-medium text-gray-400 tracking-widest uppercase">DBMS CINEMA SCREENING &amp; TICKETING</p>
+          <p class="text-[10px] font-bold text-slateText tracking-widest uppercase">DBMS CINEMA SCREENING &amp; TICKETING</p>
         </div>
       </a>
 
-      <nav class="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold">
-        <a href="/" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Movies</a>
-        <a href="/concessions" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gourmet Food</a>
-        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">My Tickets</a>
-        <a href="/usher" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition-all">Gate Scanner</a>
-        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilac hover:text-white transition-all">Cinema Manager</a>
-        <a href="/docs" class="px-4 py-1.5 rounded-full text-white bg-white/10 font-bold transition-all">Docs</a>
+      <nav class="hidden md:flex items-center gap-1 bg-panel border border-panelBorder p-1 rounded-full text-xs font-bold">
+        <a href="/" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Now Showing</a>
+        <a href="/concessions" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gourmet Food</a>
+        <a href="/my-tickets" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">My Passes</a>
+        <a href="/usher" class="px-4 py-1.5 rounded-full text-slateText hover:text-charcoal transition-all">Gate Scanner</a>
+        <a href="/admin" class="px-4 py-1.5 rounded-full text-lilacDark hover:text-charcoal transition-all">Cinema Manager</a>
+        <a href="/docs" class="px-4 py-1.5 rounded-full bg-charcoal text-white shadow-sm transition-all">Docs</a>
       </nav>
 
-      <a href="/" class="px-4 py-2 rounded-full border border-white/20 text-xs font-bold hover:bg-white/10 transition-all">
+      <a href="/" class="px-5 py-2 rounded-full bg-charcoal text-white font-bold text-xs hover:bg-black transition-all">
         Launch Website &rarr;
       </a>
-    </div>
-  </header>
+    </header>
 
-  <!-- ========================================================================= -->
-  <!-- 2. PROJECT 65 ACADEMIC SPECIFICATION & PORTFOLIO                         -->
-  <!-- ========================================================================= -->
-  <main class="flex-1 max-w-5xl mx-auto px-4 md:px-8 py-10 w-full space-y-12">
-    
-    <!-- Title Strip -->
-    <div class="space-y-3 border-b border-white/10 pb-8">
-      <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-lilac/20 text-lilac border border-lilac/30">
-        Course Deliverable &bull; Project 65
-      </span>
-      <h1 class="text-3xl sm:text-4xl font-black text-white leading-tight">
-        Design and Implementation of a Database Management System for Cinema Screening and Ticket Booking System
-      </h1>
-      <p class="text-sm text-gray-300 leading-relaxed font-serif italic">
-        "A complete ACID-compliant relational DBMS engine normalized up to 3NF, featuring triggers, concurrency control, 6 business intelligence views, and a dedicated multi-page frontend."
-      </p>
-    </div>
-
-    <!-- Review 1 Deliverables Section -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="w-8 h-8 rounded-full bg-lilac text-charcoal font-black flex items-center justify-center text-xs">R1</span>
-        <div>
-          <h2 class="text-lg font-black text-white">Review 1 (Week 7): Conceptual Design &amp; Relational Schema</h2>
-          <p class="text-xs text-gray-400">Problem identification, scope, users, principal entities, and ER model.</p>
-        </div>
+    <!-- ========================================================================= -->
+    <!-- 2. PROJECT 65 ACADEMIC SPECIFICATION & PORTFOLIO                         -->
+    <!-- ========================================================================= -->
+    <main class="flex-1 max-w-5xl mx-auto p-6 sm:p-10 w-full space-y-12">
+      
+      <!-- Title Strip -->
+      <div class="space-y-3 border-b border-gray-200 pb-8">
+        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-lilac text-lilacDark border border-lilacBorder">
+          Course Deliverable &bull; Project 65
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black text-charcoal leading-tight">
+          Design and Implementation of a Database Management System for Cinema Screening and Ticket Booking System
+        </h1>
+        <p class="text-sm text-slateText leading-relaxed font-serif italic">
+          "A complete ACID-compliant relational DBMS engine normalized up to 3NF, featuring triggers, concurrency control, 6 business intelligence views, and a dedicated multi-page frontend."
+        </p>
       </div>
 
-      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-5">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">1. Principal Entities (16 Relational Tables)</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">1. cinemas</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">2. screens</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">3. seats</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">4. movies</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">5. screenings</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">6. customers</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">7. bookings</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">8. booked_seats</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">9. tickets</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">10. concession_items</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">11. orders</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">12. order_items</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">13. cancellations</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">14. refunds</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">15. payments</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">16. audit_log</div>
-        </div>
-
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider pt-2">2. User Roles &amp; Permissions</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-300">
-          <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
-            <strong class="text-white">Customer:</strong>
-            <p class="text-gray-400">Browses movies, selects showtimes and seats, pre-orders concessions, executes bookings, and manages tickets.</p>
-          </div>
-          <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
-            <strong class="text-white">Cinema Usher / Staff:</strong>
-            <p class="text-gray-400">Scans digital tickets at turnstiles, verifies admission tokens, prevents duplicate entries via live database state check.</p>
-          </div>
-          <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
-            <strong class="text-white">Cinema Manager:</strong>
-            <p class="text-gray-400">Schedules new shows with automated conflict validation, monitors BI occupancy, and manages concession inventory.</p>
+      <!-- Review 1 Deliverables Section -->
+      <section class="space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-charcoal text-white font-black flex items-center justify-center text-xs">R1</span>
+          <div>
+            <h2 class="text-lg font-black text-charcoal">Review 1 (Week 7): Conceptual Design &amp; Relational Schema</h2>
+            <p class="text-xs text-slateText">Problem identification, scope, users, principal entities, and ER model.</p>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Review 2 Deliverables Section -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="w-8 h-8 rounded-full bg-lilac text-charcoal font-black flex items-center justify-center text-xs">R2</span>
-        <div>
-          <h2 class="text-lg font-black text-white">Review 2 (Week 11): 3NF Normalization, Constraints &amp; SQL Views</h2>
-          <p class="text-xs text-gray-400">DDL scripts, triggers, business rules, and 6 analytical views.</p>
-        </div>
-      </div>
-
-      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-5">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">1. Enforced Business Rules &amp; Triggers</h3>
-        <div class="space-y-2.5 text-xs">
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div>
-              <strong class="text-white">One Seat per Screening (Double-Booking Prevention):</strong>
-              <p class="text-gray-400">Enforced by unique partial index <code class="text-lilac">uq_screening_seat_active</code> on <code class="text-lilac">booked_seats(screening_id, seat_id)</code> where status='Booked'.</p>
-            </div>
+        <div class="bg-panel border border-panelBorder rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm">
+          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider">1. Principal Entities (16 Relational Tables)</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono font-bold text-charcoal">
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">1. cinemas</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">2. screens</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">3. seats</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">4. movies</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">5. screenings</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">6. customers</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">7. bookings</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">8. booked_seats</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">9. tickets</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">10. concession_items</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">11. orders</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">12. order_items</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">13. cancellations</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">14. refunds</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">15. payments</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">16. audit_log</div>
           </div>
 
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div>
-              <strong class="text-white">No Screen Overlap (15-Minute Turnaround Buffer):</strong>
-              <p class="text-gray-400">Enforced by triggers <code class="text-lilac">trg_prevent_screen_overlap_insert</code> and <code class="text-lilac">trg_prevent_screen_overlap_update</code> that verify interval intersections on the same screen.</p>
+          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider pt-2">2. User Roles &amp; Permissions</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slateText">
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm space-y-1">
+              <strong class="text-charcoal block">Customer:</strong>
+              <p>Browses movies, selects showtimes and seats, pre-orders concessions, executes bookings, and manages tickets.</p>
             </div>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div>
-              <strong class="text-white">Positive Quantity Constraint:</strong>
-              <p class="text-gray-400">Enforced by table <code class="text-lilac">CHECK (quantity > 0)</code> on concession items and order items.</p>
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm space-y-1">
+              <strong class="text-charcoal block">Cinema Usher / Staff:</strong>
+              <p>Scans digital tickets at turnstiles, verifies admission tokens, prevents duplicate entries via live database state check.</p>
             </div>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div>
-              <strong class="text-white">Cancellation Policy &amp; Refund Limit:</strong>
-              <p class="text-gray-400">Enforced by trigger <code class="text-lilac">trg_check_refund_limit</code> ensuring refund $\le$ original payment amount. Standard policy retains 10% cancellation charge.</p>
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm space-y-1">
+              <strong class="text-charcoal block">Cinema Manager:</strong>
+              <p>Schedules new shows with automated conflict validation, monitors BI occupancy, and manages concession inventory.</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider pt-2">2. The 6 Required SQL Views</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">1. view_show_occupancy</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">2. view_movie_performance</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">3. view_screen_utilization</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">4. view_concession_sales_summary</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">5. view_cancellations_and_refunds</div>
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">6. view_total_revenue_breakdown</div>
+      <!-- Review 2 Deliverables Section -->
+      <section class="space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-charcoal text-white font-black flex items-center justify-center text-xs">R2</span>
+          <div>
+            <h2 class="text-lg font-black text-charcoal">Review 2 (Week 11): 3NF Normalization, Constraints &amp; SQL Views</h2>
+            <p class="text-xs text-slateText">DDL scripts, triggers, business rules, and 6 analytical views.</p>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Review 3 Deliverables Section -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="w-8 h-8 rounded-full bg-lilac text-charcoal font-black flex items-center justify-center text-xs">R3</span>
-        <div>
-          <h2 class="text-lg font-black text-white">Review 3 (Week 16): Application Demo, CRUD &amp; Architecture</h2>
-          <p class="text-xs text-gray-400">Full frontend integration, search, validation, error handling, and dedicated landing pages.</p>
+        <div class="bg-panel border border-panelBorder rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm">
+          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider">1. Enforced Business Rules &amp; Triggers</h3>
+          <div class="space-y-2.5 text-xs">
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-start gap-3">
+              <span class="text-emerald-700 font-black">✓</span>
+              <div>
+                <strong class="text-charcoal">One Seat per Screening (Double-Booking Prevention):</strong>
+                <p class="text-slateText mt-0.5">Enforced by unique partial index <code class="text-charcoal font-bold font-mono">uq_screening_seat_active</code> on <code class="text-charcoal font-bold font-mono">booked_seats(screening_id, seat_id)</code> where status='Booked'.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-start gap-3">
+              <span class="text-emerald-700 font-black">✓</span>
+              <div>
+                <strong class="text-charcoal">No Screen Overlap (15-Minute Turnaround Buffer):</strong>
+                <p class="text-slateText mt-0.5">Enforced by triggers <code class="text-charcoal font-bold font-mono">trg_prevent_screen_overlap_insert</code> and <code class="text-charcoal font-bold font-mono">trg_prevent_screen_overlap_update</code> that verify interval intersections on the same screen.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-start gap-3">
+              <span class="text-emerald-700 font-black">✓</span>
+              <div>
+                <strong class="text-charcoal">Positive Quantity Constraint:</strong>
+                <p class="text-slateText mt-0.5">Enforced by table <code class="text-charcoal font-bold font-mono">CHECK (quantity > 0)</code> on concession items and order items.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-start gap-3">
+              <span class="text-emerald-700 font-black">✓</span>
+              <div>
+                <strong class="text-charcoal">Cancellation Policy &amp; Refund Limit:</strong>
+                <p class="text-slateText mt-0.5">Enforced by trigger <code class="text-charcoal font-bold font-mono">trg_check_refund_limit</code> ensuring refund &le; original payment amount. Standard policy retains 10% cancellation charge.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider pt-2">2. The 6 Required SQL Views</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono font-bold text-charcoal">
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">1. view_show_occupancy</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">2. view_movie_performance</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">3. view_screen_utilization</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">4. view_concession_sales_summary</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">5. view_cancellations_and_refunds</div>
+            <div class="p-3 rounded-2xl bg-white border border-gray-200 shadow-sm">6. view_total_revenue_breakdown</div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-5">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Multi-Page Cinema Portal Structure</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <a href="/" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block">
-            <h4 class="font-bold text-white flex items-center gap-1.5"><span>🎬</span> <span>/ (Home / Movies Catalog)</span></h4>
-            <p class="text-gray-400 mt-1">Hero spotlights, trailer modal, now showing grid, genre filters, and movie discovery.</p>
-          </a>
-
-          <a href="/movie?id=1" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block">
-            <h4 class="font-bold text-white flex items-center gap-1.5"><span>🎥</span> <span>/movie (Movie Landing Page)</span></h4>
-            <p class="text-gray-400 mt-1">Full-bleed movie backdrop, cast &amp; crew, multi-date picker, and showtimes list.</p>
-          </a>
-
-          <a href="/booking?screening_id=1" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block">
-            <h4 class="font-bold text-white flex items-center gap-1.5"><span>💺</span> <span>/booking (Auditorium Seating)</span></h4>
-            <p class="text-gray-400 mt-1">Curved screen, VIP recliner/prime tiers, real-time WebSocket holds, and digital pass issuance.</p>
-          </a>
-
-          <a href="/concessions" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block">
-            <h4 class="font-bold text-white flex items-center gap-1.5"><span>🍿</span> <span>/concessions (Gourmet Dining)</span></h4>
-            <p class="text-gray-400 mt-1">Live inventory stock, category filters, shopping cart, and food order execution.</p>
-          </a>
-
-          <a href="/my-tickets" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block">
-            <h4 class="font-bold text-white flex items-center gap-1.5"><span>🎟️</span> <span>/my-tickets (Passes Wallet)</span></h4>
-            <p class="text-gray-400 mt-1">Boarding passes with scannable barcodes, and 1-click 90% refund cancellation.</p>
-          </a>
-
-          <a href="/usher" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block">
-            <h4 class="font-bold text-white flex items-center gap-1.5"><span>⚡</span> <span>/usher (Gate Check-In)</span></h4>
-            <p class="text-gray-400 mt-1">Real-time gate admission scanner verifying active vs used vs cancelled tickets.</p>
-          </a>
-
-          <a href="/admin" class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-lilac/40 transition-all block sm:col-span-2">
-            <h4 class="font-bold text-lilac flex items-center gap-1.5"><span>📊</span> <span>/admin (Cinema Manager &amp; BI Console)</span></h4>
-            <p class="text-gray-400 mt-1">Show scheduling form with trigger overlap validation, all 6 SQL views, OCC simulator, and EXPLAIN QUERY PLAN.</p>
-          </a>
+      <!-- Review 3 Deliverables Section -->
+      <section class="space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-charcoal text-white font-black flex items-center justify-center text-xs">R3</span>
+          <div>
+            <h2 class="text-lg font-black text-charcoal">Review 3 (Week 16): Application Demo, Architecture &amp; Dedicated Pages</h2>
+            <p class="text-xs text-slateText">Full frontend integration, search, validation, error handling, and dedicated landing pages.</p>
+          </div>
         </div>
-      </div>
-    </section>
 
-  </main>
+        <div class="bg-panel border border-panelBorder rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm">
+          <h3 class="text-xs font-black text-charcoal uppercase tracking-wider">Multi-Page Cinema Portal Structure</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <a href="/" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block">
+              <h4 class="font-black text-charcoal flex items-center gap-1.5"><span>🎬</span> <span>/ (Home / Movies Catalog)</span></h4>
+              <p class="text-slateText mt-1">Hero spotlights, trailer modal, now showing grid, genre filters, and movie discovery.</p>
+            </a>
 
-  <!-- ========================================================================= -->
-  <!-- 4. FOOTER                                                                  -->
-  <!-- ========================================================================= -->
-  <footer class="border-t border-white/10 bg-charcoalDark/80 py-6 px-4 md:px-8 text-xs text-gray-500">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <a href="/movie?id=1" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block">
+              <h4 class="font-black text-charcoal flex items-center gap-1.5"><span>🎥</span> <span>/movie (Movie Landing Page)</span></h4>
+              <p class="text-slateText mt-1">Full-bleed movie backdrop, cast &amp; crew, multi-date picker, and showtimes list.</p>
+            </a>
+
+            <a href="/booking?screening_id=1" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block">
+              <h4 class="font-black text-charcoal flex items-center gap-1.5"><span>💺</span> <span>/booking (Auditorium Seating)</span></h4>
+              <p class="text-slateText mt-1">Curved screen, VIP recliner/prime tiers, real-time WebSocket holds, and digital pass issuance.</p>
+            </a>
+
+            <a href="/concessions" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block">
+              <h4 class="font-black text-charcoal flex items-center gap-1.5"><span>🍿</span> <span>/concessions (Gourmet Dining)</span></h4>
+              <p class="text-slateText mt-1">Live inventory stock, category filters, shopping cart, and food order execution.</p>
+            </a>
+
+            <a href="/my-tickets" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block">
+              <h4 class="font-black text-charcoal flex items-center gap-1.5"><span>🎟️</span> <span>/my-tickets (Passes Wallet)</span></h4>
+              <p class="text-slateText mt-1">Boarding passes with scannable barcodes, and 1-click 90% refund cancellation.</p>
+            </a>
+
+            <a href="/usher" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block">
+              <h4 class="font-black text-charcoal flex items-center gap-1.5"><span>⚡</span> <span>/usher (Gate Check-In)</span></h4>
+              <p class="text-slateText mt-1">Real-time gate admission scanner verifying active vs used vs cancelled tickets.</p>
+            </a>
+
+            <a href="/admin" class="p-5 rounded-2xl bg-white border border-gray-200 hover:border-charcoal shadow-sm transition-all block sm:col-span-2">
+              <h4 class="font-black text-lilacDark flex items-center gap-1.5"><span>📊</span> <span>/admin (Cinema Manager &amp; BI Console)</span></h4>
+              <p class="text-slateText mt-1">Show scheduling form with trigger overlap validation, all 6 SQL views, OCC simulator, and EXPLAIN QUERY PLAN.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- 4. FOOTER                                                                  -->
+    <!-- ========================================================================= -->
+    <footer class="px-6 sm:px-10 py-6 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText">
       <div class="flex items-center gap-2">
-        <span>📑</span>
-        <span class="font-bold text-white">PROJECT 65 TECHNICAL DOCUMENTATION</span>
+        <span class="font-black text-charcoal uppercase">PROJECT 65 TECHNICAL DOCUMENTATION</span>
         <span>&bull; &copy; 2026 DBMS Architecture</span>
       </div>
-      <div class="flex items-center gap-4 text-gray-400">
-        <a href="/" class="hover:text-white">Home</a>
-        <a href="/admin" class="hover:text-lilac">Cinema Manager</a>
-        <a href="/metrics" target="_blank" class="hover:text-white">Prometheus /metrics</a>
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="/" class="hover:text-charcoal">Home</a>
+        <a href="/admin" class="text-lilacDark hover:underline">Cinema Manager</a>
+        <a href="/metrics" target="_blank" class="hover:text-charcoal">Prometheus /metrics</a>
       </div>
-    </div>
-  </footer>
+    </footer>
+
+  </div>
 
 </body>
 </html>
