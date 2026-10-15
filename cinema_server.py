@@ -51,9 +51,12 @@ def init_advanced_db_features():
     
     # 1. Composite & Covering Indexes for high-frequency filters
     cur.execute("CREATE INDEX IF NOT EXISTS idx_screenings_screen_time ON screenings(screen_id, show_date, start_time);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_screenings_date ON screenings(show_date);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_booked_seats_screening_status ON booked_seats(screening_id, status);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_payments_status_method ON payments(payment_status, payment_method);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_seats_screen_tier ON seats(screen_id, seat_tier);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_tickets_barcode ON tickets(barcode_hash, ticket_number);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_bookings_cust ON bookings(customer_id);")
     
     # 2. Add version_id column to seats if not exists for Optimistic Concurrency Control (OCC)
     cur.execute("PRAGMA table_info(seats);")
@@ -543,7 +546,7 @@ def get_screening_seats(screening_id: int):
     
     cur.execute("""
         SELECT s.screening_id, m.title, c.name, sc.screen_number, sc.screen_type,
-               s.show_date, s.start_time, s.end_time, s.ticket_price, sc.screen_id, sc.seating_capacity
+               s.show_date, s.start_time, s.end_time, s.ticket_price, sc.screen_id, sc.seating_capacity, m.movie_id
         FROM screenings s
         JOIN screens sc ON s.screen_id = sc.screen_id
         JOIN cinemas c ON sc.cinema_id = c.cinema_id
@@ -555,7 +558,7 @@ def get_screening_seats(screening_id: int):
         conn.close()
         raise HTTPException(status_code=404, detail="Screening ID not found")
         
-    _, title, cinema, screen_num, screen_type, s_date, s_time, e_time, price, screen_id, capacity = show_info
+    _, title, cinema, screen_num, screen_type, s_date, s_time, e_time, price, screen_id, capacity, movie_id = show_info
     
     cur.execute("""
         SELECT seat_id, row_label, seat_number, seat_tier, base_price, version_id
@@ -592,6 +595,7 @@ def get_screening_seats(screening_id: int):
         
     return {
         "screening_id": screening_id,
+        "movie_id": movie_id,
         "movie_title": title,
         "cinema_name": cinema,
         "screen_number": screen_num,
@@ -803,7 +807,11 @@ def explain_query_plan(view_name: str = "view_show_occupancy"):
         "view_show_occupancy": "SELECT * FROM view_show_occupancy WHERE screening_id = 1",
         "view_movie_performance": "SELECT * FROM view_movie_performance WHERE movie_id = 1",
         "view_total_revenue_breakdown": "SELECT * FROM view_total_revenue_breakdown",
-        "composite_index_search": "SELECT * FROM screenings WHERE screen_id = 1 AND show_date = '2026-10-04'"
+        "composite_index_search": "SELECT * FROM screenings WHERE screen_id = 1 AND show_date = '2026-10-04'",
+        "date_index_search": "SELECT * FROM screenings WHERE show_date = '2026-10-05'",
+        "barcode_index_search": "SELECT * FROM tickets WHERE barcode_hash = 'TXN-HASH-SAMPLE'",
+        "view_concession_sales": "SELECT * FROM view_concession_sales_summary",
+        "view_cancellations": "SELECT * FROM view_cancellations_and_refunds"
     }
     
     query = valid_views.get(view_name, valid_views["view_show_occupancy"])

@@ -245,12 +245,23 @@
 
       <!-- EXPLAIN QUERY PLAN Visualizer -->
       <div class="bg-charcoal border border-white/15 rounded-3xl p-6 space-y-4">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 class="text-base font-black text-white">SQLite B-Tree Query Optimizer (EXPLAIN QUERY PLAN)</h3>
             <p class="text-xs text-gray-400">Demonstrates composite indexing optimization on high-frequency filters.</p>
           </div>
-          <button onclick="fetchExplain()" class="text-xs text-lilac hover:underline font-bold">Refresh Plan</button>
+          <div class="flex items-center gap-2">
+            <select id="explain-query-selector" onchange="fetchExplain()" class="px-3 py-1.5 rounded-xl bg-white/10 border border-white/20 text-xs text-white focus:outline-none">
+              <option value="view_show_occupancy">view_show_occupancy (SQL View)</option>
+              <option value="view_movie_performance">view_movie_performance (SQL View)</option>
+              <option value="composite_index_search">Composite Index (screen_id, show_date)</option>
+              <option value="date_index_search">Covering Index (idx_screenings_date)</option>
+              <option value="barcode_index_search">Gate Scanner Index (idx_tickets_barcode)</option>
+              <option value="view_concession_sales">view_concession_sales_summary</option>
+              <option value="view_cancellations">view_cancellations_and_refunds</option>
+            </select>
+            <button onclick="fetchExplain()" class="px-3 py-1.5 rounded-xl bg-lilac/20 text-lilac hover:bg-lilac/30 text-xs font-bold transition-all">Refresh</button>
+          </div>
         </div>
 
         <div id="explain-box" class="space-y-2 font-mono text-xs"></div>
@@ -639,8 +650,10 @@
 
     async function fetchExplain() {
       const box = document.getElementById('explain-box');
+      const selector = document.getElementById('explain-query-selector');
+      const viewName = selector ? selector.value : 'view_show_occupancy';
       try {
-        const res = await fetch('/api/explain-query');
+        const res = await fetch(`/api/explain-query?view_name=${encodeURIComponent(viewName)}`);
         const d = await res.json();
         box.innerHTML = `
           <div class="text-lilac font-bold mb-2">&bull; Target Query: ${d.executed_query}</div>
@@ -651,7 +664,9 @@
             </div>
           `).join('')}
         `;
-      } catch (e) {}
+      } catch (e) {
+        box.innerHTML = `<span class="text-rose-400">Error loading query plan: ${e.message}</span>`;
+      }
     }
 
     async function loadAuditLogs() {

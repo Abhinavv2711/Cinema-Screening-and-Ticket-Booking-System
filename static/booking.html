@@ -414,12 +414,20 @@
       currentScreeningId = parseInt(urlParams.get('screening_id') || '1');
 
       try {
-        const [seatsRes, concRes] = await Promise.all([
+        const [seatsRes, concRes, pricingRes] = await Promise.all([
           fetch(`/api/screening/${currentScreeningId}/seats`),
-          fetch('/api/concessions')
+          fetch('/api/concessions'),
+          fetch(`/api/dynamic-pricing/${currentScreeningId}`).catch(() => null)
         ]);
         screeningDetails = await seatsRes.json();
         allConcessions = await concRes.json();
+        if (pricingRes && pricingRes.ok) {
+          const pricingData = await pricingRes.json();
+          const tierEl = document.getElementById('top-price-tier');
+          if (tierEl) {
+            tierEl.innerText = `${pricingData.pricing_tier} (Multiplier ${pricingData.multiplier}x)`;
+          }
+        }
 
         renderScreeningHeader(screeningDetails);
         renderSeats(screeningDetails.seats || []);
@@ -434,7 +442,7 @@
       document.title = `Book Seats: ${d.movie_title} | AURA LUXE CINEMAS`;
       document.getElementById('top-movie-title').innerText = d.movie_title;
       document.getElementById('top-screening-meta').innerText = `${d.cinema_name} • Screen ${d.screen_number} (${d.screen_type}) • ${d.show_date} at ${d.start_time}`;
-      document.getElementById('change-showtime-btn').href = `/movie?id=1`;
+      document.getElementById('change-showtime-btn').href = `/movie?id=${d.movie_id || 1}`;
     }
 
     function renderSeats(seats) {
