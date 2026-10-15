@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Placement | DAA Algorithm Engine</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Satoshi Font via Fontshare CDN -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,800,700,600,500,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#231212',
+            charcoalDark: '#170c0c',
+            charcoalHover: '#361c1c',
+            lilac: '#e3e2f7',
+            lilacDark: '#564488',
+            offwhite: '#f4f4f4',
+            canvas: '#F5F6F9',
+          },
+          fontFamily: {
+            sans: ['Satoshi', 'Inter', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background-color: #f4f4f4;
+      color: #231212;
+    }
+    
+    /* Smooth Transitions */
+    * {
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #E5E7EB;
+      height: 6px;
+      border-radius: 9999px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #231212;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(35, 18, 18, 0.3);
+    }
+
+    /* SVG Packet pulse animation */
+    @keyframes pulsePacket {
+      0% { r: 3; opacity: 1; }
+      50% { r: 6; opacity: 0.7; }
+      100% { r: 3; opacity: 1; }
+    }
+    .pulse-dot {
+      animation: pulsePacket 1.8s infinite ease-in-out;
+    }
+
+    /* SVG Dash animation for MST / Traffic flows */
+    @keyframes dashFlow {
+      to {
+        stroke-dashoffset: -20;
+      }
+    }
+    .flow-line {
+      stroke-dasharray: 6 4;
+      animation: dashFlow 1s linear infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+  <!-- ========================================================================= -->
+  <!-- 1. TOP NAVBAR (Matching Images 1 & 2)                                      -->
+  <!-- ========================================================================= -->
+  <header class="max-w-7xl mx-auto bg-white rounded-full px-6 py-3 border border-gray-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+    <!-- Brand / Logo -->
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-charcoal text-white flex items-center justify-center font-bold text-lg shadow-sm">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-sm font-black tracking-tight text-charcoal leading-none uppercase">CLOUD PLACEMENT</h1>
+        <p class="text-[10px] font-bold text-gray-500 tracking-wider uppercase mt-0.5">DAA ALGORITHM ENGINE</p>
+      </div>
+    </div>
+
+    <!-- Center Nav Pills -->
+    <nav class="flex items-center bg-gray-100/90 p-1 rounded-full text-xs font-bold gap-1">
+      <button onclick="setTab('simulation')" id="tab-btn-simulation" class="px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all">Simulation</button>
+      <button onclick="setTab('topologies')" id="tab-btn-topologies" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Topologies</button>
+      <button onclick="setTab('mst')" id="tab-btn-mst" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">MST Backbone</button>
+      <button onclick="setTab('routing')" id="tab-btn-routing" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Routing</button>
+      <button onclick="setTab('benchmarks')" id="tab-btn-benchmarks" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Benchmarks</button>
+    </nav>
+
+    <!-- Right Status & Button -->
+    <div class="flex items-center gap-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 border border-gray-200">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]"></span>
+        <span>FastAPI :8000</span>
+      </div>
+      <button onclick="runSimulation()" class="px-4 py-1.5 rounded-full border border-charcoal text-charcoal hover:bg-charcoal hover:text-white text-xs font-bold transition-all shadow-sm">
+        Launch Solvers &rarr;
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto space-y-6">
+
+    <!-- ========================================================================= -->
+    <!-- 2. HERO DISPLAY SECTION (Matching Image 2)                                -->
+    <!-- ========================================================================= -->
+    <section class="bg-white rounded-[28px] border border-gray-200/80 p-8 md:p-12 shadow-sm">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left Hero Text -->
+        <div class="lg:col-span-7 space-y-5">
+          <span class="inline-block px-3.5 py-1 rounded-full bg-lilac text-lilacDark text-xs font-black tracking-widest uppercase">
+            GRAPH OPTIMIZATION &bull; PROVABLE CORRECTNESS
+          </span>
+          <h2 class="text-4xl md:text-5xl font-black text-charcoal leading-[1.08] tracking-tight">
+            OPTIMIZE YOUR<br>
+            <span class="font-serif italic font-normal text-charcoal">CLOUD MESH</span>
+          </h2>
+          <p class="text-gray-500 text-sm md:text-base leading-relaxed max-w-xl">
+            Formally place virtual machine replicas across multi-tier topologies to minimize end-to-end communication latency while strictly respecting multi-dimensional hardware capacities (CPU Cores &amp; RAM).
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <button onclick="scrollToSimulation()" class="px-6 py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-sm font-bold shadow-md flex items-center gap-2">
+              <span>Run Simulation</span>
+              <span>&darr;</span>
+            </button>
+            <button onclick="toggleMSTView()" class="px-6 py-3 rounded-full bg-gray-100 hover:bg-gray-200 text-charcoal text-sm font-bold border border-gray-200">
+              Explore MST Backbone
+            </button>
+          </div>
+
+          <!-- Hero Metrics -->
+          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100 max-w-lg">
+            <div>
+              <div id="hero-pruned-pct" class="text-2xl md:text-3xl font-black text-charcoal">46.4%</div>
+              <div class="text-xs text-gray-500 font-medium mt-0.5">Links Pruned (MST)</div>
+            </div>
+            <div>
+              <div id="hero-stretch" class="text-2xl md:text-3xl font-black text-charcoal">1.16x</div>
+              <div class="text-xs text-gray-500 font-medium mt-0.5">Avg Latency Stretch</div>
+            </div>
+            <div>
+              <div id="hero-gap" class="text-2xl md:text-3xl font-black text-charcoal">&lt; 1%</div>
+              <div class="text-xs text-gray-500 font-medium mt-0.5">Optimality Gap</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Phone Mockup (from Image 2) -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="w-full max-w-[310px] bg-charcoal p-3 rounded-[40px] shadow-2xl">
+            <div class="bg-white rounded-[32px] p-5 space-y-3.5 text-charcoal">
+              <!-- Camera Island -->
+              <div class="w-20 h-4 bg-charcoal rounded-full mx-auto"></div>
+              
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-black text-sm text-charcoal">Cluster Monitor</h3>
+                  <p class="text-[10px] text-gray-400 font-medium">Live Topology Telemetry</p>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 font-bold text-[10px]">Campus DC</span>
+              </div>
+
+              <!-- Phone Metric Card 1 -->
+              <div class="bg-gray-50/90 border border-gray-100 rounded-2xl p-3.5 flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">AVERAGE LATENCY</div>
+                  <div id="phone-latency" class="text-xl font-black text-charcoal mt-0.5">2.5 ms</div>
+                </div>
+                <div class="w-7 h-7 rounded-full bg-lilac/70 text-lilacDark flex items-center justify-center font-bold text-xs">
+                  ⚡
+                </div>
+              </div>
+
+              <!-- Phone Metric Card 2 -->
+              <div class="bg-gray-50/90 border border-gray-100 rounded-2xl p-3.5">
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CAPACITY INTEGRITY</div>
+                <div id="phone-integrity" class="text-xs font-bold text-emerald-600 flex items-center gap-1.5 mt-1">
+                  <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[9px] font-black">&check;</span>
+                  <span>100% Feasible</span>
+                </div>
+              </div>
+
+              <!-- Phone Progress -->
+              <div class="bg-gray-50/90 border border-gray-100 rounded-2xl p-3.5 space-y-1.5">
+                <div class="flex justify-between text-[10px] font-bold text-gray-500">
+                  <span>Cluster CPU Load</span>
+                  <span id="phone-cpu-pct">11.46%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="phone-cpu-bar" class="bg-charcoal h-full rounded-full transition-all duration-500" style="width: 11.46%;"></div>
+                </div>
+              </div>
+
+              <button onclick="scrollToSimulation()" class="w-full py-2.5 rounded-full bg-charcoal text-white text-xs font-bold hover:bg-charcoalHover transition-all shadow-sm">
+                Inspect Solver Output
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. SIMULATION PARAMETERS (Matching Image 1)                                -->
+    <!-- ========================================================================= -->
+    <section id="simulation-section" class="bg-offwhite border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">SIMULATION PARAMETERS</h3>
+        <span class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">Active Config</span>
+      </div>
+
+      <!-- Parameter Inputs Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-5 items-end">
+        <!-- Topology Preset -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">TOPOLOGY PRESET</label>
+          <select id="param-topology" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <option value="Campus Network Backbone (16 Nodes)" selected>Campus Network Backbone (16 Nodes)</option>
+            <option value="Data Center Fat-Tree (20 Nodes)">Data Center Fat-Tree (20 Nodes)</option>
+          </select>
+        </div>
+
+        <!-- Task Replicas Slider -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-[11px] font-bold uppercase text-gray-600">TASK REPLICAS</label>
+            <span id="replicas-badge" class="px-2 py-0.5 rounded-full bg-charcoal text-white text-[10px] font-bold">10 Tasks</span>
+          </div>
+          <input type="range" id="param-replicas" min="1" max="30" value="10" oninput="updateReplicasLabel(this.value)" class="w-full cursor-pointer">
+        </div>
+
+        <!-- Traffic Profile -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">TRAFFIC</label>
+          <select id="param-traffic" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <option value="Hotspot 80/20" selected>Hotspot 80/20</option>
+            <option value="Uniform Distributed">Uniform Distributed</option>
+            <option value="Locality Sensitive">Locality Sensitive</option>
+          </select>
+        </div>
+
+        <!-- Capacity Mode -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">CAPACITY</label>
+          <select id="param-capacity" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <option value="Normal 100%" selected>Normal 100%</option>
+            <option value="Constrained 80%">Constrained 80%</option>
+            <option value="High Stress 120%">High Stress 120%</option>
+          </select>
+        </div>
+
+        <!-- Optimization Solver -->
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1.5">OPTIMIZATION SOLVER</label>
+          <select id="param-solver" class="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-charcoal focus:outline-none focus:border-charcoal shadow-sm">
+            <option value="Exact Optimizer (Branch & Bound)" selected>Exact Optimizer (Branch & Bound)</option>
+            <option value="Greedy Cost-First">Greedy Cost-First</option>
+            <option value="MST-Guided Heuristic">MST-Guided Heuristic</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="flex justify-end pt-2">
+        <button onclick="runSimulation()" id="execute-btn" class="px-6 py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-xs font-black shadow-md flex items-center gap-2 transition-all">
+          <span>&blacktriangleright;</span>
+          <span>Execute Simulation</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 4. 4 KPI METRIC CARDS (Matching Image 1)                                   -->
+    <!-- ========================================================================= -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Card 1: Average Latency -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">AVERAGE LATENCY</div>
+          <div class="flex items-baseline gap-1 mt-2">
+            <span id="kpi-latency" class="text-3xl font-black text-charcoal">2.5</span>
+            <span class="text-xs font-bold text-gray-400">ms</span>
+          </div>
+        </div>
+        <div id="kpi-cost" class="text-[11px] text-gray-500 font-medium mt-4">Total Cost: 15688.55</div>
+      </div>
+
+      <!-- Card 2: Feasibility Status -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">FEASIBILITY STATUS</div>
+          <div id="kpi-feasibility-val" class="text-3xl font-black text-charcoal mt-2">10 / 10</div>
+        </div>
+        <div id="kpi-feasibility-text" class="text-[11px] font-bold text-emerald-600 flex items-center gap-1 mt-4">
+          <span>&check;</span>
+          <span>100% Capacity Feasible</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Cluster CPU Load -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">CLUSTER CPU LOAD</div>
+          <div id="kpi-cpu-val" class="text-3xl font-black text-charcoal mt-2">11.46%</div>
+        </div>
+        <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mt-4">
+          <div id="kpi-cpu-bar" class="bg-charcoal h-full rounded-full transition-all duration-500" style="width: 11.46%;"></div>
+        </div>
+      </div>
+
+      <!-- Card 4: Solver Runtime -->
+      <div class="bg-white border border-gray-200/90 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="text-[11px] font-black uppercase text-gray-500 tracking-wider">SOLVER RUNTIME</div>
+          <div class="flex items-baseline gap-1 mt-2">
+            <span id="kpi-runtime" class="text-3xl font-black text-charcoal">2.891</span>
+            <span class="text-xs font-bold text-gray-400">ms</span>
+          </div>
+        </div>
+        <div id="kpi-solver-desc" class="text-[11px] text-gray-500 font-medium truncate mt-4">Exact Optimizer (Branch-and-Bound)</div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 5. INTERACTIVE SVG NETWORK TOPOLOGY & PACKET FLOW VISUALIZER               -->
+    <!-- ========================================================================= -->
+    <section class="bg-white border border-gray-200/90 rounded-[24px] p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">TOPOLOGY CANVAS &bull; LIVE PACKET TELEMETRY</h3>
+          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Interactive vector graph showing replica placement, link latencies, and real-time traffic pulses</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleMSTMode()" id="mst-toggle-btn" class="px-4 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-charcoal text-xs font-bold border border-gray-300 shadow-sm transition-all">
+            Show MST Backbone
+          </button>
+          <span class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[10px] font-bold uppercase tracking-wider">
+            SVG Vector Engine
+          </span>
+        </div>
+      </div>
+
+      <!-- SVG Container -->
+      <div class="w-full overflow-x-auto bg-[#FAFAFA] rounded-2xl border border-gray-200 p-2">
+        <svg id="network-svg" viewBox="0 0 960 620" class="w-full h-auto min-w-[750px] max-h-[580px] select-none">
+          <!-- Definitions for markers and glow filters -->
+          <defs>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          
+          <!-- Background Groups -->
+          <g id="svg-edges"></g>
+          <g id="svg-traffic-flows"></g>
+          <g id="svg-nodes"></g>
+        </svg>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-semibold text-gray-600">
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-full bg-charcoal"></span>
+          <span>Core Router (128 Cores)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-full bg-[#564488]"></span>
+          <span>Distribution Switch (64 Cores)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-full bg-gray-400"></span>
+          <span>Edge Compute Node (32 Cores)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-1 bg-[#10B981] rounded-full"></span>
+          <span>Hosted Replica Active</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-1 bg-[#8B5CF6] rounded-full"></span>
+          <span>MST Backbone Link</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 6. SERVER HARDWARE SATURATION PROFILES (Matching Image 1 Bottom)           -->
+    <!-- ========================================================================= -->
+    <section class="bg-offwhite border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">SERVER HARDWARE SATURATION PROFILES (CPU &amp; RAM CORES)</h3>
+        <span id="profiles-count-badge" class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">16 Active Nodes</span>
+      </div>
+
+      <!-- Cards Grid -->
+      <div id="saturation-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-7xl mx-auto text-center text-xs font-medium text-gray-400 py-8">
+    Cloud Placement DAA Algorithm Engine &bull; FastAPI + Uvicorn + Satoshi Zero-Build SPA
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 7. JAVASCRIPT CONTROLLER (VANILLA ES6+ ZERO-BUILD)                         -->
+  <!-- ========================================================================= -->
+  <script>
+    // State
+    let currentTopology = null;
+    let currentSimulation = null;
+    let currentMST = null;
+    let isMSTMode = false;
+
+    // Initialize on page load
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadTopology("Campus Network Backbone (16 Nodes)");
+      await runSimulation();
+    });
+
+    function setTab(tabId) {
+      const tabs = ['simulation', 'topologies', 'mst', 'routing', 'benchmarks'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabId) {
+          btn.className = "px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all";
+        } else {
+          btn.className = "px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all";
+        }
+      });
+
+      if (tabId === 'mst') {
+        isMSTMode = true;
+        document.getElementById('mst-toggle-btn').innerText = "Hide MST Backbone";
+        renderSVG();
+      } else if (tabId === 'simulation') {
+        isMSTMode = false;
+        document.getElementById('mst-toggle-btn').innerText = "Show MST Backbone";
+        renderSVG();
+      }
+    }
+
+    function scrollToSimulation() {
+      document.getElementById('simulation-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateReplicasLabel(val) {
+      document.getElementById('replicas-badge').innerText = `${val} Tasks`;
+    }
+
+    function toggleMSTMode() {
+      isMSTMode = !isMSTMode;
+      const btn = document.getElementById('mst-toggle-btn');
+      btn.innerText = isMSTMode ? "Hide MST Backbone" : "Show MST Backbone";
+      renderSVG();
+    }
+
+    function toggleMSTView() {
+      isMSTMode = true;
+      document.getElementById('mst-toggle-btn').innerText = "Hide MST Backbone";
+      renderSVG();
+      document.getElementById('network-svg').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Load Topology Data from FastAPI
+    async function loadTopology(topoName) {
+      try {
+        const res = await fetch(`/api/topology/${encodeURIComponent(topoName)}`);
+        currentTopology = await res.json();
+
+        // Also fetch MST
+        const mstRes = await fetch('/api/mst', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topology_name: topoName })
+        });
+        currentMST = await mstRes.json();
+
+        // Update hero metrics
+        document.getElementById('hero-pruned-pct').innerText = `${currentMST.links_pruned_percentage}%`;
+        document.getElementById('hero-stretch').innerText = `${currentMST.avg_latency_stretch}x`;
+        document.getElementById('hero-gap').innerText = currentMST.optimality_gap;
+      } catch (e) {
+        console.error("Failed to load topology:", e);
+      }
+    }
+
+    // Run Placement Simulation
+    async function runSimulation() {
+      const topoName = document.getElementById('param-topology').value;
+      const replicas = parseInt(document.getElementById('param-replicas').value);
+      const traffic = document.getElementById('param-traffic').value;
+      const capacity = document.getElementById('param-capacity').value;
+      const solver = document.getElementById('param-solver').value;
+
+      const btn = document.getElementById('execute-btn');
+      btn.innerHTML = `<span>⏳</span><span>Solving...</span>`;
+
+      try {
+        if (!currentTopology || currentTopology.name !== topoName) {
+          await loadTopology(topoName);
+        }
+
+        const res = await fetch('/api/simulate-placement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            topology_name: topoName,
+            task_replicas: replicas,
+            traffic_profile: traffic,
+            capacity_mode: capacity,
+            solver: solver
+          })
+        });
+
+        currentSimulation = await res.json();
+        updateUI();
+        renderSVG();
+      } catch (e) {
+        console.error("Simulation error:", e);
+      } finally {
+        btn.innerHTML = `<span>&blacktriangleright;</span><span>Execute Simulation</span>`;
+      }
+    }
+
+    // Update KPI and Dashboard Widgets
+    function updateUI() {
+      if (!currentSimulation) return;
+      const sim = currentSimulation;
+
+      // KPIs
+      document.getElementById('kpi-latency').innerText = sim.average_latency_ms.toFixed(1);
+      document.getElementById('kpi-cost').innerText = `Total Cost: ${sim.total_cost.toFixed(2)}`;
+      document.getElementById('kpi-feasibility-val').innerText = sim.feasibility_status;
+      document.getElementById('kpi-feasibility-text').innerHTML = `<span>&check;</span><span>${sim.feasibility_text}</span>`;
+      document.getElementById('kpi-cpu-val').innerText = `${sim.cluster_cpu_load_pct}%`;
+      document.getElementById('kpi-cpu-bar').style.width = `${Math.min(sim.cluster_cpu_load_pct, 100)}%`;
+      document.getElementById('kpi-runtime').innerText = sim.solver_runtime_ms.toFixed(3);
+      document.getElementById('kpi-solver-desc').innerText = sim.solver_name;
+
+      // Phone preview
+      document.getElementById('phone-latency').innerText = `${sim.average_latency_ms.toFixed(1)} ms`;
+      document.getElementById('phone-cpu-pct').innerText = `${sim.cluster_cpu_load_pct}%`;
+      document.getElementById('phone-cpu-bar').style.width = `${Math.min(sim.cluster_cpu_load_pct, 100)}%`;
+
+      // Saturation Profiles Grid
+      renderSaturationGrid(sim.saturation_profiles);
+    }
+
+    // Render Saturation Grid
+    function renderSaturationGrid(profiles) {
+      const grid = document.getElementById('saturation-grid');
+      grid.innerHTML = '';
+
+      profiles.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-gray-200/90 rounded-2xl p-4 shadow-sm hover:border-charcoal transition-all";
+        
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-xs text-charcoal">${p.label}</span>
+            <span class="text-[11px] font-bold text-gray-500">${p.cpu_pct}%</span>
+          </div>
+          <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-3">
+            <div class="bg-charcoal h-full rounded-full transition-all duration-500" style="width: ${Math.min(p.cpu_pct, 100)}%;"></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] font-semibold text-gray-400">
+            <span>CPU: ${p.cpu_used}/${p.cpu_total}</span>
+            <span>RAM: ${p.ram_used}G</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // =========================================================================
+    // SVG VECTOR GRAPH & REAL-TIME ANIMATIONS
+    // =========================================================================
+    function renderSVG() {
+      if (!currentTopology) return;
+
+      const gEdges = document.getElementById('svg-edges');
+      const gTraffic = document.getElementById('svg-traffic-flows');
+      const gNodes = document.getElementById('svg-nodes');
+
+      gEdges.innerHTML = '';
+      gTraffic.innerHTML = '';
+      gNodes.innerHTML = '';
+
+      const nodeMap = {};
+      currentTopology.nodes.forEach(n => { nodeMap[n.id] = n; });
+
+      // Build MST set
+      const mstSet = new Set();
+      if (currentMST && currentMST.edges) {
+        currentMST.edges.forEach(e => {
+          if (e.is_mst) {
+            mstSet.add(`${e.source}-${e.target}`);
+            mstSet.add(`${e.target}-${e.source}`);
+          }
+        });
+      }
+
+      // Render Edges
+      currentTopology.edges.forEach(e => {
+        const n1 = nodeMap[e.source];
+        const n2 = nodeMap[e.target];
+        if (!n1 || !n2) return;
+
+        const isMSTEdge = mstSet.has(`${e.source}-${e.target}`);
+        
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", n1.x);
+        line.setAttribute("y1", n1.y);
+        line.setAttribute("x2", n2.x);
+        line.setAttribute("y2", n2.y);
+
+        if (isMSTMode) {
+          if (isMSTEdge) {
+            line.setAttribute("stroke", "#8B5CF6");
+            line.setAttribute("stroke-width", "3.5");
+            line.setAttribute("opacity", "0.95");
+          } else {
+            line.setAttribute("stroke", "#E5E7EB");
+            line.setAttribute("stroke-width", "1");
+            line.setAttribute("stroke-dasharray", "4 4");
+            line.setAttribute("opacity", "0.3");
+          }
+        } else {
+          line.setAttribute("stroke", "#CBD5E1");
+          line.setAttribute("stroke-width", "1.5");
+          line.setAttribute("opacity", "0.65");
+        }
+        gEdges.appendChild(line);
+
+        // Latency tag at midpoint
+        const midX = (n1.x + n2.x) / 2;
+        const midY = (n1.y + n2.y) / 2;
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", midX);
+        text.setAttribute("y", midY - 3);
+        text.setAttribute("font-size", "9");
+        text.setAttribute("font-weight", "600");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("fill", isMSTMode && isMSTEdge ? "#7C3AED" : "#94A3B8");
+        text.textContent = `${e.latency_ms}ms`;
+        gEdges.appendChild(text);
+      });
+
+      // Render Active Traffic Paths (Packet Animations)
+      if (currentSimulation && currentSimulation.active_traffic_paths) {
+        currentSimulation.active_traffic_paths.forEach(tp => {
+          const n1 = nodeMap[tp.source];
+          const n2 = nodeMap[tp.target];
+          if (!n1 || !n2) return;
+
+          // Animated Dash Flow Line
+          const flow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          flow.setAttribute("x1", n1.x);
+          flow.setAttribute("y1", n1.y);
+          flow.setAttribute("x2", n2.x);
+          flow.setAttribute("y2", n2.y);
+          flow.setAttribute("stroke", "#10B981");
+          flow.setAttribute("stroke-width", "2");
+          flow.setAttribute("class", "flow-line");
+          flow.setAttribute("opacity", "0.8");
+          gTraffic.appendChild(flow);
+
+          // Glowing pulse dot at source
+          const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          dot.setAttribute("cx", (n1.x * 2 + n2.x) / 3);
+          dot.setAttribute("cy", (n1.y * 2 + n2.y) / 3);
+          dot.setAttribute("r", "4");
+          dot.setAttribute("fill", "#10B981");
+          dot.setAttribute("class", "pulse-dot");
+          gTraffic.appendChild(dot);
+        });
+      }
+
+      // Saturation mapping for node rings
+      const satMap = {};
+      if (currentSimulation && currentSimulation.saturation_profiles) {
+        currentSimulation.saturation_profiles.forEach(p => { satMap[p.node_id] = p; });
+      }
+
+      // Render Nodes
+      currentTopology.nodes.forEach(n => {
+        const sat = satMap[n.id] || { cpu_pct: 0, tasks_count: 0 };
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("transform", `translate(${n.x}, ${n.y})`);
+        g.setAttribute("class", "cursor-pointer");
+
+        const radius = n.tier === "Core" ? 22 : (n.tier === "Distribution" ? 18 : 15);
+        const circumference = 2 * Math.PI * (radius + 4);
+        const strokeDash = (sat.cpu_pct / 100) * circumference;
+
+        // Capacity Utilization Ring
+        if (sat.cpu_pct > 0) {
+          const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          ring.setAttribute("r", radius + 4);
+          ring.setAttribute("fill", "none");
+          ring.setAttribute("stroke", "#10B981");
+          ring.setAttribute("stroke-width", "3");
+          ring.setAttribute("stroke-dasharray", `${strokeDash} ${circumference}`);
+          ring.setAttribute("transform", "rotate(-90)");
+          g.appendChild(ring);
+        }
+
+        // Node Main Body
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", radius);
+        const fillColor = n.tier === "Core" ? "#231212" : (n.tier === "Distribution" ? "#564488" : "#64748B");
+        circle.setAttribute("fill", fillColor);
+        circle.setAttribute("stroke", "#FFFFFF");
+        circle.setAttribute("stroke-width", "2.5");
+        circle.setAttribute("filter", "drop-shadow(0 2px 4px rgba(0,0,0,0.1))");
+        g.appendChild(circle);
+
+        // Hosted Tasks Badge if any
+        if (sat.tasks_count > 0) {
+          const badge = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          badge.setAttribute("cx", radius - 2);
+          badge.setAttribute("cy", -radius + 2);
+          badge.setAttribute("r", "7");
+          badge.setAttribute("fill", "#10B981");
+          badge.setAttribute("stroke", "#FFFFFF");
+          badge.setAttribute("stroke-width", "1.5");
+          g.appendChild(badge);
+
+          const badgeText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          badgeText.setAttribute("x", radius - 2);
+          badgeText.setAttribute("y", -radius + 5);
+          badgeText.setAttribute("font-size", "8");
+          badgeText.setAttribute("font-weight", "900");
+          badgeText.setAttribute("text-anchor", "middle");
+          badgeText.setAttribute("fill", "#FFFFFF");
+          badgeText.textContent = sat.tasks_count;
+          g.appendChild(badgeText);
+        }
+
+        // Node Label
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("y", radius + 15);
+        label.setAttribute("font-size", "11");
+        label.setAttribute("font-weight", "800");
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("fill", "#231212");
+        label.textContent = n.label;
+        g.appendChild(label);
+
+        gNodes.appendChild(g);
+      });
+    }
+  </script>
+</body>
+</html>
