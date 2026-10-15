@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cinema Screening & Ticket Booking Engine | DBMS Architecture</title>
+  <title>Cinema Screening & Ticket Booking Engine | Enterprise DBMS Architecture</title>
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -70,6 +70,16 @@
     .pulse-selected {
       animation: pulseSeat 1.5s infinite ease-in-out;
     }
+    
+    /* Lock pulse */
+    @keyframes pulseLock {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    .seat-locked-pulse {
+      animation: pulseLock 1.2s infinite ease-in-out;
+    }
   </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -85,27 +95,32 @@
       </div>
       <div>
         <h1 class="text-sm font-black tracking-tight text-charcoal leading-none uppercase">CINEMA SCREENING &amp; TICKETING</h1>
-        <p class="text-[10px] font-bold text-gray-500 tracking-wider uppercase mt-0.5">DBMS ACID RESERVATION ENGINE</p>
+        <p class="text-[10px] font-bold text-gray-500 tracking-wider uppercase mt-0.5">DBMS ENTERPRISE ENGINE</p>
       </div>
     </div>
 
     <!-- Center Nav Pills -->
-    <nav class="flex items-center bg-gray-100/90 p-1 rounded-full text-xs font-bold gap-1">
-      <button onclick="setTab('booking')" id="tab-btn-booking" class="px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all">Reservation</button>
-      <button onclick="setTab('screenings')" id="tab-btn-screenings" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Screenings</button>
-      <button onclick="setTab('concessions')" id="tab-btn-concessions" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Concessions</button>
-      <button onclick="setTab('usher')" id="tab-btn-usher" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Usher Gate</button>
-      <button onclick="setTab('reports')" id="tab-btn-reports" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all">Executive BI</button>
+    <nav class="flex items-center bg-gray-100/90 p-1 rounded-full text-xs font-bold gap-1 overflow-x-auto">
+      <button onclick="setTab('booking')" id="tab-btn-booking" class="px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all whitespace-nowrap">Reservation</button>
+      <button onclick="setTab('screenings')" id="tab-btn-screenings" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap">Screenings</button>
+      <button onclick="setTab('concessions')" id="tab-btn-concessions" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap">Concessions</button>
+      <button onclick="setTab('gantt')" id="tab-btn-gantt" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap">15m Buffers</button>
+      <button onclick="setTab('concurrency')" id="tab-btn-concurrency" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap">OCC &amp; Locks</button>
+      <button onclick="setTab('usher')" id="tab-btn-usher" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap">Usher Gate</button>
+      <button onclick="setTab('reports')" id="tab-btn-reports" class="px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap">Executive BI</button>
     </nav>
 
     <!-- Right Status & Button -->
     <div class="flex items-center gap-3">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 border border-gray-200">
+      <div id="ws-status-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 border border-gray-200">
         <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]"></span>
-        <span>FastAPI :8000</span>
+        <span id="ws-status-text">WS Mesh Connected</span>
       </div>
-      <button onclick="runDiagnosticsModal()" class="px-4 py-1.5 rounded-full border border-charcoal text-charcoal hover:bg-charcoal hover:text-white text-xs font-bold transition-all shadow-sm">
-        Run Diagnostics &rarr;
+      <a href="/metrics" target="_blank" class="px-3.5 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 text-xs font-bold transition-all shadow-sm">
+        Prometheus &rarr;
+      </a>
+      <button onclick="runDiagnosticsModal()" class="px-3.5 py-1.5 rounded-full border border-charcoal text-charcoal hover:bg-charcoal hover:text-white text-xs font-bold transition-all shadow-sm">
+        Diagnostics &rarr;
       </button>
     </div>
   </header>
@@ -120,7 +135,7 @@
         <!-- Left Hero Text -->
         <div class="lg:col-span-7 space-y-5">
           <span class="inline-block px-3.5 py-1 rounded-full bg-lilac text-lilacDark text-xs font-black tracking-widest uppercase">
-            ACID TRANSACTIONS &bull; ZERO OVERLAP GUARANTEE
+            ACID TRANSACTIONS &bull; OPTIMISTIC LOCKING &bull; REAL-TIME WEBSOCKETS
           </span>
           <h2 class="text-4xl md:text-5xl font-black text-charcoal leading-[1.08] tracking-tight">
             OPTIMIZE YOUR<br>
@@ -134,8 +149,8 @@
               <span>Reserve Seats Now</span>
               <span>&darr;</span>
             </button>
-            <button onclick="setTab('reports')" class="px-6 py-3 rounded-full bg-gray-100 hover:bg-gray-200 text-charcoal text-sm font-bold border border-gray-200">
-              Explore Executive BI
+            <button onclick="setTab('concurrency')" class="px-6 py-3 rounded-full bg-gray-100 hover:bg-gray-200 text-charcoal text-sm font-bold border border-gray-200">
+              Explore OCC &amp; Locks
             </button>
           </div>
 
@@ -217,7 +232,10 @@
     <section id="reservation-section" class="bg-offwhite border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
       <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
         <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">RESERVATION &amp; SCREENING PARAMETERS</h3>
-        <span class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">Active Config</span>
+        <div class="flex items-center gap-2">
+          <span id="dynamic-pricing-tag" class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[11px] font-bold shadow-sm">Base Rate: Rs. 450</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-gray-200 text-[11px] font-bold text-gray-600 shadow-sm">Idempotency Enabled</span>
+        </div>
       </div>
 
       <!-- Parameter Inputs Grid -->
@@ -265,6 +283,8 @@
           <span id="selected-summary-text">0 Seats Selected</span>
           <span class="text-gray-300">|</span>
           <span class="text-charcoal font-black text-sm" id="selected-total-text">Total: Rs. 0.00</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-[10px] font-mono text-gray-400" id="idempotency-key-display">IDEMPOTENCY: Active</span>
         </div>
         <button onclick="executeBooking()" id="book-btn" class="px-6 py-3 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-xs font-black shadow-md flex items-center gap-2 transition-all disabled:opacity-50" disabled>
           <span>&blacktriangleright;</span>
@@ -332,7 +352,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">2D AUDITORIUM TOPOLOGY &bull; INTERACTIVE SEATING MATRIX</h3>
-          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Click seats in the SVG vector canvas to toggle selection with real-time capacity rings</p>
+          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Click seats in the SVG vector canvas. Real-time WebSocket broadcasts temporary locks to peer clients.</p>
         </div>
         <div class="flex items-center gap-2">
           <span class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[10px] font-bold uppercase tracking-wider">
@@ -363,6 +383,10 @@
           <span>Selected</span>
         </div>
         <div class="flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-md bg-amber-200 border border-amber-400"></span>
+          <span>Locked in WS (Peer User)</span>
+        </div>
+        <div class="flex items-center gap-2">
           <span class="w-3.5 h-3.5 rounded-md bg-red-100 text-red-500 text-[9px] font-bold flex items-center justify-center">&cross;</span>
           <span>Booked / Occupied</span>
         </div>
@@ -378,7 +402,7 @@
       </div>
     </section>
 
-    <!-- Digital Boarding Pass Modal / Container (rendered upon booking) -->
+    <!-- Digital Boarding Pass Modal / Container -->
     <div id="confirmed-pass-container" class="hidden"></div>
 
     <!-- ========================================================================= -->
@@ -397,20 +421,97 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 7. GOURMET CONCESSIONS, USHER GATE & EXECUTIVE BI TABS                    -->
+    <!-- 7. GANTT CLEAN-DOWN TIMELINE (Visualizing the 15-Minute Buffers)           -->
     <!-- ========================================================================= -->
+    <section id="gantt-section" class="hidden bg-white border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <div>
+          <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">AUDITORIUM TURNAROUND TIMELINE &bull; 15-MINUTE CLEANING BUFFERS</h3>
+          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Visual verification of the trg_prevent_screen_overlap_insert trigger preventing back-to-back screening collisions</p>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[11px] font-bold shadow-sm">Trigger Verified</span>
+      </div>
+
+      <div id="timeline-screens-container" class="space-y-4">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 8. OCC & CONCURRENCY LAB (RACE CONDITION SIMULATION & EXPLAIN QUERY PLAN) -->
+    <!-- ========================================================================= -->
+    <section id="concurrency-section" class="hidden bg-white border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
+        <div>
+          <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">CONCURRENCY LAB &bull; OCC RACE CONDITION &amp; EXPLAIN QUERY PLAN</h3>
+          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Demonstrates Optimistic Concurrency Control (OCC) versioning alongside SQLite EXPLAIN QUERY PLAN execution trees</p>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold shadow-sm">OCC Active (version_id)</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- OCC Simulator Card -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 space-y-4">
+          <h4 class="text-xs font-black uppercase text-charcoal tracking-wider">⚡ SIMULATE TWO CONCURRENT CLIENTS GRABBING SEAT #14</h4>
+          <p class="text-xs text-gray-600 leading-relaxed">
+            Simulates Thread A and Thread B simultaneously reading <code>version_id = 1</code>. Thread A commits and increments version to 2. Thread B's update detects the stale version and is aborted with an <code>OptimisticLockException (409 Conflict)</code>.
+          </p>
+          <button onclick="simulateOCCRace()" class="px-5 py-2.5 rounded-full bg-charcoal hover:bg-charcoalHover text-white text-xs font-bold shadow-md transition-all">
+            Execute OCC Race Simulation
+          </button>
+          <div id="occ-result-box" class="hidden p-4 rounded-xl text-xs font-mono bg-white border border-gray-200 space-y-1"></div>
+        </div>
+
+        <!-- EXPLAIN QUERY PLAN Inspector Card -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 space-y-4">
+          <div class="flex justify-between items-center">
+            <h4 class="text-xs font-black uppercase text-charcoal tracking-wider">🔍 SQL EXPLAIN QUERY PLAN INSPECTOR</h4>
+            <select id="query-plan-select" onchange="runExplainQueryPlan()" class="bg-white border border-gray-300 rounded-xl px-2.5 py-1.5 text-xs font-bold text-charcoal">
+              <option value="view_show_occupancy">view_show_occupancy</option>
+              <option value="view_movie_performance">view_movie_performance</option>
+              <option value="view_total_revenue_breakdown">view_total_revenue_breakdown</option>
+              <option value="composite_index_search">Composite Index Search</option>
+            </select>
+          </div>
+          <p class="text-xs text-gray-600 leading-relaxed">
+            Directly executes SQLite's <code>EXPLAIN QUERY PLAN</code> to inspect index scans, covering indexes, and B-Tree lookups.
+          </p>
+          <div id="query-plan-result" class="p-3 rounded-xl text-xs font-mono bg-white border border-gray-200 max-h-[160px] overflow-y-auto space-y-1 text-gray-700">
+            Select a view above to inspect execution tree...
+          </div>
+        </div>
+      </div>
+
+      <!-- Immutable Audit Log Trail -->
+      <div class="border-t border-gray-200/60 pt-4">
+        <h4 class="text-xs font-black uppercase text-charcoal mb-3">IMMUTABLE AUDIT LOG TRAIL (EVENT SOURCING)</h4>
+        <div id="audit-log-container" class="overflow-x-auto border border-gray-200 rounded-2xl max-h-[220px]"></div>
+      </div>
+    </section>
+
+    <!-- Gourmet Concessions Section -->
     <section id="concessions-section" class="hidden bg-white border border-gray-200/90 rounded-[24px] p-6 md:p-8 space-y-6">
       <div class="flex items-center justify-between border-b border-gray-200/60 pb-3">
-        <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">GOURMET CONCESSIONS &amp; IN-SEAT DELIVERY</h3>
+        <div>
+          <h3 class="text-xs font-black tracking-widest uppercase text-charcoal">GOURMET CONCESSIONS &amp; INVENTORY FORECASTING</h3>
+          <p class="text-[11px] text-gray-500 font-medium mt-0.5">Predictive model links ticket sales by genre to forecast snack/drink demand and prevent stockouts</p>
+        </div>
         <span class="px-3 py-1 rounded-full bg-lilac/70 text-lilacDark text-[11px] font-bold shadow-sm">Auto Stock Depletion</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <div class="md:col-span-8">
+        <div class="md:col-span-8 space-y-6">
           <div id="concessions-menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Populated via API -->
           </div>
+
+          <!-- Predictive Forecasting Table -->
+          <div class="border-t border-gray-200/80 pt-4">
+            <h4 class="text-xs font-black uppercase text-charcoal mb-2">PREDICTIVE RESTOCK FORECAST (BY GENRE DEMAND)</h4>
+            <div id="concession-forecast-container" class="overflow-x-auto border border-gray-200 rounded-xl"></div>
+          </div>
         </div>
+
         <div class="md:col-span-4 bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-4">
           <h4 class="text-xs font-black uppercase text-charcoal tracking-wider">🛍️ YOUR ORDER TRAY</h4>
           <div id="tray-items-list" class="text-xs space-y-2 text-gray-600 min-h-[120px]">
@@ -479,7 +580,7 @@
   </main>
 
   <footer class="max-w-7xl mx-auto text-center text-xs font-medium text-gray-400 py-8">
-    Cinema Screening &amp; Ticket Booking System &bull; DBMS Project-Based Learning &bull; FastAPI + Uvicorn + Satoshi Zero-Build UI
+    Cinema Screening &amp; Ticket Booking System &bull; Enterprise DBMS Architecture &bull; FastAPI + WebSockets + SQLite3 ACID
   </footer>
 
   <!-- ========================================================================= -->
@@ -489,30 +590,36 @@
     let screeningsList = [];
     let currentScreeningSeats = null;
     let selectedSeatIds = new Set();
+    let peerLockedSeatIds = new Set();
     let currentUnitPrice = 0;
     let trayCart = {};
+    let ws = null;
 
     document.addEventListener("DOMContentLoaded", async () => {
       await loadScreenings();
       await loadSaturationProfiles();
       await loadConcessions();
       await loadReports();
+      await loadTimelineGantt();
+      await loadAuditLogs();
+      runExplainQueryPlan();
     });
 
     function setTab(tabName) {
-      const tabs = ['booking', 'screenings', 'concessions', 'usher', 'reports'];
+      const tabs = ['booking', 'screenings', 'concessions', 'gantt', 'concurrency', 'usher', 'reports'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
         if (btn) {
           btn.className = (t === tabName)
-            ? "px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all"
-            : "px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all";
+            ? "px-5 py-2 rounded-full bg-charcoal text-white shadow-sm transition-all whitespace-nowrap"
+            : "px-5 py-2 rounded-full text-gray-600 hover:text-charcoal transition-all whitespace-nowrap";
         }
       });
 
-      // Show/Hide sections
       document.getElementById('reservation-section').style.display = (tabName === 'booking' || tabName === 'screenings') ? 'block' : 'none';
       document.getElementById('auditorium-canvas-section').style.display = (tabName === 'booking' || tabName === 'screenings') ? 'block' : 'none';
+      document.getElementById('gantt-section').style.display = (tabName === 'gantt') ? 'block' : 'none';
+      document.getElementById('concurrency-section').style.display = (tabName === 'concurrency') ? 'block' : 'none';
       document.getElementById('concessions-section').style.display = (tabName === 'concessions') ? 'block' : 'none';
       document.getElementById('usher-section').style.display = (tabName === 'usher') ? 'block' : 'none';
       document.getElementById('reports-section').style.display = (tabName === 'reports') ? 'block' : 'none';
@@ -520,6 +627,45 @@
 
     function scrollToReservation() {
       document.getElementById('reservation-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Connect WebSocket for live seat locking
+    function connectWebSocket(screeningId) {
+      if (ws) {
+        ws.close();
+      }
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${location.host}/ws/screening/${screeningId}`;
+      
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        document.getElementById('ws-status-badge').innerHTML = `
+          <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]"></span>
+          <span>WS Mesh Connected</span>
+        `;
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.event === "INITIAL_LOCKS") {
+          peerLockedSeatIds = new Set(Object.keys(data.locks).map(Number));
+          renderSVGSeats();
+        } else if (data.event === "SEAT_LOCKED") {
+          peerLockedSeatIds.add(data.seat_id);
+          renderSVGSeats();
+        } else if (data.event === "SEAT_RELEASED") {
+          peerLockedSeatIds.delete(data.seat_id);
+          renderSVGSeats();
+        }
+      };
+
+      ws.onclose = () => {
+        document.getElementById('ws-status-badge').innerHTML = `
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>WS Reconnecting...</span>
+        `;
+      };
     }
 
     // Load screenings from FastAPI
@@ -531,7 +677,7 @@
         const select = document.getElementById('param-screening');
         select.innerHTML = '';
 
-        screeningsList.forEach((s, idx) => {
+        screeningsList.forEach((s) => {
           const opt = document.createElement('option');
           opt.value = s.screening_id;
           opt.textContent = `${s.movie_title} (${s.show_date} @ ${s.start_time}) - ${s.cinema_name} Scrn ${s.screen_number} [Rs.${parseInt(s.ticket_price)}]`;
@@ -556,9 +702,15 @@
     // Load Seat Matrix for screening
     async function loadScreeningSeats(screeningId) {
       try {
+        connectWebSocket(screeningId);
         const res = await fetch(`/api/screening/${screeningId}/seats`);
         currentScreeningSeats = await res.json();
         currentUnitPrice = currentScreeningSeats.ticket_price;
+
+        // Fetch dynamic pricing
+        const dynRes = await fetch(`/api/dynamic-pricing/${screeningId}`);
+        const dynData = await dynRes.json();
+        document.getElementById('dynamic-pricing-tag').innerText = `${dynData.pricing_tier}: Rs. ${dynData.dynamic_ticket_price}`;
 
         renderSVGSeats();
         calculateTotal();
@@ -581,7 +733,6 @@
       gSeats.innerHTML = '';
 
       const seats = currentScreeningSeats.seats;
-      // Group by row_label
       const rows = {};
       seats.forEach(s => {
         if (!rows[s.row_label]) rows[s.row_label] = [];
@@ -614,12 +765,13 @@
           const x = rowStartX + sIdx * seatGap;
           const isSelected = selectedSeatIds.has(seat.seat_id);
           const isBooked = seat.is_booked;
+          const isPeerLocked = peerLockedSeatIds.has(seat.seat_id);
 
           const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
           g.setAttribute("transform", `translate(${x}, ${y})`);
-          g.setAttribute("class", isBooked ? "cursor-not-allowed" : "cursor-pointer");
+          g.setAttribute("class", (isBooked || isPeerLocked) ? "cursor-not-allowed" : "cursor-pointer");
 
-          if (!isBooked) {
+          if (!isBooked && !isPeerLocked) {
             g.onclick = () => toggleSeat(seat.seat_id);
           }
 
@@ -634,6 +786,10 @@
           if (isBooked) {
             rect.setAttribute("fill", "#FEE2E2");
             rect.setAttribute("stroke", "#FECACA");
+          } else if (isPeerLocked) {
+            rect.setAttribute("fill", "#FEF3C7");
+            rect.setAttribute("stroke", "#F59E0B");
+            rect.setAttribute("class", "seat-locked-pulse");
           } else if (isSelected) {
             rect.setAttribute("fill", "#231212");
             rect.setAttribute("stroke", "#231212");
@@ -655,6 +811,9 @@
           if (isBooked) {
             text.setAttribute("fill", "#EF4444");
             text.textContent = "✕";
+          } else if (isPeerLocked) {
+            text.setAttribute("fill", "#B45309");
+            text.textContent = "🔒";
           } else if (isSelected) {
             text.setAttribute("fill", "#FFFFFF");
             text.textContent = String(seat.seat_number).padStart(2, '0');
@@ -683,8 +842,14 @@
     function toggleSeat(seatId) {
       if (selectedSeatIds.has(seatId)) {
         selectedSeatIds.delete(seatId);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ action: "RELEASE_SEAT", seat_id: seatId }));
+        }
       } else {
         selectedSeatIds.add(seatId);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ action: "LOCK_SEAT", seat_id: seatId, user: "Active Guest" }));
+        }
       }
       renderSVGSeats();
       calculateTotal();
@@ -705,7 +870,7 @@
       document.getElementById('book-btn').disabled = (count === 0);
     }
 
-    // Execute atomic booking transaction
+    // Execute atomic booking transaction with Idempotency Key
     async function executeBooking() {
       const sid = parseInt(document.getElementById('param-screening').value);
       const custId = parseInt(document.getElementById('param-customer').value);
@@ -715,10 +880,17 @@
       const btn = document.getElementById('book-btn');
       btn.innerHTML = `<span>⏳</span><span>Processing ACID Transaction...</span>`;
 
+      // Generate UUID v4 for Idempotency Key
+      const idempotencyKey = "IDEM-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9);
+      document.getElementById('idempotency-key-display').innerText = `KEY: ${idempotencyKey.substr(0, 16)}...`;
+
       try {
         const res = await fetch('/api/book-tickets', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Idempotency-Key': idempotencyKey
+          },
           body: JSON.stringify({
             screening_id: sid,
             seat_ids: Array.from(selectedSeatIds),
@@ -734,10 +906,10 @@
           return;
         }
 
-        // Render Apple Wallet / Stripe style Digital Boarding Pass
         renderConfirmedPass(data);
         selectedSeatIds.clear();
         await loadScreeningSeats(sid);
+        await loadAuditLogs();
       } catch (e) {
         console.error("Booking error:", e);
       } finally {
@@ -786,14 +958,166 @@
           ${ticketsList}
         </div>
 
-        <div class="text-[10px] text-gray-400 font-mono pt-2 border-t border-gray-100">
-          TXN REF: ${data.transaction_reference}
+        <div class="text-[10px] text-gray-400 font-mono pt-2 border-t border-gray-100 flex justify-between">
+          <span>TXN REF: ${data.transaction_reference}</span>
+          <span>IDEMPOTENT REPLAY: ${data.is_idempotent_replay ? 'YES (Cached)' : 'NO (Fresh)'}</span>
         </div>
       `;
       passDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Load Saturation Profiles
+    // Gantt 15-Minute Turnaround Buffers
+    async function loadTimelineGantt() {
+      try {
+        const res = await fetch('/api/schedule-timeline');
+        const screens = await res.json();
+        const container = document.getElementById('timeline-screens-container');
+        container.innerHTML = '';
+
+        screens.forEach(sc => {
+          const blockHtml = sc.blocks.map(b => `
+            <div class="flex items-center gap-2">
+              <div class="bg-charcoal text-white text-[11px] font-bold px-3 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+                <span>🎬 ${b.movie}</span>
+                <span class="text-gray-300 font-mono">(${b.start} - ${b.end})</span>
+              </div>
+              <div class="bg-lilac text-lilacDark text-[10px] font-black px-2.5 py-1.5 rounded-lg border border-lilacDark/20 flex items-center gap-1 shadow-xs">
+                <span>⏱️ 15m Buffer</span>
+              </div>
+            </div>
+          `).join('');
+
+          const div = document.createElement('div');
+          div.className = "bg-gray-50 border border-gray-200 rounded-2xl p-4";
+          div.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+              <span class="font-black text-xs text-charcoal">Screen ${sc.screen_number} (${sc.screen_type})</span>
+              <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Trigger Verified: Zero Overlap</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              ${blockHtml}
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (e) {
+        console.error("Error loading timeline:", e);
+      }
+    }
+
+    // OCC Race Condition Simulation
+    async function simulateOCCRace() {
+      const resBox = document.getElementById('occ-result-box');
+      resBox.className = "block p-4 rounded-xl text-xs font-mono bg-white border border-gray-200 space-y-1";
+      resBox.innerHTML = `<span>⏳ Simulating concurrent threads contending for seat...</span>`;
+
+      try {
+        const res = await fetch('/api/occ-simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ screening_id: 1, seat_id: 14 })
+        });
+        const data = await res.json();
+        resBox.innerHTML = `
+          <div class="text-charcoal font-bold font-sans text-xs mb-1">Target: ${data.seat} (Read Version: ${data.initial_read_version})</div>
+          <div class="text-emerald-700 font-bold">&check; Thread A: ${data.thread_a_status}</div>
+          <div class="text-red-600 font-bold">&cross; Thread B: ${data.thread_b_status}</div>
+          <div class="text-gray-500 pt-1 border-t border-gray-100 text-[11px]">${data.resolution}</div>
+        `;
+        await loadAuditLogs();
+      } catch (e) {
+        resBox.innerHTML = `<span class="text-red-500">Error: ${e}</span>`;
+      }
+    }
+
+    // Explain Query Plan
+    async function runExplainQueryPlan() {
+      const viewName = document.getElementById('query-plan-select').value;
+      const resBox = document.getElementById('query-plan-result');
+      try {
+        const res = await fetch(`/api/explain-query?view_name=${viewName}`);
+        const data = await res.json();
+
+        resBox.innerHTML = `
+          <div class="text-gray-400 font-bold text-[10px] pb-1 border-b border-gray-100">${data.executed_query}</div>
+          ${data.execution_steps.map(s => `
+            <div class="flex items-center justify-between py-1">
+              <span>&bull; ${s.detail}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full ${s.is_index_scan ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-gray-100 text-gray-500'}">
+                ${s.optimization_score}
+              </span>
+            </div>
+          `).join('')}
+        `;
+      } catch (e) {
+        console.error("Error explaining query:", e);
+      }
+    }
+
+    // Audit Log Viewer
+    async function loadAuditLogs() {
+      try {
+        const res = await fetch('/api/audit-logs?limit=8');
+        const logs = await res.json();
+        const container = document.getElementById('audit-log-container');
+        container.innerHTML = `
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-100 text-gray-500 font-bold uppercase text-[10px]">
+              <tr><th class="p-2.5">ID</th><th class="p-2.5">Entity</th><th class="p-2.5">Transition</th><th class="p-2.5">Action</th><th class="p-2.5">Details</th><th class="p-2.5">Timestamp</th></tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              ${logs.map(l => `
+                <tr>
+                  <td class="p-2.5 font-mono font-bold text-gray-400">#${l.audit_id}</td>
+                  <td class="p-2.5 font-bold">${l.entity_type} (#${l.entity_id})</td>
+                  <td class="p-2.5"><span class="text-gray-400">${l.previous_state || 'INIT'}</span> &rarr; <span class="font-bold text-charcoal">${l.new_state}</span></td>
+                  <td class="p-2.5"><span class="px-2 py-0.5 rounded-full bg-lilac/70 text-lilacDark text-[10px] font-bold">${l.action_type}</span></td>
+                  <td class="p-2.5 text-gray-600">${l.details || ''}</td>
+                  <td class="p-2.5 text-gray-400 font-mono text-[10px]">${l.timestamp}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } catch (e) {
+        console.error("Error loading audit logs:", e);
+      }
+    }
+
+    // Concession Predictive Forecast
+    async function loadConcessionForecast() {
+      try {
+        const res = await fetch('/api/concession-forecast');
+        const data = await res.json();
+        const container = document.getElementById('concession-forecast-container');
+        container.innerHTML = `
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-100 text-gray-500 font-bold uppercase text-[10px]">
+              <tr><th class="p-2.5">Item Name</th><th class="p-2.5">Category</th><th class="p-2.5">Current Stock</th><th class="p-2.5">Forecast Demand</th><th class="p-2.5">Stock Status</th></tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              ${data.map(d => `
+                <tr>
+                  <td class="p-2.5 font-bold">${d.item_name}</td>
+                  <td class="p-2.5">${d.category}</td>
+                  <td class="p-2.5 font-mono">${d.current_stock}</td>
+                  <td class="p-2.5 font-mono font-bold text-charcoal">${d.predicted_demand_units} units</td>
+                  <td class="p-2.5">
+                    ${d.reorder_alert 
+                      ? `<span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold">⚠️ Reorder (+${d.restock_recommendation})</span>` 
+                      : `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">&check; Safe Buffer</span>`}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } catch (e) {
+        console.error("Error loading forecast:", e);
+      }
+    }
+
+    // Saturation Profiles
     async function loadSaturationProfiles() {
       try {
         const res = await fetch('/api/reports');
@@ -847,6 +1171,8 @@
           `;
           grid.appendChild(card);
         });
+
+        await loadConcessionForecast();
       } catch (e) {
         console.error("Error loading concessions:", e);
       }
@@ -900,6 +1226,7 @@
           trayCart = {};
           renderTray();
           await loadConcessions();
+          await loadAuditLogs();
         } else {
           alert(`Order Failed: ${data.detail}`);
         }
@@ -927,6 +1254,7 @@
           <div>${data.message}</div>
           ${data.details ? `<div class="mt-2 text-gray-600 font-normal">Movie: ${data.details.movie} &bull; Screen ${data.details.screen} &bull; ${data.details.showtime}</div>` : ''}
         `;
+        await loadAuditLogs();
       } catch (e) {
         console.error("Verification error:", e);
       }
@@ -948,6 +1276,7 @@
         resBox.className = "block p-3 rounded-xl text-xs font-semibold bg-gray-50 border border-gray-200";
         if (res.ok) {
           resBox.innerHTML = `✓ Booking #${bkgId} cancelled! Refunded: <b>Rs.${data.refund_amount}</b> (10% Fee Retained: Rs.${data.cancellation_fee}). Ref: <code>${data.refund_reference}</code>`;
+          await loadAuditLogs();
         } else {
           resBox.innerHTML = `❌ Error: ${data.detail}`;
         }
@@ -962,7 +1291,6 @@
         const res = await fetch('/api/reports');
         const data = await res.json();
 
-        // Box office table
         const boxDiv = document.getElementById('boxoffice-table-container');
         boxDiv.innerHTML = `
           <table class="w-full text-left text-xs">
@@ -975,7 +1303,6 @@
           </table>
         `;
 
-        // Occupancy table
         const occDiv = document.getElementById('occupancy-table-container');
         occDiv.innerHTML = `
           <table class="w-full text-left text-xs">
