@@ -69,23 +69,6 @@ Open your browser at **`http://localhost:8000/`**.
 
 ---
 
-## 🧪 5-Pass Recursive Verification Test Suite
-
-Run the full end-to-end automated verification harness:
-
-```bash
-python test_recursive_master.py
-```
-
-### Test Coverage:
-- **Pass 1 (`test_pass1_db.py`):** 31 Database assertions (16 tables, 6 views, 3 triggers, overlap constraint, double-booking prevention, OCC versioning, 7-day dates).
-- **Pass 2 (`test_pass2_api.py`):** 11 API assertions (OCC race condition simulator, idempotency replay, turnstile check-in, double-entry denial, stock decrement, 1-click refund, audit log).
-- **Pass 3 (`test_pass3_ux.py`):** 27 UX route assertions (All 8 dedicated landing pages returning HTTP 200 with proper DOM headers and Tailwind CSS).
-- **Pass 4 (`test_pass4_analytics.py`):** 10 Analytics assertions (Dynamic pricing tiers, concession inventory forecast, turnaround timeline, Prometheus `/metrics`).
-- **Pass 5 (Master Audit):** End-to-end stress test passing all 5 cycles with zero errors.
-
----
-
 ## 🏛️ Academic PBL Context
 - **Course:** Database Management Systems (DBMS PBL)
 - **Author:** G. Abhinav (`25WU0102089`)
